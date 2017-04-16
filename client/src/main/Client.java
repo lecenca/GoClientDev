@@ -4,6 +4,7 @@ package src.main;
  * Created by touhoudoge on 2017/3/20.
  */
 
+import javafx.scene.control.TableView;
 import javafx.stage.Modality;
 import src.main.view.CreateRoomController;
 import src.main.view.GameController;
@@ -53,7 +54,7 @@ public class Client extends Application
         createRoomStage.close();
     }
 
-    public void gotoCreateRoom() throws IOException {
+    public void gotoCreateRoom(TableView<Room> roomList) throws IOException {
         createRoomStage = new Stage();
         createRoomStage.initModality(Modality.APPLICATION_MODAL);
         createRoomStage.initOwner(primaryStage);
@@ -65,6 +66,7 @@ public class Client extends Application
         createRoomStage.show();
         CreateRoomController createRoomController = (CreateRoomController) loader.getController();
         createRoomController.setClient(this);
+        createRoomController.setRoomList(roomList);
     }
 
     public void gotoGame() throws Exception{
