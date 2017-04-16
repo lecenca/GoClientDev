@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import src.main.Board;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,6 +19,7 @@ import java.util.ResourceBundle;
 public class ChessBox implements Initializable{
 
     private Timer timer;
+    private Board board = new Board();
 
     @FXML private Pane chessPane;
 
@@ -45,6 +47,7 @@ public class ChessBox implements Initializable{
             }else{
                 return;
             }
+            board.chessMoves((x-10)/30,(y-10)/30,1);
             circle.setLayoutX(x);
             circle.setLayoutY(y);
             circle.setRadius(10);
