@@ -1,11 +1,14 @@
 package src.main.view;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.collections.FXCollections;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.StringConverter;
 import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import src.main.Room;
 
 
 import java.io.IOException;
@@ -22,7 +25,15 @@ public class LobbyController implements Initializable{
     @FXML private TextField inputField;
     @FXML private Button sentBtn;
     @FXML private Button createRoomBtn;
+    @FXML private Button autoMatch;
     @FXML private ListView<String> chatBox;
+    @FXML private TableView<Room> roomList;
+    @FXML private TableColumn roomIdCol;
+    @FXML private TableColumn roomNameCol;
+    @FXML private TableColumn player01Col;
+    @FXML private TableColumn player02Col;
+    @FXML private TableColumn stateCol;
+
     @FXML private ChatBox chatBoxController;
 
     @FXML private void sent(){
@@ -39,8 +50,13 @@ public class LobbyController implements Initializable{
     }
 
     @FXML
+    private void autoMatchPlayer() throws Exception {
+        client.gotoGame();
+    }
+
+    @FXML
     private void gotoCreateRoom() throws IOException {
-        client.gotoCreateRoom();
+        client.gotoCreateRoom(roomList);
     }
 
     public void setClient(Client client){
@@ -49,6 +65,29 @@ public class LobbyController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
+        /************* test ********************/
+        StringConverter<Object> sc = new StringConverter<Object>() {
+            @Override
+            public String toString(Object t) {
+                return t == null ? null : t.toString();
+            }
 
+            @Override
+            public Object fromString(String string) {
+                return string;
+            }
+        };
+
+        roomList.setItems(FXCollections.observableArrayList());
+        roomIdCol.setCellValueFactory(new PropertyValueFactory("roomId"));
+        roomIdCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+
+        roomNameCol.setCellValueFactory(new PropertyValueFactory("roomName"));
+        roomNameCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+
+        player01Col.setCellFactory(new PropertyValueFactory("player01"));
+        player01Col.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+
+        /************* test ********************/
     }
 }
