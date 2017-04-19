@@ -31,8 +31,8 @@ public class LoginController implements Initializable
         if(checkInfo()){
         	String msg = encoder.getPlayerListRequest();
         	String resMsg = client.getConnect().sendAndReceive(msg);
-        	ArrayList list = Decoder.parseJsontoArray(msg);
-        	client.getPlayerList().addAll(list);
+        	//ArrayList list = Decoder.parseJsontoArray(msg);
+        	//client.getPlayerList().addAll(list);
         	client.getPrimaryStage().close();
             client.gotoLobby();
         }

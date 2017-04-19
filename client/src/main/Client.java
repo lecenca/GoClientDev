@@ -81,7 +81,6 @@ public class Client extends Application
         createRoomController.setClient(this);
         createRoomController.setRoomList(roomList);
     }
-
     public void gotoGame() throws Exception{
         gameStage = new Stage();
         FXMLLoader loader = new FXMLLoader();
