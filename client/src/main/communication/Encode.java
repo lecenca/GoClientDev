@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by 刘俊延 on 2017/4/9.
+ * Created by 鍒樹繆寤� on 2017/4/9.
  */
 
 public class Encode {
@@ -19,6 +19,7 @@ public class Encode {
                 CHECK_ACCOUNT = 0,
                 REGIST = 1,
                 LOGIN = 2,
+                CHECK_NAME = 3,	
                 LOGOUT,
                 FETCH_PLAYER_INFO,
                 FETCH_LOBBY_INFO,
@@ -41,7 +42,11 @@ public class Encode {
         map.put("account",account);
         return requestJson(gson.toJson(map),rt.CHECK_ACCOUNT);
     }
-
+    public String checkNameRequest(String name){
+        Map map = new HashMap();
+        map.put("nickname",name);
+        return requestJson(gson.toJson(map),rt.CHECK_NAME);
+    }
     public String signUpRequest(UserInfo u){
         return requestJson(gson.toJson(u),rt.REGIST);
     }
@@ -52,7 +57,9 @@ public class Encode {
         map.put("password",password);
         return requestJson(gson.toJson(map),rt.LOGIN);
     }
-
+    public String getPlayerListRequest() {
+    	return "{\"request_type\":" + String.valueOf(rt.FETCH_PLAYER_INFO) + "}";
+    }
     private String requestJson(String json, int type){
         return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
     }

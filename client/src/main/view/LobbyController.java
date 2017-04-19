@@ -39,13 +39,15 @@ public class LobbyController implements Initializable{
     @FXML private void sent(){
         /************* test ********************/
         chatBoxController.sentSentence(inputField.getText());
+        client.getConnect().sendMessage(inputField.getText());
         /************* test ********************/
     }
 
     @FXML
     private void logout() throws Exception{
         /************* release *****************/
-        client.gotoLogin();
+    	client.getLobbyStage().close();
+        client.getPrimaryStage().show();
         /************* release *****************/
     }
 

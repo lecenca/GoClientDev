@@ -10,46 +10,91 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- * Created by 刘俊延 on 2017/4/10.
+ * Created by 鍒樹繆寤�? on 2017/4/10.
  */
 
 public class Connect {
-
-    public void send(String args) throws Exception {
+	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
+	private final static String IP = "172.16.90.242";
+	private final static int PORT = 10005;
+	private static Socket socket;
+	private static OutputStream os;
+	private static InputStream is;
+	private static PrintWriter pw;
+	private static BufferedReader br;
+	public Connect() {
+		try {
+			socket = new Socket(IP,PORT);
+			os = socket.getOutputStream();
+			is = socket.getInputStream();
+			pw = new PrintWriter(os);
+			br = new BufferedReader(new InputStreamReader(is));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("连接服务器失�?");
+		}
+	}
+    public String sendAndReceive(String args) throws Exception {
+    	String msg=null;
+    	//BufferedReader br = null;
+    	//PrintWriter pw = null;
         try {
-            //1.建立客户端socket连接，指定服务器位置及端口
-            Socket socket =new Socket("192.168.43.7",6000);
-            //2.得到socket读写流
-            OutputStream os=socket.getOutputStream();
-            PrintWriter pw=new PrintWriter(os);
-            //输入流
-            InputStream is=socket.getInputStream();
-            BufferedReader br=new BufferedReader(new InputStreamReader(is));
-            //3.利用流按照一定的操作，对socket进行读写操作
+            //2.寰楀埌socket璇诲啓娴�?
+            //OutputStream os=socket.getOutputStream();
+           // pw=new PrintWriter(os);
+            //杈撳叆娴�?
+           // InputStream is=socket.getInputStream();
+          //  br=new BufferedReader(new InputStreamReader(is));
+            //3.鍒╃敤娴佹寜鐓т竴瀹氱殑鎿嶄綔锛屽socket杩涜璇诲啓鎿嶄�?
             String info = new String(toHH(args.length())) + args;
             System.out.println("info:" + info);
-            pw.write(info);
-            pw.flush();
-            socket.shutdownOutput();
-            //接收服务器的相应
-            String reply=null;
+            os.write(info.getBytes());
+            //pw.flush();
+            //socket.shutdownOutput();
+            //鎺ユ敹鏈嶅姟鍣ㄧ殑鐩稿簲
+            /*String reply=null;
             while(!((reply=br.readLine())==null)){
-                System.out.println("接收服务器的信息："+reply);
-            }
-            //4.关闭资源
-            br.close();
-            is.close();
-            pw.close();
-            os.close();
-            socket.close();
+                System.out.println("鎺ユ敹鏈嶅姟鍣ㄧ殑淇℃伅锛�"+reply);
+            }*/
+            //create the buff 
+            byte[] buff = new byte[1024];
+            int len= is.read(buff);
+            msg = new String(buff,0,len);
+           // socket.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+        	return msg;
         }
     }
-
+    
+    public static void sendMessage(String msg) {
+    	//get the outputStream of socket
+		//OutputStream outputStream = socket.getOutputStream();
+		//create the printwriter
+		//pw = new PrintWriter(os,true);
+		pw.write(msg + LINE_SEPARATOR);
+		pw.flush();
+    }
     //
+    public static String receiveMessage() {
+    	String msg = null;
+    	//创建字节数组缓冲�?
+    	byte[] buff = new byte[1024];
+    	try {
+			int len = is.read(buff);
+			msg = new String(buff,0,len);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			return msg;
+		}
+		
+    }
     private byte[] toLH(int n) {
         byte[] b = new byte[4];
         b[0] = (byte) (n & 0xff);

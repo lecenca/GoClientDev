@@ -8,9 +8,11 @@ import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.communication.Connect;
+import src.main.communication.Decoder;
 import src.main.communication.Encode;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable
@@ -24,34 +26,42 @@ public class LoginController implements Initializable
     @FXML private Label         invaildMessageTips;
 
     private Encode  encoder   = new Encode();
-    private Connect connector = new Connect();
 
     @FXML private void login() throws Exception{
         if(checkInfo()){
+        	String msg = encoder.getPlayerListRequest();
+        	String resMsg = client.getConnect().sendAndReceive(msg);
+        	ArrayList list = Decoder.parseJsontoArray(msg);
+        	client.getPlayerList().addAll(list);
+        	client.getPrimaryStage().close();
             client.gotoLobby();
         }
     }
 
     @FXML
     private void signUp() throws Exception{
+    	client.getPrimaryStage().close();
         client.gotoSignUp();
     }
 
     @FXML
     private boolean checkInfo() throws Exception {
-        boolean isValid = true;
+      //  boolean isValid = true;
         String account = this.account.getText();
         String password = this.password.getText();
         if(account.isEmpty()){
             emptyAccountTips.setVisible(true);
-            isValid = false;
+            //isValid = false;
+            return false;
+            
         }
         else{
             emptyAccountTips.setVisible(false);
         }
         if(password.isEmpty()){
             emptyPasswordTips.setVisible(true);
-            isValid = false;
+//            isValid = false;
+            return false;
         }
         else{
             emptyPasswordTips.setVisible(false);
@@ -60,8 +70,11 @@ public class LoginController implements Initializable
             String json = encoder.loginRequest(this.account.getText(),this.password.getText());
             System.out.println(json);
             //connector.send(json);
+            String msg = client.getConnect().sendAndReceive(json);
+            if(!"true".equals(msg))
+            	return false;
         }
-        return isValid;
+        return true;
     }
 
     @FXML
