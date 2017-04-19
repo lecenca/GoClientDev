@@ -24,7 +24,6 @@ public class LoginController implements Initializable
     @FXML private Label         invaildMessageTips;
 
     private Encode  encoder   = new Encode();
-    private Connect connector = new Connect();
 
     @FXML private void login() throws Exception{
         if(checkInfo()){
