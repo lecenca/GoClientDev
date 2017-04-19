@@ -57,7 +57,9 @@ public class Encode {
         map.put("password",password);
         return requestJson(gson.toJson(map),rt.LOGIN);
     }
-
+    public String getPlayerListRequest() {
+    	return "{\"request_type\":" + String.valueOf(rt.FETCH_PLAYER_INFO) + "}";
+    }
     private String requestJson(String json, int type){
         return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
     }

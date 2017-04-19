@@ -92,7 +92,6 @@ public class SignUpController implements Initializable{
             System.out.println("user info: " + json);
             String msg = client.getConnect().sendAndReceive(json);
             if("true".equals(msg)) {
-            	
             	client.getsignupStage().close();
             	client.getPrimaryStage().show();
             }

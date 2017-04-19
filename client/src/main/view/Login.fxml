@@ -18,13 +18,13 @@
             <font>
                 <Font size="25.0" />
             </font></Label>
-        <TextField fx:id="account" layoutX="130.0" layoutY="56.0" prefHeight="40.0" prefWidth="240.0" />
+        <TextField fx:id="account" layoutX="130.0" layoutY="56.0" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的帐号" />
         <Label layoutX="34.0" layoutY="129.0" prefHeight="40.0" prefWidth="82.0" text="密 码">
             <font>
                 <Font size="25.0" />
             </font>
       </Label>
-      <PasswordField fx:id="password" layoutX="148.0" layoutY="138.0" />
+      <PasswordField fx:id="password" layoutX="148.0" layoutY="138.0" promptText="请输入您的密码" />
       <Label fx:id="invaildMessageTips" layoutX="233.0" layoutY="175.0" text="无效信息提示" textFill="RED" />
         <Button fx:id="loginBtn" layoutX="100.0" layoutY="200.0" mnemonicParsing="false" onAction="#login" prefHeight="40.0" prefWidth="95.0" text="登陆">
             <font>
