@@ -27,40 +27,36 @@ public class Stone {
         this.type = t;
     }
 
-    public int getType() {
-        return type;
-    }
-
     public void setType(int t) {
         this.type = t;
     }
 
-    public Stone up(){
-        if(y == 0){
+    public Stone up() {
+        if (y == 0) {
             return null;
         }
-        return Board.stones[x][y-1];
+        return Board.stones[x][y - 1];
     }
 
-    public Stone down(){
-        if(y == 18){
+    public Stone down() {
+        if (y == 18) {
             return null;
         }
-        return Board.stones[x][y+1];
+        return Board.stones[x][y + 1];
     }
 
-    public Stone left(){
-        if(x == 0){
+    public Stone left() {
+        if (x == 0) {
             return null;
         }
-        return Board.stones[x-1][y];
+        return Board.stones[x - 1][y];
     }
 
-    public Stone right(){
-        if(x == 18){
+    public Stone right() {
+        if (x == 18) {
             return null;
         }
-        return Board.stones[x+1][y];
+        return Board.stones[x + 1][y];
     }
 
 }

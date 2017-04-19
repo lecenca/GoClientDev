@@ -12,10 +12,9 @@ import src.main.Action;
 import src.main.Board;
 import src.main.Stone;
 
-
 import java.awt.Point;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 
 /**
@@ -25,17 +24,17 @@ public class ChessBox implements Initializable {
 
     private Timer timer;
     private Board board = new Board();
-    private Circle[][] stonesPicture = new Circle[19][19];
+    private Circle[][] stonesCircle = new Circle[19][19];
     private int turns = -1;
 
     @FXML
     private Pane chessPane;
 
     private static final int borderGap = 20;
-    private static final int stoneGap = 30;
+    private static final int stoneGap = 32;
     private static final int xLen = 18 * stoneGap + 2 * borderGap;
     private static final int yLen = 18 * stoneGap + 2 * borderGap;
-    private static final int stoneRadius = 10;
+    private static final int stoneRadius = (stoneGap - 4) / 2;
 
     private Point pixel = new Point();
     private Point index = new Point();
@@ -46,73 +45,71 @@ public class ChessBox implements Initializable {
         int action = action();
         if (action != Action.INVALID) {
             //System.out.println("iX=" + index.x + ", iY=" + index.y);
-            if(action == Action.KILL){
-                place(stonesPicture[index.x][index.y], turns);
-                for(int chain : Board.killed){
+            if (action == Action.KILL) {
+                place(stonesCircle[index.x][index.y], turns);
+                for (int chain : Board.killed) {
                     remove(chain);
                 }
                 board.remove();
-            }
-            else{
-                place(stonesPicture[index.x][index.y], turns);
+            } else {
+                place(stonesCircle[index.x][index.y], turns);
             }
             timer.start();
             turns = -turns;
         }
     }
 
-    private void getPixelPos(MouseEvent event){
-        pixel.setLocation(event.getX(),event.getY());
+    private void getPixelPos(MouseEvent event) {
+        pixel.setLocation(event.getX(), event.getY());
     }
 
-    private void getIndexPos(){
-        index.setLocation((pixel.x - borderGap)/stoneGap,(pixel.y - borderGap)/stoneGap);
+    private void getIndexPos() {
+        index.setLocation((pixel.x - borderGap) / stoneGap, (pixel.y - borderGap) / stoneGap);
     }
 
-    private void place(Circle stone, int color){
-        System.out.println("Place: ("+index.x+","+index.y+")");
-        board.add(index.x, index.y, turns);
-        if(color == Stone.Black){
+    private void place(Circle stone, int color) {
+        System.out.println("ChessBox Place: (" + index.x + "," + index.y + ")");
+        if (color == Stone.Black) {
             stone.setFill(Color.BLACK);
-        }
-        else{
+        } else {
             stone.setFill(Color.WHITE);
         }
         stone.setLayoutX(pixel.x);
         stone.setLayoutY(pixel.y);
         stone.setRadius(stoneRadius);
         chessPane.getChildren().add(stone);
+        board.add(index.x, index.y, turns);
     }
 
-    private void remove(int chain){
-        ArrayList<Stone> stones = Board.stoneMap.get(chain);
-        System.out.print("Kill chain " + chain +" : ");
-        for(Stone s : stones){
-            System.out.print("("+s.x+","+s.y+") ");
-            chessPane.getChildren().remove(stonesPicture[s.x][s.y]);
+    private void remove(int chain) {
+        HashSet<Stone> stones = Board.stoneMap.get(chain);
+        System.out.print("ChessBox remove chain " + chain + " : ");
+        for (Stone s : stones) {
+            System.out.print("Stone(" + s.x + "," + s.y + ") ");
+            chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
         }
         System.out.println();
     }
 
     private int action() {
-        if (pixel.x < borderGap - 8 || pixel.x > xLen - borderGap + 8
-                || pixel.y < borderGap - 8 || pixel.y > yLen - borderGap + 8) {
+        if (pixel.x < borderGap - stoneRadius || pixel.x > xLen - borderGap + stoneRadius
+                || pixel.y < borderGap - stoneRadius || pixel.y > yLen - borderGap + stoneRadius) {
             return Action.INVALID;
         }
         int gridX = (pixel.x - borderGap) % stoneGap;
         int gridY = (pixel.y - borderGap) % stoneGap;
         int indexX = (pixel.x - borderGap) / stoneGap;
         int indexY = (pixel.y - borderGap) / stoneGap;
-        if (gridX < 8 && gridY < 8) {
+        if (gridX < stoneRadius && gridY < stoneRadius) {
             pixel.x = indexX * stoneGap + borderGap;
             pixel.y = indexY * stoneGap + borderGap;
-        } else if (gridX < 8 && gridY > 22) {
+        } else if (gridX < stoneRadius && gridY > stoneGap - stoneRadius) {
             pixel.x = indexX * stoneGap + borderGap;
             pixel.y = (indexY + 1) * stoneGap + borderGap;
-        } else if (gridX > 22 && gridY < 8) {
+        } else if (gridX > stoneGap - stoneRadius && gridY < stoneRadius) {
             pixel.x = (indexX + 1) * stoneGap + borderGap;
             pixel.y = indexY * stoneGap + borderGap;
-        } else if (gridX > 22 && gridY > 22) {
+        } else if (gridX > stoneGap - stoneRadius && gridY > stoneGap - stoneRadius) {
             pixel.x = (indexX + 1) * stoneGap + borderGap;
             pixel.y = (indexY + 1) * stoneGap + borderGap;
         } else {
@@ -127,7 +124,7 @@ public class ChessBox implements Initializable {
         drawBoard();
         drawLine();
         drawStar();
-        initStones();
+        initStonesCircle();
     }
 
     private void drawBoard() {
@@ -168,10 +165,10 @@ public class ChessBox implements Initializable {
         }
     }
 
-    private void initStones(){
-        for(int i = 0; i < 19; ++i){
-            for(int j = 0; j < 19; ++j){
-                stonesPicture[i][j] = new Circle();
+    private void initStonesCircle() {
+        for (int i = 0; i < 19; ++i) {
+            for (int j = 0; j < 19; ++j) {
+                stonesCircle[i][j] = new Circle();
             }
         }
     }
