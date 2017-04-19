@@ -25,6 +25,7 @@ public class Board {
     public static Map<Stone, Integer> chainMap = new HashMap<>();
     public static Map<Integer, ArrayList<Stone>> stoneMap = new HashMap<>();
     public static Map<Integer, TreeSet<Point>> liberty = new TreeMap<>();
+    public static ArrayList<Integer> killed = new ArrayList<>();
 
     private static boolean[] used = new boolean[361];
 
@@ -47,53 +48,72 @@ public class Board {
     }
 
     // Checks if the stones in color can be placed in the Point p.
-    public boolean check(Point p, int color) {
-        return check(p.x, p.y, color);
+    public int action(Point p, int color) {
+        return action(p.x, p.y, color);
     }
 
-    public boolean check(int x, int y, int color) {
-        if (stones[x][y].getType() != Stone.None) {
-            return false;
+    public int action(int x, int y, int color) {
+        if (stones[x][y].type != Stone.None) {
+            return Action.INVALID;
         }
-        if(!core.hasLiberty(x, y, color)){
-            return false;
-        }
-        return true;
+        return core.action(x,y,color);
     }
 
     // Adds a stone in color on the Point (x, y)
     public void add(int x, int y, int color) {
         stones[x][y].setType(color);
-        initChainId(stones[x][y]);
+        initStone(stones[x][y]);
         update(stones[x][y]);
-        System.out.println("Point:("+x+","+y+") chain "+chainMap.get(stones[x][y])+" has liberty "+core.liberty(stones[x][y]));
     }
 
     // Removes the stone in the Point (x, y)
-    public void remove(int x, int y) {
-        stones[x][y].setType(Stone.None);
+    public void remove() {
+        for(int chain : killed){
+            ArrayList<Stone> ss = stoneMap.get(chain);
+            for(Stone s : ss){
+                s.setType(Stone.None);
+                if(s.up() != null){
+                    extendLiberty(chainMap.get(s.up()),new Point(s.x,s.y));
+                }
+                if(s.down() != null){
+                    extendLiberty(chainMap.get(s.down()),new Point(s.x,s.y));
+                }
+                if(s.left() != null){
+                    extendLiberty(chainMap.get(s.left()),new Point(s.x,s.y));
+                }
+                if(s.right() != null){
+                    extendLiberty(chainMap.get(s.right()),new Point(s.x,s.y));
+                }
+                stoneMap.remove(chain);
+            }
+            ss.clear();
+            used[chain] = false;
+        }
+        killed.clear();
     }
 
-    private void initChainId(Stone stone) {
-        int i = 0;
-        while (used[i]) {
-            ++i;
+    private void initStone(Stone stone) {
+        int chain = 0;
+        while (used[chain]) {
+            ++chain;
         }
-        used[i] = true;
-        chainMap.put(stone, i);
-        stoneMap.put(i, new ArrayList<>());
-        liberty.put(i,new TreeSet<Point>(new PointComparator()));
+        used[chain] = true;
+        chainMap.put(stone, chain);
+        ArrayList<Stone> list = new ArrayList<>();
+        list.add(stone);
+        stoneMap.put(chain, list);
+        liberty.put(chain,new TreeSet<Point>(new PointComparator()));
         if(stone.up() != null && stone.up().type == Stone.None){
-            extendLiberty(i, new Point(stone.x,stone.y - 1));
+            extendLiberty(chain, new Point(stone.x,stone.y - 1));
         }
         if(stone.down() != null && stone.down().type == Stone.None){
-            extendLiberty(i, new Point(stone.x,stone.y + 1));
+            extendLiberty(chain, new Point(stone.x,stone.y + 1));
         }
         if(stone.left() != null && stone.left().type == Stone.None){
-            extendLiberty(i, new Point(stone.x - 1,stone.y));
+            extendLiberty(chain, new Point(stone.x - 1,stone.y));
         }
         if(stone.right() != null && stone.right().type == Stone.None){
-            extendLiberty(i, new Point(stone.x + 1,stone.y));
+            extendLiberty(chain, new Point(stone.x + 1,stone.y));
         }
     }
 
@@ -140,7 +160,6 @@ public class Board {
             ArrayList<Stone> newList = stoneMap.get(newChain);
             TreeSet<Point> oldLib = liberty.get(oldChain);
             TreeSet<Point> newLib = liberty.get(newChain);
-            newList.add(stone);
             for (Stone s : oldList) {
                 newList.add(s);
             }
@@ -149,6 +168,7 @@ public class Board {
             }
             oldList.clear();
             oldLib.clear();
+            used[oldChain] = false;
         }
     }
 
