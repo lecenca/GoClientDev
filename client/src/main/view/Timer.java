@@ -23,7 +23,7 @@ public class Timer implements Initializable {
 
     public Timer(){
         timeline = new Timeline();
-        timeline.setCycleCount(12);
+        timeline.setCycleCount(60);
         timeline.getKeyFrames().addAll(new KeyFrame(Duration.seconds(1),(ActionEvent ae)->{
             --time;
             displayTime();
@@ -34,9 +34,7 @@ public class Timer implements Initializable {
     }
 
     private void displayTime(){
-        int minute = time/60;
-        int second = time%60;
-        timeLabel.setText(String.valueOf(minute)+" : "+String.valueOf(second));
+        timeLabel.setText(String.format("%02d",time)+" 秒");
     }
 
     public void start(){
@@ -56,8 +54,8 @@ public class Timer implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         /************* test ********************/
-        timeLabel.setText(2+" : "+0);
-        time = 120;
+        timeLabel.setText("60 秒");
+        time = 60;
         timeline.play();
         /************* test ********************/
     }
