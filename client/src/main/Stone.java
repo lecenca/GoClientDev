@@ -1,7 +1,5 @@
 package src.main;
 
-import java.awt.Point;
-
 /**
  * Created by 刘俊延 on 2017/4/18.
  */
@@ -13,22 +11,22 @@ public class Stone {
 
     public int x;
     public int y;
-    public int type;
+    public int color;
 
     public Stone(int x, int y) {
         this.x = x;
         this.y = y;
-        this.type = this.None;
+        this.color = this.None;
     }
 
     public Stone(int x, int y, int t) {
         this.x = x;
         this.y = y;
-        this.type = t;
+        this.color = t;
     }
 
-    public void setType(int t) {
-        this.type = t;
+    public void setColor(int t) {
+        this.color = t;
     }
 
     public Stone up() {

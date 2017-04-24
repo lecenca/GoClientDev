@@ -31,9 +31,9 @@ public class Core {
     }
 
     private static void actionWith(Stone stone, int color) {
-        if (stone.type == Stone.None || (stone.type == color && liberty(stone) > 1)) {
+        if (stone.color == Stone.None || (stone.color == color && liberty(stone) > 1)) {
             hasLiberty = true;
-        } else if (stone.type == -color && liberty(stone) == 1) {
+        } else if (stone.color == -color && liberty(stone) == 1) {
             hasKilled = true;
             Board.killed.add(Board.chainMap.get(stone));
         }

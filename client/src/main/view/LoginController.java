@@ -7,12 +7,9 @@ import javafx.scene.paint.Color;
 import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import src.main.communication.Connect;
-import src.main.communication.Decoder;
-import src.main.communication.Encode;
+import src.main.communication.Encoder;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable
@@ -25,7 +22,7 @@ public class LoginController implements Initializable
     @FXML private Label         emptyPasswordTips;
     @FXML private Label         invaildMessageTips;
 
-    private Encode  encoder   = new Encode();
+    private Encoder encoder   = new Encoder();
 
     @FXML private void login() throws Exception{
         if(checkInfo()){
@@ -70,9 +67,9 @@ public class LoginController implements Initializable
             String json = encoder.loginRequest(this.account.getText(),this.password.getText());
             System.out.println(json);
             //connector.send(json);
-            String msg = client.getConnect().sendAndReceive(json);
-            if(!"true".equals(msg))
-            	return false;
+//            String msg = client.getConnect().sendAndReceive(json);
+//            if(!"true".equals(msg))
+//            	return false;
         }
         return true;
     }
