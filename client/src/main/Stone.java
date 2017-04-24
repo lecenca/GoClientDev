@@ -12,21 +12,13 @@ public class Stone {
     public int x;
     public int y;
     public int color;
+    public int step;
 
     public Stone(int x, int y) {
         this.x = x;
         this.y = y;
-        this.color = this.None;
-    }
-
-    public Stone(int x, int y, int t) {
-        this.x = x;
-        this.y = y;
-        this.color = t;
-    }
-
-    public void setColor(int t) {
-        this.color = t;
+        this.color = None;
+        this.step = 0;
     }
 
     public Stone up() {
