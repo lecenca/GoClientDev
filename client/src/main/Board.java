@@ -18,9 +18,8 @@ public class Board {
     public static HashSet<Integer> killed = new HashSet<>();
     public static Stone[] maybeKo = new Stone[2];
 
+    private static int step;
     private static boolean[] used = new boolean[361];
-
-    private Core core = new Core();
 
     public Board() {
         for (int i = 0; i < 19; ++i) {
@@ -44,14 +43,6 @@ public class Board {
         killed.clear();
     }
 
-    public Stone get(Point p) {
-        return get(p.x, p.y);
-    }
-
-    public Stone get(int x, int y) {
-        return stones[x][y];
-    }
-
     // Checks if the stones in color can be placed in the Point p.
     public int action(Point p, int color) {
         return action(p.x, p.y, color);
@@ -66,7 +57,9 @@ public class Board {
 
     // Adds a stone at the Point (x, y)
     public void add(int x, int y, int color) {
-        stones[x][y].setColor(color);
+        stones[x][y].color = color;
+        stones[x][y].step = step;
+        step += 2;
         initStone(stones[x][y]);
         update(stones[x][y]);
         System.out.println("Board add stone(" + x + "," + y + ") in chain " + chainMap.get(stones[x][y])
@@ -91,7 +84,7 @@ public class Board {
                 if (s.right() != null && s.right().color == -s.color) {
                     extendLiberty(chainMap.get(s.right()), new Point(s.x, s.y));
                 }
-                s.setColor(Stone.None);
+                s.color = Stone.None;
                 chainMap.remove(s);
             }
             stoneMap.remove(chain);
