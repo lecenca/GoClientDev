@@ -47,7 +47,7 @@ public class ChessBox implements Initializable {
         int action = action();
         if (action != Action.INVALID) {
             //System.out.println("iX=" + index.x + ", iY=" + index.y);
-            String jsonmsg = encoder.actionRequest(action,turns,index.x,index.y);
+            String jsonmsg = encoder.actionRequest(action, turns, index.x, index.y);
             System.out.println(jsonmsg);
             if (action == Action.KILL) {
                 place(index.x, index.y, turns);

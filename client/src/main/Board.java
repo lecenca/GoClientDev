@@ -16,7 +16,7 @@ public class Board {
     public static Map<Integer, HashSet<Stone>> stoneMap = new HashMap<>();
     public static Map<Integer, HashSet<Point>> liberty = new HashMap<>();
     public static HashSet<Integer> killed = new HashSet<>();
-    public static Stone ko = new Stone(0, 0);
+    public static Stone[] maybeKo = new Stone[2];
 
     private static boolean[] used = new boolean[361];
 
@@ -28,6 +28,8 @@ public class Board {
                 stones[i][j] = new Stone(i, j);
             }
         }
+        maybeKo[0] = new Stone(-1, -1);
+        maybeKo[1] = new Stone(-1, -1);
     }
 
     public static void reset() {
@@ -100,10 +102,20 @@ public class Board {
     }
 
     // Adds the stones that were killed in the killed.
-    public void addKilled(ArrayList<HashMap> list){
-        for(HashMap stone : list){
-            killed.add(chainMap.get(stones[(int)stone.get("x")][(int)stone.get("y")]));
+    public void addKilled(ArrayList<HashMap> list) {
+        for (HashMap stone : list) {
+            killed.add(chainMap.get(stones[(int) stone.get("x")][(int) stone.get("y")]));
         }
+    }
+
+    // Sets some point that look like ko.
+    public void setKoPoint(int x1, int y1, int color, int x2, int y2) {
+        maybeKo[0].x = x1;
+        maybeKo[0].y = y1;
+        maybeKo[0].color = color;
+        maybeKo[1].x = x2;
+        maybeKo[1].y = y2;
+        maybeKo[1].color = -color;
     }
 
     // Initializes a new stone for chainMap, stoneMap and liberty.
