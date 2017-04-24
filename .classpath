@@ -3,5 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="client"/>
 	<classpathentry exported="true" kind="lib" path="client/lib/gson-2.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="client/lib/fastjson-1.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="client/lib/junit-4.9.jar"/>
 	<classpathentry kind="output" path="out/production/MicroOnlineGo"/>
 </classpath>

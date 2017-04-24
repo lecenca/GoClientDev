@@ -11,6 +11,7 @@ import javafx.scene.shape.Rectangle;
 import src.main.Action;
 import src.main.Board;
 import src.main.Stone;
+import src.main.communication.Encoder;
 
 import java.awt.Point;
 import java.net.URL;
@@ -27,6 +28,7 @@ public class ChessBox implements Initializable {
     private Circle[][] stonesCircle = new Circle[19][19];
     private int turns = -1;
 
+    private Encoder encoder = new Encoder();
     @FXML
     private Pane chessPane;
 
@@ -45,14 +47,16 @@ public class ChessBox implements Initializable {
         int action = action();
         if (action != Action.INVALID) {
             //System.out.println("iX=" + index.x + ", iY=" + index.y);
+            String jsonmsg = encoder.actionRequest(action, turns, index.x, index.y);
+            System.out.println(jsonmsg);
             if (action == Action.KILL) {
-                place(stonesCircle[index.x][index.y], turns);
+                place(index.x, index.y, turns);
                 for (int chain : Board.killed) {
                     remove(chain);
                 }
                 board.remove();
             } else {
-                place(stonesCircle[index.x][index.y], turns);
+                place(index.x, index.y, turns);
             }
             timer.start();
             turns = -turns;
@@ -67,8 +71,9 @@ public class ChessBox implements Initializable {
         index.setLocation((pixel.x - borderGap) / stoneGap, (pixel.y - borderGap) / stoneGap);
     }
 
-    private void place(Circle stone, int color) {
-        System.out.println("ChessBox Place: (" + index.x + "," + index.y + ")");
+    private void place(int x, int y, int color) {
+        Circle stone = stonesCircle[x][y];
+        System.out.println("ChessBox Place: (" + x + "," + y + ")");
         if (color == Stone.Black) {
             stone.setFill(Color.BLACK);
         } else {
@@ -78,7 +83,7 @@ public class ChessBox implements Initializable {
         stone.setLayoutY(pixel.y);
         stone.setRadius(stoneRadius);
         chessPane.getChildren().add(stone);
-        board.add(index.x, index.y, turns);
+        board.add(x, y, turns);
     }
 
     private void remove(int chain) {

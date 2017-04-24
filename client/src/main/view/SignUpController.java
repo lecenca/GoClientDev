@@ -1,26 +1,17 @@
 package src.main.view;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import src.main.UserInfo;
 import src.main.Client;
-import src.main.communication.Encode;
+import src.main.communication.Encoder;
 //import src.main.communication.Connect;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import com.sun.prism.paint.Paint;
-import com.sun.xml.internal.ws.spi.db.RepeatedElementBridge;
 
 
 /**
@@ -31,7 +22,7 @@ public class SignUpController implements Initializable{
     private Client client;
 
     private UserInfo user       = new UserInfo();
-    private Encode   encoder   = new Encode();
+    private Encoder encoder   = new Encoder();
     //private Connect  connector = new Connect();
 
     private boolean validInfo = true;
