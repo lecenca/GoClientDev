@@ -29,10 +29,12 @@ public class LoginController implements Initializable
 
     @FXML private void login() throws Exception{
         if(checkInfo()){
-        	String msg = encoder.getPlayerListRequest();
-        	String resMsg = client.getConnect().sendAndReceive(msg);
+        	/*String msg = encoder.getPlayerListRequest();
+        	String resMsg = client.getConnect().sendAndReceive(msg);*/
         	//ArrayList list = Decoder.parseJsontoArray(msg);
         	//client.getPlayerList().addAll(list);
+        	client.setFlag(true);
+        	System.out.println("Thread" + client.getChatThread().isAlive());
         	client.getPrimaryStage().close();
             client.gotoLobby();
         }
@@ -71,6 +73,7 @@ public class LoginController implements Initializable
             System.out.println(json);
             //connector.send(json);
             String msg = client.getConnect().sendAndReceive(json);
+            System.out.println(msg);
             if(!"true".equals(msg))
             	return false;
         }

@@ -40,14 +40,22 @@ public class LobbyController implements Initializable{
         /************* test ********************/
         chatBoxController.sentSentence(inputField.getText());
         client.getConnect().sendMessage(inputField.getText());
+        
         /************* test ********************/
     }
 
     @FXML
     private void logout() throws Exception{
         /************* release *****************/
+    	
+    	System.out.println("Thread" + client.getChatThread().isAlive());
+    	client.setFlag(false);
+    	//client.getChatThread().join();
+    	client.getChatThread().sleep(60000);
+    	System.out.println("Thread:" + client.getChatThread().isAlive());
     	client.getLobbyStage().close();
         client.getPrimaryStage().show();
+        
         /************* release *****************/
     }
 

@@ -34,11 +34,23 @@ public class Client extends Application
     private UserInfo account;
     private Connect connect;
     private ArrayList playerList=new ArrayList(); 
+    private Thread chatThread;
+    boolean flag = false;
     public Client() {
     	connect = new Connect();
     	lobbyStage = new Stage();
     	signupStage = new Stage();
-    	
+    	chatThread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				while(flag) {
+					String msg = connect.receiveMessage();
+					System.out.println("here " + msg);
+				}
+			}
+		});
     }
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -56,6 +68,10 @@ public class Client extends Application
     public void gotoLobby() throws Exception{
         LobbyController lobbyController = (LobbyController) changeStage("view/Lobby.fxml",lobbyStage);
         lobbyController.setClient(this);
+        System.out.println("flag" + flag);
+        flag = true;
+        chatThread.start();
+        
     }
 
     public void gotoSignUp() throws Exception{
@@ -162,6 +178,16 @@ public class Client extends Application
 	
 	public ArrayList getPlayerList() {
 		return playerList;
+	}
+	public Thread getChatThread() {
+		return chatThread;
+	}
+	
+	public boolean getFlag() {
+		return flag;
+	}
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 	public static void main(String[] args)
     {
