@@ -23,7 +23,8 @@ import java.util.ResourceBundle;
  */
 public class ChessBox implements Initializable {
 
-    private Timer timer;
+    private Timer timer01;
+    private Timer timer02;
     private Board board = new Board();
     private Circle[][] stonesCircle = new Circle[19][19];
     private int turns = -1;
@@ -58,7 +59,7 @@ public class ChessBox implements Initializable {
             } else {
                 place(index.x, index.y, turns);
             }
-            timer.start();
+            //timer.start();
             turns = -turns;
         }
     }
@@ -178,7 +179,8 @@ public class ChessBox implements Initializable {
         }
     }
 
-    public void setTimer(Timer timer) {
-        this.timer = timer;
+    public void setTimer(Timer timer01,Timer timer02) {
+        this.timer01 = timer01;
+        this.timer02 = timer02;
     }
 }
