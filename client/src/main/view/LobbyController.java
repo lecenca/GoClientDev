@@ -47,12 +47,14 @@ public class LobbyController implements Initializable{
     @FXML
     private void logout() throws Exception{
         /************* release *****************/
-    	
-    	System.out.println("Thread" + client.getChatThread().isAlive());
+    	System.out.println("now logout");
+    	System.out.println("Thread is " + client.getChatThread().isAlive());
     	client.setFlag(false);
     	//client.getChatThread().join();
-    	client.getChatThread().sleep(60000);
-    	System.out.println("Thread:" + client.getChatThread().isAlive());
+    	//client.getChatThread().sleep(60000);
+    	client.getChatThread().stop();
+    	System.out.println("Thread is " + client.getChatThread().isAlive());
+    	client.getConnect().closeInputstream();
     	client.getLobbyStage().close();
         client.getPrimaryStage().show();
         

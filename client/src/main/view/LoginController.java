@@ -33,8 +33,8 @@ public class LoginController implements Initializable
         	String resMsg = client.getConnect().sendAndReceive(msg);*/
         	//ArrayList list = Decoder.parseJsontoArray(msg);
         	//client.getPlayerList().addAll(list);
-        	client.setFlag(true);
-        	System.out.println("Thread" + client.getChatThread().isAlive());
+        	/*client.setFlag(true);
+        	System.out.println("Thread" + client.getChatThread().isAlive());*/
         	client.getPrimaryStage().close();
             client.gotoLobby();
         }

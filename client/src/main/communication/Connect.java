@@ -32,7 +32,7 @@ public class Connect {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("连接服务器失�?");
+			System.out.println("连接服务器失!");
 		}
 	}
     public String sendAndReceive(String args) throws Exception {
@@ -115,4 +115,13 @@ public class Connect {
         b[0] = (byte) (n >> 24 & 0xff);
         return b;
     }
+	public void closeInputstream() {
+		// TODO Auto-generated method stub
+		try {
+			socket.shutdownInput();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

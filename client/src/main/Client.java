@@ -24,175 +24,183 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class Client extends Application
-{
-    private Stage primaryStage;
-    private Stage createRoomStage;
-    private Stage gameStage;
-    private Stage lobbyStage = null;
-    private Stage signupStage = null;
-    private UserInfo account;
-    private Connect connect;
-    private ArrayList playerList=new ArrayList(); 
-    private Thread chatThread;
-    boolean flag = false;
-    public Client() {
-    	connect = new Connect();
-    	lobbyStage = new Stage();
-    	signupStage = new Stage();
-    	chatThread = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				while(flag) {
-					String msg = connect.receiveMessage();
-					System.out.println("here " + msg);
+public class Client extends Application {
+	private Stage primaryStage;
+	private Stage createRoomStage;
+	private Stage gameStage;
+	private Stage lobbyStage = null;
+	private Stage signupStage = null;
+	private UserInfo account;
+	private Connect connect;
+	private ArrayList playerList = new ArrayList();
+	private Thread chatThread = null;
+	boolean flag = false;
+
+	public Client() {
+		connect = new Connect();
+		lobbyStage = new Stage();
+		signupStage = new Stage();
+		if (chatThread == null)
+			chatThread = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					while (flag) {
+						String msg = connect.receiveMessage();
+						System.out.println("here " + msg);
+					}
 				}
-			}
-		});
-    }
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        this.primaryStage = primaryStage;
-        primaryStage.setTitle("MicroOnlineGo");
-        gotoLogin();
-    }
+			});
+	}
 
-    public void gotoLogin() throws Exception{
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		this.primaryStage = primaryStage;
+		primaryStage.setTitle("MicroOnlineGo");
+		gotoLogin();
+	}
 
-        LoginController loginController = (LoginController) changeStage("view/Login.fxml",primaryStage);
-        loginController.setClient(this);
-    }
+	public void gotoLogin() throws Exception {
 
-    public void gotoLobby() throws Exception{
-        LobbyController lobbyController = (LobbyController) changeStage("view/Lobby.fxml",lobbyStage);
-        lobbyController.setClient(this);
-        System.out.println("flag" + flag);
-        flag = true;
-        chatThread.start();
-        
-    }
+		LoginController loginController = (LoginController) changeStage("view/Login.fxml", primaryStage);
+		loginController.setClient(this);
+	}
 
-    public void gotoSignUp() throws Exception{
-        SignUpController signUpController = (SignUpController) changeStage("view/SignUp.fxml",signupStage);
-        signUpController.setClient(this);
-    }
+	public void gotoLobby() throws Exception {
+		LobbyController lobbyController = (LobbyController) changeStage("view/Lobby.fxml", lobbyStage);
+		lobbyController.setClient(this);
+		flag = true;
+		System.out.println("Now the flag is " + flag);
+		chatThread.start();
+		System.out.println("Now the Thread is " + chatThread.isAlive());
+	}
 
-    public void backToLobby(){
-        createRoomStage.close();
-    }
+	public void gotoSignUp() throws Exception {
+		SignUpController signUpController = (SignUpController) changeStage("view/SignUp.fxml", signupStage);
+		signUpController.setClient(this);
+	}
 
-    public void gotoCreateRoom(TableView<Room> roomList) throws IOException {
-        createRoomStage = new Stage();
-        createRoomStage.initModality(Modality.APPLICATION_MODAL);
-        createRoomStage.initOwner(primaryStage);
-        FXMLLoader loader = new FXMLLoader();
-        loader.setBuilderFactory(new JavaFXBuilderFactory());
-        loader.setLocation(getClass().getResource("view/CreateRoom.fxml"));
-        InputStream in = getClass().getResourceAsStream("view/CreateRoom.fxml");
-        createRoomStage.setScene(new Scene(loader.load(in)));
-        createRoomStage.show();
-        CreateRoomController createRoomController = (CreateRoomController) loader.getController();
-        createRoomController.setClient(this);
-        createRoomController.setRoomList(roomList);
-    }
-    public void gotoGame() throws Exception{
-        gameStage = new Stage();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setBuilderFactory(new JavaFXBuilderFactory());
-        loader.setLocation(getClass().getResource("view/Game.fxml"));
-        InputStream in = getClass().getResourceAsStream("view/Game.fxml");
-        gameStage.setScene(new Scene(loader.load(in)));
-        gameStage.show();
-        GameController gameController = (GameController) loader.getController();
-        gameController.setClient(this);
-    }
+	public void backToLobby() {
+		createRoomStage.close();
+	}
 
-    private Initializable replaceSceneContent(String fxml) throws Exception {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setBuilderFactory(new JavaFXBuilderFactory());
-        loader.setLocation(getClass().getResource(fxml));
-        InputStream in = getClass().getResourceAsStream(fxml);
-        primaryStage.close();
-        primaryStage = new Stage();
-        primaryStage.setScene(new Scene(loader.load(in)));
-        primaryStage.show();
-        return (Initializable) loader.getController();
-    }
-    
-    private Initializable changeStage(String fxml,Stage stage) {
-    	//create a new stage
-    	/*if(stage == null)
-    		stage = new Stage();*/
-    	//create the fxml loader
-    	FXMLLoader loader = new FXMLLoader();
-    	//set the location of the fxml
-    	loader.setLocation(getClass().getResource(fxml));
-    	//get the pane
-    	try {
+	public void gotoCreateRoom(TableView<Room> roomList) throws IOException {
+		createRoomStage = new Stage();
+		createRoomStage.initModality(Modality.APPLICATION_MODAL);
+		createRoomStage.initOwner(primaryStage);
+		FXMLLoader loader = new FXMLLoader();
+		loader.setBuilderFactory(new JavaFXBuilderFactory());
+		loader.setLocation(getClass().getResource("view/CreateRoom.fxml"));
+		InputStream in = getClass().getResourceAsStream("view/CreateRoom.fxml");
+		createRoomStage.setScene(new Scene(loader.load(in)));
+		createRoomStage.show();
+		CreateRoomController createRoomController = (CreateRoomController) loader.getController();
+		createRoomController.setClient(this);
+		createRoomController.setRoomList(roomList);
+	}
+
+	public void gotoGame() throws Exception {
+		gameStage = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setBuilderFactory(new JavaFXBuilderFactory());
+		loader.setLocation(getClass().getResource("view/Game.fxml"));
+		InputStream in = getClass().getResourceAsStream("view/Game.fxml");
+		gameStage.setScene(new Scene(loader.load(in)));
+		gameStage.show();
+		GameController gameController = (GameController) loader.getController();
+		gameController.setClient(this);
+	}
+
+	private Initializable replaceSceneContent(String fxml) throws Exception {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setBuilderFactory(new JavaFXBuilderFactory());
+		loader.setLocation(getClass().getResource(fxml));
+		InputStream in = getClass().getResourceAsStream(fxml);
+		primaryStage.close();
+		primaryStage = new Stage();
+		primaryStage.setScene(new Scene(loader.load(in)));
+		primaryStage.show();
+		return (Initializable) loader.getController();
+	}
+
+	private Initializable changeStage(String fxml, Stage stage) {
+		// create a new stage
+		/*
+		 * if(stage == null) stage = new Stage();
+		 */
+		// create the fxml loader
+		FXMLLoader loader = new FXMLLoader();
+		// set the location of the fxml
+		loader.setLocation(getClass().getResource(fxml));
+		// get the pane
+		try {
 			Pane pane = loader.load();
-			//create a new scene with the pane
+			// create a new scene with the pane
 			Scene scene = new Scene(pane);
-			//set the scene
+			// set the scene
 			stage.setScene(scene);
-			//show the stage
+			// show the stage
 			stage.show();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally {
-			return (Initializable)loader.getController();
+		} finally {
+			return (Initializable) loader.getController();
 		}
-    }
-    //get the connection
-    
-    public Connect getConnect() {
+	}
+	// get the connection
+
+	public Connect getConnect() {
 		return connect;
 	}
-    public void setAccount(UserInfo account){
-        this.account = account;
-    }
 
-    
-	public UserInfo getAccount(){
-        return account;
-    }
-	
-	
-    public Stage getPrimaryStage() {
+	public void setAccount(UserInfo account) {
+		this.account = account;
+	}
+
+	public UserInfo getAccount() {
+		return account;
+	}
+
+	public Stage getPrimaryStage() {
 		return primaryStage;
 	}
+
 	public Stage getCreateRoomStage() {
 		return createRoomStage;
 	}
+
 	public Stage getGameStage() {
 		return gameStage;
 	}
+
 	public Stage getLobbyStage() {
 		return lobbyStage;
 	}
+
 	public Stage getsignupStage() {
 		return signupStage;
 	}
-	
+
 	public ArrayList getPlayerList() {
 		return playerList;
 	}
+
 	public Thread getChatThread() {
 		return chatThread;
 	}
-	
+
 	public boolean getFlag() {
 		return flag;
 	}
+
 	public void setFlag(boolean flag) {
 		this.flag = flag;
 	}
-	public static void main(String[] args)
-    {
-        launch(args);
-    }
 
+	public static void main(String[] args) {
+		launch(args);
+	}
 
 }
