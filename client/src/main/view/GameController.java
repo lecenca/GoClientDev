@@ -19,7 +19,6 @@ public class GameController implements Initializable {
     @FXML private TextField inputField;
     @FXML private Button sentBtn;
     @FXML private ListView<String> chatBox;
-    @FXML private Timer timeLabelController;
     @FXML private ChatBox chatBoxController;
 
     public void setClient(Client client){
@@ -33,11 +32,6 @@ public class GameController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
-        chessPaneController.setTimer(timeLabelController);
 
-        chatBox.setLayoutX(602);
-        chatBox.setLayoutY(24);
-        chatBox.setPrefWidth(200);
-        chatBox.setPrefHeight(393);
     }
 }

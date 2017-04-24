@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="MicroOnlineGo.jnlp">
+  <information>
+    <title>MicroOnlineGo</title>
+    <vendor>Unknown</vendor>
+    <description>MicroOnlineGo</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="MicroOnlineGo.jar" size="40788" download="eager" />
+    <jar href="lib\fastjson-1.2.5.jar" size="411161" download="eager" />
+    <jar href="lib\gson-2.8.0.jar" size="231952" download="eager" />
+    <jar href="lib\junit-4.9.jar" size="248994" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="600" height="400" main-class="src.Client"  name="MicroOnlineGo" />
+  <update check="background"/>
+</jnlp>
