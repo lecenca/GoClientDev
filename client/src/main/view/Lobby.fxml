@@ -33,7 +33,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <TableView fx:id="roomList" layoutX="23.0" layoutY="16.0" prefHeight="330.0" prefWidth="625.0">
+      <TableView fx:id="roomList" layoutX="23.0" layoutY="16.0" onMouseClicked="#clickRoom" prefHeight="330.0" prefWidth="625.0">
         <columns>
           <TableColumn fx:id="roomIdCol" prefWidth="74.0" text="房间ID" />
           <TableColumn fx:id="roomNameCol" prefWidth="163.0" text="房间名称" />

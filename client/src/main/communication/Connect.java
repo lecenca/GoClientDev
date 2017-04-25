@@ -1,5 +1,10 @@
 package src.main.communication;
 
+import com.alibaba.fastjson.JSONObject;
+import src.main.ThreadLock;
+import src.main.view.ChatBox;
+import src.main.view.SignUpController;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,10 +13,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import com.alibaba.fastjson.JSONObject;
-
-import src.main.view.ChatBox;
 
 public class Connect {
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -28,6 +29,9 @@ public class Connect {
 	private String registerMessage;
 	private String chatMessage = "hello";
 	private ChatBox chatBox;
+
+	public static boolean recv = false;
+
 	public Connect() {
 		try {
 			socket = new Socket(IP,PORT);
@@ -36,16 +40,20 @@ public class Connect {
 			pw = new PrintWriter(os);
 			br = new BufferedReader(new InputStreamReader(is));
 			receiveThread = new Thread(new Runnable() {
-				
 				@Override
 				public void run() {
-					System.out.println("鎺ユ敹绾跨▼鍚姩");
-					while(true) 
-						receiveMessage();
+					System.out.println("接收线程启动");
+					while(true) {
+                        receive();
+                        /*try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }*/
+                    }
 				}
 			});
 			chatThread = new Thread(new Runnable() {
-				
 				@Override
 				public void run() {
 					System.out.println("鑱婂ぉ绾跨▼鍚姩");
@@ -57,14 +65,18 @@ public class Connect {
 						System.out.println(msg);
 						if(chatBox != null)
 							chatBox.sentSentence(msg);
-						//chatMessage = null;
+                        /*try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }*/
 					}
 				}
 			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("鏈嶅姟鍣ㄨ繛鎺ュけ璐�");
+			System.out.println("服务器连接失败");
 		}
 	}
     public String sendAndReceive(String args) throws Exception {
@@ -111,49 +123,60 @@ public class Connect {
 		//pw = new PrintWriter(os,true);
 		pw.write(msg + LINE_SEPARATOR);
 		pw.flush();
+		recv = false;
     }
-    //
-    public void receiveMessage() {
+
+    public void receive() {
     	String msg = null;
     	byte[] buff = new byte[1024];
     	try {
 			int len = is.read(buff);
 			msg = new String(buff,0,len);
-			System.out.println("鏉ヨ嚜鏈嶅姟鍣�" + msg);
-			JSONObject jsonObject = Decoder.jsonToJsonObject(msg);
-			int response_type = jsonObject.getIntValue("response_type");
-			System.out.println("瑙ｆ瀽锛�" + response_type);
-			switch(response_type) {
-				case ResponseType.LOGIN_SUCCESS:
-//					ThreadLock.lock.lock();
-					loginMessage = "false";
-					/*ThreadLock.client.signalAll();
-					ThreadLock.lock.unlock();*/
-					break;
-				case ResponseType.LOGIN_FAILED:
-					loginMessage = "false";
-					break;
-				case ResponseType.REGISTER_FAILED:
-					registerMessage = "false";
-					break;
-				case ResponseType.REGISTER_SUCCESS:
-					registerMessage = "true";
-					break;
-				default:
-					break;
-			}
-			//loginMessage = msg;
-			System.out.println("server:" + msg);
-			registerMessage = msg;
-			chatMessage = msg;
-			//System.out.println("chatMessage:" + chatMessage);
-			
-    		//msg = br.readLine();
+            System.out.println("从服务器收到: " + msg);
+            JSONObject jsonObject = Decoder.parseObject(msg);
+            int response_type = jsonObject.getIntValue("response_type");
+            System.out.println("response_type：" + response_type);
+            switch(response_type) {
+                case ResponseType.ACCOUNT_CHECK_SUCCESS:
+                    handleAccountCheck(true);break;
+                case ResponseType.ACCOUNT_CHECK_FAILED:
+                    handleAccountCheck(false);break;
+                case ResponseType.REGIST_SUCCESS:
+                    handleRegist(true);break;
+                case ResponseType.REGIST_FAILED:
+                    handleRegist(false);break;
+                case ResponseType.LOGIN_SUCCESS:
+                    ThreadLock.lock.lock();
+                    loginMessage = "false";
+                    ThreadLock.client.signalAll();
+                    ThreadLock.lock.unlock();
+                    break;
+                case ResponseType.LOGIN_FAILED:
+                    loginMessage = "false";
+                    break;
+                default:
+                    break;
+            }
+            recv = true;
+            //loginMessage = msg;
+            registerMessage = msg;
+            chatMessage = msg;
+            //System.out.println("chatMessage:" + chatMessage);
+            //msg = br.readLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
+
+    private void handleAccountCheck(boolean state){
+        SignUpController.accountExist = state;
+    }
+
+    private void handleRegist(boolean state){
+        SignUpController.registSuccess = state;
+    }
+
     private byte[] toLH(int n) {
         byte[] b = new byte[4];
         b[0] = (byte) (n & 0xff);

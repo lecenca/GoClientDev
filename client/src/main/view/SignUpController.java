@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import src.main.UserInfo;
 import src.main.Client;
+import src.main.communication.Connect;
 import src.main.communication.Encoder;
 //import src.main.communication.Connect;
 
@@ -69,6 +70,9 @@ public class SignUpController implements Initializable {
     private boolean validPassword = false;
     private boolean validRepeatPassowrd = false;
 
+    public static boolean accountExist;
+    public static boolean registSuccess;
+
     @FXML
     private void goToLogin() throws Exception {
         /************* test ********************/
@@ -87,24 +91,21 @@ public class SignUpController implements Initializable {
             int year = Integer.parseInt(this.year.getValue().toString());
             int month = Integer.parseInt(this.month.getValue().toString());
             int day = Integer.parseInt(this.day.getValue().toString());
-            //gameServe = client.getGameServe();
             user.setAccount(ac);
             user.setNickname(nn);
             user.setPassword(pw);
             user.setBirthday(year, month, day);
-            //gameServe.signIn(user);
             client.setAccount(user);
             String json = encoder.signUpRequest(user);
             System.out.println("user signup info: " + json);
-//            String msg = client.getConnect().sendAndReceive(json);
-//            if ("true".equals(msg)) {
+            //client.getConnect().send(json);
+            while (!Connect.recv){
+                Thread.currentThread().sleep(100);
+            }
+            if(registSuccess){
                 client.getsignupStage().close();
                 client.getPrimaryStage().show();
-//            } else {
-//                accountFormatTips.setText("帐号已经被注册！");
-//                nameFormatTips.setText("昵称已经被使用！");
-//            }
-            //connector.send(json);
+            }
         }
         /************* release *****************/
     }
@@ -131,7 +132,7 @@ public class SignUpController implements Initializable {
     }
 
     @FXML
-    private boolean checkAccountOK2() throws Exception {
+    private boolean checkAccountOK() throws Exception {
         if (signUpCall) {
             if (this.account.getText().isEmpty() || this.account.getText() == null || "".equals(this.account.getText())) {
                 setTipsError(accountFormatTips, "账号不能为空");
@@ -146,7 +147,7 @@ public class SignUpController implements Initializable {
                 return false;
             }
             if (accountIsExist()) {
-                setTipsError(accountFormatTips, "该账号已被注册");
+                setTipsError(accountFormatTips, "账号已被注册");
                 validAccount = false;
                 return false;
             }
@@ -322,14 +323,11 @@ public class SignUpController implements Initializable {
     }
 
     private boolean accountIsExist() throws Exception {
+        accountExist = false;
         String account = this.account.getText();
         String json = encoder.chechAccountRequest(account);
         System.out.println("account check: " + json);
-        // TODO: chech
-//        String msg = client.getConnect().sendAndReceive(json);
-//        if ("true".equals(msg))
-//            return false;
-        return false;
+        return accountExist;
     }
 
 //    private boolean isNameExist() throws Exception {
@@ -345,7 +343,7 @@ public class SignUpController implements Initializable {
     @FXML
     private void synchronousCheck() throws Exception {
         validInfo = true;
-        if (!checkAccountOK2()) {
+        if (!checkAccountOK()) {
             validInfo = false;
         }
         if (!checkNameOK2()) {
@@ -480,7 +478,7 @@ public class SignUpController implements Initializable {
                /*account.setText("12");
                System.out.println("Textfield 1 out focus");*/
                 try {
-                    checkAccountOK2();
+                    checkAccountOK();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
