@@ -34,6 +34,7 @@ public class LoginController implements Initializable
         	//client.getPlayerList().addAll(list);
         	client.getPrimaryStage().close();
             client.gotoLobby();
+           
         }
     }
 

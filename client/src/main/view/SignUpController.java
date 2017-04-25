@@ -135,7 +135,9 @@ public class SignUpController implements Initializable {
         if (signUpCall) {
             if (this.account.getText().isEmpty() || this.account.getText() == null || "".equals(this.account.getText())) {
                 setTipsError(accountFormatTips, "账号不能为空");
+            
                 return false;
+                
             }
             return validAccount;
         } else {

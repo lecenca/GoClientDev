@@ -9,6 +9,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import com.alibaba.fastjson.JSONObject;
+
+import src.main.view.ChatBox;
+
 public class Connect {
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	private final static String IP = "172.16.90.242";
@@ -35,7 +39,7 @@ public class Connect {
 				
 				@Override
 				public void run() {
-					System.out.println("接收线程启动");
+					System.out.println("鎺ユ敹绾跨▼鍚姩");
 					while(true) 
 						receiveMessage();
 				}
@@ -44,7 +48,7 @@ public class Connect {
 				
 				@Override
 				public void run() {
-					System.out.println("聊天线程启动");
+					System.out.println("鑱婂ぉ绾跨▼鍚姩");
 					// TODO Auto-generated method stub
 					while(true) {
 						String msg = null;
@@ -60,7 +64,7 @@ public class Connect {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("服务器连接失败");
+			System.out.println("鏈嶅姟鍣ㄨ繛鎺ュけ璐�");
 		}
 	}
     public String sendAndReceive(String args) throws Exception {
@@ -68,22 +72,22 @@ public class Connect {
     	//BufferedReader br = null;
     	//PrintWriter pw = null;
         try {
-            //2.寰楀埌socket璇诲啓娴�?
+            //2.瀵版鍩宻ocket鐠囪鍟撳ù锟�?
             //OutputStream os=socket.getOutputStream();
            // pw=new PrintWriter(os);
-            //杈撳叆娴�?
+            //鏉堟挸鍙嗗ù锟�?
            // InputStream is=socket.getInputStream();
           //  br=new BufferedReader(new InputStreamReader(is));
-            //3.鍒╃敤娴佹寜鐓т竴瀹氱殑鎿嶄綔锛屽socket杩涜璇诲啓鎿嶄�?
+            //3.閸掆晝鏁ゅù浣瑰瘻閻撗傜鐎规氨娈戦幙宥勭稊閿涘苯顕畇ocket鏉╂稖顢戠拠璇插晸閹垮秳锟�?
             String info = new String(toHH(args.length())) + args;
             System.out.println("info:" + info);
             os.write(info.getBytes());
             //pw.flush();
             //socket.shutdownOutput();
-            //鎺ユ敹鏈嶅姟鍣ㄧ殑鐩稿簲
+            //閹恒儲鏁归張宥呭閸ｃ劎娈戦惄绋跨安
             /*String reply=null;
             while(!((reply=br.readLine())==null)){
-                System.out.println("鎺ユ敹鏈嶅姟鍣ㄧ殑淇℃伅锛�"+reply);
+                System.out.println("閹恒儲鏁归張宥呭閸ｃ劎娈戞穱鈩冧紖閿涳拷"+reply);
             }*/
             //create the buff 
             byte[] buff = new byte[1024];
@@ -115,16 +119,16 @@ public class Connect {
     	try {
 			int len = is.read(buff);
 			msg = new String(buff,0,len);
-			System.out.println("来自服务器" + msg);
+			System.out.println("鏉ヨ嚜鏈嶅姟鍣�" + msg);
 			JSONObject jsonObject = Decoder.jsonToJsonObject(msg);
 			int response_type = jsonObject.getIntValue("response_type");
-			System.out.println("解析：" + response_type);
+			System.out.println("瑙ｆ瀽锛�" + response_type);
 			switch(response_type) {
 				case ResponseType.LOGIN_SUCCESS:
-					ThreadLock.lock.lock();
+//					ThreadLock.lock.lock();
 					loginMessage = "false";
-					ThreadLock.client.signalAll();
-					ThreadLock.lock.unlock();
+					/*ThreadLock.client.signalAll();
+					ThreadLock.lock.unlock();*/
 					break;
 				case ResponseType.LOGIN_FAILED:
 					loginMessage = "false";

@@ -35,7 +35,7 @@ public class Client extends Application {
     private ArrayList playerList = new ArrayList();
 
     public Client() {
-//        connect = new Connect();
+        connect = new Connect();
         lobbyStage = new Stage();
         signupStage = new Stage();
     }
