@@ -9,123 +9,99 @@ import src.main.Client;
 import src.main.ThreadLock;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import src.main.communication.Connect;
-import src.main.communication.Decoder;
-import src.main.communication.Encode;
+import src.main.communication.Encoder;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class LoginController implements Initializable {
-	private Client client;
+public class LoginController implements Initializable
+{
+    private Client client;
 
-	@FXML
-	private TextField account;
-	@FXML
-	private PasswordField password;
-	@FXML
-	private Label emptyAccountTips;
-	@FXML
-	private Label emptyPasswordTips;
-	@FXML
-	private Label invaildMessageTips;
+    @FXML private TextField     account;
+    @FXML private PasswordField password;
+    @FXML private Label         emptyAccountTips;
+    @FXML private Label         emptyPasswordTips;
+    @FXML private Label         invaildMessageTips;
 
-	private Encode encoder = new Encode();
+    private Encoder encoder   = new Encoder();
 
-	@FXML
-	private void login() throws Exception {
-		if (checkInfo()) {
-			/*
-			 * String msg = encoder.getPlayerListRequest(); String resMsg =
-			 * client.getConnect().sendAndReceive(msg);
-			 */
-			// ArrayList list = Decoder.parseJsontoArray(msg);
-			// client.getPlayerList().addAll(list);
-			/*
-			 * client.setFlag(true); System.out.println("Thread" +
-			 * client.getChatThread().isAlive());
-			 */
+    @FXML private void login() throws Exception{
+        if(checkInfo()){
+        	String msg = encoder.getPlayerListRequest();
+        	//String resMsg = client.getConnect().sendAndReceive(msg);
+        	//ArrayList list = Decoder.parseJsontoArray(msg);
+        	//client.getPlayerList().addAll(list);
+        	client.getPrimaryStage().close();
+            client.gotoLobby();
+        }
+    }
 
-			client.getPrimaryStage().close();
-			client.gotoLobby();
-		}
-	}
+    @FXML
+    private void signUp() throws Exception{
+    	client.getPrimaryStage().close();
+        client.gotoSignUp();
+    }
 
-	@FXML
-	private void signUp() throws Exception {
-		client.getPrimaryStage().close();
-		client.gotoSignUp();
-	}
+    @FXML
+    private boolean checkInfo() throws Exception {
+      //  boolean isValid = true;
+        String account = this.account.getText();
+        String password = this.password.getText();
+        if(account.isEmpty()){
+            emptyAccountTips.setVisible(true);
+            //isValid = false;
+            return false;
+            
+        }
+        else{
+            emptyAccountTips.setVisible(false);
+        }
+        if(password.isEmpty()){
+            emptyPasswordTips.setVisible(true);
+//            isValid = false;
+            return false;
+        }
+        else{
+            emptyPasswordTips.setVisible(false);
+        }
+        if(!account.isEmpty() && !password.isEmpty()){
+            String json = encoder.loginRequest(this.account.getText(),this.password.getText());
+            System.out.println(json);
+            //connector.send(json);
+//            String msg = client.getConnect().sendAndReceive(json);
+//            if(!"true".equals(msg))
+//            	return false;
+        }
+        return true;
+    }
 
-	@FXML
-	private boolean checkInfo() throws Exception {
-		// boolean isValid = true;
-		String account = this.account.getText();
-		String password = this.password.getText();
-		if (account.isEmpty()) {
-			emptyAccountTips.setVisible(true);
-			// isValid = false;
-			return false;
+    @FXML
+    private void setTipsError(Label tip, String msg){
+        tip.setVisible(true);
+        tip.setTextFill(Color.RED);
+        tip.setText(msg);
+    }
 
-		} else {
-			emptyAccountTips.setVisible(false);
-		}
-		if (password.isEmpty()) {
-			emptyPasswordTips.setVisible(true);
-			// isValid = false;
-			return false;
-		} else {
-			emptyPasswordTips.setVisible(false);
-		}
-		if (!account.isEmpty() && !password.isEmpty()) {
-			String json = encoder.loginRequest(this.account.getText(), this.password.getText());
-			System.out.println(json);
-			// connector.send(json);
+    @FXML
+    public void resetAccount() {
+        account.setText("");
+    }
 
-			client.getConnect().sendMessage(json);
-			String msg = null;
-			//msg = client.getConnect().getLoginMessage();
-			ThreadLock.lock.lock();
-			while(client.getConnect().getLoginMessage() == null)
-				ThreadLock.client.await();
-			msg = client.getConnect().getLoginMessage();
-			ThreadLock.lock.unlock();
-			System.out.println("res:" + msg);
-			
-			// msg = client.getConnect().getLoginMessage();
-			// client.getConnect().setLoginMessage(null);
-			System.out.println("loginresponse:" + msg);
-			if ("false".equals(msg))
-				return false;
-		}
-		return true;
-	}
+    @FXML
+    public void resetPassword() {
+        account.setText("");
+    }
 
-	@FXML
-	private void setTipsError(Label tip, String msg) {
-		tip.setVisible(true);
-		tip.setTextFill(Color.RED);
-		tip.setText(msg);
-	}
+    public void setClient(Client client){
+        this.client = client;
+    }
 
-	public void setClient(Client client) {
-		this.client = client;
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		emptyAccountTips.setVisible(false);
-		emptyPasswordTips.setVisible(false);
-		invaildMessageTips.setVisible(false);
-	}
-
-	public PasswordField getPassword() {
-		return password;
-	}
-
-	public void setPassword(PasswordField password) {
-		this.password = password;
-	}
+    @Override
+    public void initialize(URL location, ResourceBundle resources){
+        emptyAccountTips.setVisible(false);
+        emptyPasswordTips.setVisible(false);
+        invaildMessageTips.setVisible(false);
+    }
 
 }

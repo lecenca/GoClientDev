@@ -9,16 +9,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import src.main.ThreadLock;
-import src.main.view.ChatBox;
-
-/**
- * Created by 鍒樹繆寤�? on 2017/4/10.
- */
-
 public class Connect {
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	private final static String IP = "172.16.90.242";
@@ -70,7 +60,7 @@ public class Connect {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("连接服务器失!");
+			System.out.println("服务器连接失败");
 		}
 	}
     public String sendAndReceive(String args) throws Exception {
@@ -121,7 +111,6 @@ public class Connect {
     //
     public void receiveMessage() {
     	String msg = null;
-    	//创建字节数组缓冲�?
     	byte[] buff = new byte[1024];
     	try {
 			int len = is.read(buff);

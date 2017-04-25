@@ -5,21 +5,66 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.GameController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="1076.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.GameController">
    <children>
-      <fx:include fx:id="chessPane" layoutX="29" layoutY="24" source="ChessBox.fxml" />
-      <ListView layoutX="602.0" layoutY="24.0" prefHeight="393.0" prefWidth="200.0" />
-      <Button fx:id="sentBtn" layoutX="740.0" layoutY="473.0" mnemonicParsing="false" onAction="#sent" prefHeight="30.0" prefWidth="65.0" text="发送">
+      <fx:include fx:id="chessPane" layoutX="38" layoutY="25" source="ChessBox.fxml" />
+      <Button fx:id="sentBtn" layoutX="991.0" layoutY="651.0" mnemonicParsing="false" onAction="#sent" prefHeight="30.0" prefWidth="65.0" text="发送">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <TextField fx:id="inputField" layoutX="605.0" layoutY="431.0" prefHeight="30.0" prefWidth="200.0">
+      <TextField fx:id="inputField" layoutX="684.0" layoutY="651.0" prefHeight="30.0" prefWidth="307.0">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <fx:include fx:id="timeLabel" layoutX="631" layoutY="539" source="Timer.fxml" />
-      <fx:include fx:id="chatBox" source="ChatBox.fxml" />
+      <fx:include fx:id="chatBox" layoutX="684" layoutY="431" prefHeight="220" prefWidth="371" source="ChatBox.fxml" />
+      <ListView disable="true" layoutX="38.0" layoutY="25.0" prefHeight="616.0" prefWidth="616.0" visible="false" />
+      <Button layoutX="83.0" layoutY="651.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="112.0" text="认输">
+         <font>
+            <Font size="15.0" />
+         </font></Button>
+      <Button layoutX="284.0" layoutY="651.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="112.0" text="准备">
+         <font>
+            <Font size="15.0" />
+         </font></Button>
+      <Button layoutX="498.0" layoutY="651.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="112.0" text="请求判子">
+         <font>
+            <Font size="15.0" />
+         </font></Button>
+      <Label fx:id="hhhh" disable="true" layoutX="684.0" layoutY="286.0" prefHeight="61.0" prefWidth="125.0" text="00 秒" visible="false">
+         <font>
+            <Font size="48.0" />
+         </font>
+      </Label>
+      <Label fx:id="uuuuuuuuuuuu" disable="true" layoutX="937.0" layoutY="286.0" prefHeight="61.0" prefWidth="125.0" text="00 秒" visible="false">
+         <font>
+            <Font size="48.0" />
+         </font>
+      </Label>
+      <Label layoutX="838.0" layoutY="286.0" prefHeight="36.0" prefWidth="75.0" text="0次 读秒 0次" />
+      <Label layoutX="838.0" layoutY="326.0" prefHeight="15.0" prefWidth="82.0" text="0子 提子 0子" />
+      <Label layoutX="723.0" layoutY="39.0" prefHeight="76.0" prefWidth="65.0" text="黑">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Label>
+      <Label layoutX="967.0" layoutY="39.0" prefHeight="76.0" prefWidth="65.0" text="白">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Label>
+      <Label layoutX="723.0" layoutY="123.0" prefHeight="20.0" prefWidth="65.0" text="玩家一">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="967.0" layoutY="123.0" prefHeight="20.0" prefWidth="65.0" text="玩家二">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <fx:include fx:id="timeLabel01" layoutX="684.0" layoutY="286.0" prefHeight="61.0" prefWidth="125.0" source="Timer.fxml" />
+      <fx:include fx:id="timeLabel02" layoutX="937.0" layoutY="286.0" prefHeight="61.0" prefWidth="125.0" source="Timer.fxml" />
    </children>
 </AnchorPane>
