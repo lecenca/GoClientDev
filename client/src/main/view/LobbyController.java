@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.Room;
 
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -18,88 +17,112 @@ import java.util.*;
 /**
  * Created by touhoudoge on 2017/3/20.
  */
-public class LobbyController implements Initializable{
+public class LobbyController implements Initializable {
 
-    private Client client;
+	private Client client;
 
-    @FXML private TextField inputField;
-    @FXML private Button sentBtn;
-    @FXML private Button createRoomBtn;
-    @FXML private Button autoMatch;
-    @FXML private ListView<String> chatBox;
-    @FXML private TableView<Room> roomList;
-    @FXML private TableColumn roomIdCol;
-    @FXML private TableColumn roomNameCol;
-    @FXML private TableColumn player01Col;
-    @FXML private TableColumn player02Col;
-    @FXML private TableColumn stateCol;
+	@FXML
+	private TextField inputField;
+	@FXML
+	private Button sentBtn;
+	@FXML
+	private Button createRoomBtn;
+	@FXML
+	private Button autoMatch;
+	@FXML
+	private ListView<String> chatBox;
+	@FXML
+	private TableView<Room> roomList;
+	@FXML
+	private TableColumn roomIdCol;
+	@FXML
+	private TableColumn roomNameCol;
+	@FXML
+	private TableColumn player01Col;
+	@FXML
+	private TableColumn player02Col;
+	@FXML
+	private TableColumn stateCol;
+	@FXML
+	private ChatBox chatBoxController;
 
-    @FXML private ChatBox chatBoxController;
+	@FXML
+	private void sent() {
+		/************* test ********************/
+		chatBoxController.sentSentence(inputField.getText());
+		client.getConnect().sendMessage(inputField.getText());
 
-    @FXML private void sent(){
-        /************* test ********************/
-        chatBoxController.sentSentence(inputField.getText());
-        client.getConnect().sendMessage(inputField.getText());
-        
-        /************* test ********************/
-    }
+		/************* test ********************/
+	}
 
-    @FXML
-    private void logout() throws Exception{
-        /************* release *****************/
-    	System.out.println("now logout");
-    	System.out.println("Thread is " + client.getChatThread().isAlive());
-    	client.setFlag(false);
-    	//client.getChatThread().join();
-    	//client.getChatThread().sleep(60000);
-    	client.getChatThread().stop();
-    	System.out.println("Thread is " + client.getChatThread().isAlive());
-    	client.getConnect().closeInputstream();
-    	client.getLobbyStage().close();
-        client.getPrimaryStage().show();
-        
-        /************* release *****************/
-    }
+	@FXML
+	private void logout() throws Exception {
+		/************* release *****************/
+		/*
+		 * System.out.println("now logout"); System.out.println("Thread is " +
+		 * client.getChatThread().isAlive()); client.setFlag(false);
+		 * //client.getChatThread().join();
+		 * //client.getChatThread().sleep(60000); client.getChatThread().stop();
+		 * System.out.println("Thread is " + client.getChatThread().isAlive());
+		 * client.getConnect().closeInputstream();
+		 */
+		client.getLobbyStage().close();
+		client.getPrimaryStage().show();
+		//client.getLoginController().getPassword().setText("");;
 
-    @FXML
-    private void autoMatchPlayer() throws Exception {
-        client.gotoGame();
-    }
+		/************* release *****************/
+	}
 
-    @FXML
-    private void gotoCreateRoom() throws IOException {
-        client.gotoCreateRoom(roomList);
-    }
+	@FXML
+	private void autoMatchPlayer() throws Exception {
+		client.gotoGame();
+	}
 
-    public void setClient(Client client){
-        this.client = client;
-    }
+	@FXML
+	private void gotoCreateRoom() throws IOException {
+		client.gotoCreateRoom(roomList);
+	}
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources){
-        /************* test ********************/
-        StringConverter<Object> sc = new StringConverter<Object>() {
-            @Override
-            public String toString(Object t) {
-                return t == null ? null : t.toString();
-            }
+	public void setClient(Client client) {
+		this.client = client;
+	}
 
-            @Override
-            public Object fromString(String string) {
-                return string;
-            }
-        };
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		/************* test ********************/
+		StringConverter<Object> sc = new StringConverter<Object>() {
+			@Override
+			public String toString(Object t) {
+				return t == null ? null : t.toString();
+			}
 
-        roomList.setItems(FXCollections.observableArrayList());
-        roomIdCol.setCellValueFactory(new PropertyValueFactory("roomId"));
-        roomIdCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+			@Override
+			public Object fromString(String string) {
+				return string;
+			}
+		};
 
-        roomNameCol.setCellValueFactory(new PropertyValueFactory("roomName"));
-        roomNameCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+		roomList.setItems(FXCollections.observableArrayList());
+		roomIdCol.setCellValueFactory(new PropertyValueFactory("roomId"));
+		roomIdCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
 
-        player01Col.setCellFactory(new PropertyValueFactory("player01"));
-        player01Col.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+		roomNameCol.setCellValueFactory(new PropertyValueFactory("roomName"));
+		roomNameCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
 
-        /************* test ********************/
-    }
+		player01Col.setCellFactory(new PropertyValueFactory("player01"));
+		player01Col.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+
+		/************* test ********************/
+
+	}
+
+	public ChatBox getChatBoxController() {
+		return chatBoxController;
+	}
+
+	public void setChatBoxController(ChatBox chatBoxController) {
+		this.chatBoxController = chatBoxController;
+	}
+	
+
 }

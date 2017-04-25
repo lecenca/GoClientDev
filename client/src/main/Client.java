@@ -33,14 +33,15 @@ public class Client extends Application {
 	private UserInfo account;
 	private Connect connect;
 	private ArrayList playerList = new ArrayList();
-	private Thread chatThread = null;
+	private LoginController loginController;
+	//private Thread chatThread = null;
 	boolean flag = false;
 
 	public Client() {
 		connect = new Connect();
 		lobbyStage = new Stage();
 		signupStage = new Stage();
-		if (chatThread == null)
+		/*if (chatThread == null)
 			chatThread = new Thread(new Runnable() {
 
 				@Override
@@ -51,13 +52,16 @@ public class Client extends Application {
 						System.out.println("here " + msg);
 					}
 				}
-			});
+			});*/
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		primaryStage.setTitle("MicroOnlineGo");
+		//chatThread.start();
+		connect.getReceiveThread().start();
+		//connect.getChatThread().start();
 		gotoLogin();
 	}
 
@@ -65,15 +69,17 @@ public class Client extends Application {
 
 		LoginController loginController = (LoginController) changeStage("view/Login.fxml", primaryStage);
 		loginController.setClient(this);
+		this.setLoginController(loginController);
 	}
 
 	public void gotoLobby() throws Exception {
 		LobbyController lobbyController = (LobbyController) changeStage("view/Lobby.fxml", lobbyStage);
 		lobbyController.setClient(this);
-		flag = true;
+		connect.setChatBox(lobbyController.getChatBoxController());
+		/*flag = true;
 		System.out.println("Now the flag is " + flag);
 		chatThread.start();
-		System.out.println("Now the Thread is " + chatThread.isAlive());
+		System.out.println("Now the Thread is " + chatThread.isAlive());*/
 	}
 
 	public void gotoSignUp() throws Exception {
@@ -187,9 +193,9 @@ public class Client extends Application {
 		return playerList;
 	}
 
-	public Thread getChatThread() {
+	/*public Thread getChatThread() {
 		return chatThread;
-	}
+	}*/
 
 	public boolean getFlag() {
 		return flag;
@@ -203,4 +209,12 @@ public class Client extends Application {
 		launch(args);
 	}
 
+	public LoginController getLoginController() {
+		return loginController;
+	}
+
+	public void setLoginController(LoginController loginController) {
+		this.loginController = loginController;
+	}
+	
 }

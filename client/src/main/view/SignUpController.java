@@ -90,7 +90,10 @@ public class SignUpController implements Initializable{
             client.setAccount(user);
             String json = encoder.signUpRequest(user);
             System.out.println("user info: " + json);
-            String msg = client.getConnect().sendAndReceive(json);
+           client.getConnect().sendMessage(json);
+           String msg = null;
+           	while(msg == null)
+           		msg = client.getConnect().getRegisterMessage();
             if("true".equals(msg)) {
             	client.getsignupStage().close();
             	client.getPrimaryStage().show();
@@ -141,7 +144,7 @@ public class SignUpController implements Initializable{
     			return false;
     		}
     		if(checkAccountExist()){
-                setTipsError(accountFormatTips,"该账号已被注�?");
+                setTipsError(accountFormatTips,"该账号已被注!");
                 validAccount = false;
                 return false;
             }
@@ -320,7 +323,9 @@ public class SignUpController implements Initializable{
         String account = this.account.getText();
         String json = encoder.chechAccountRequest(account);
         System.out.println("account check: " + json);
-        String msg = client.getConnect().sendAndReceive(json);
+        //String msg = client.getConnect().sendAndReceive(json);
+        client.getConnect().sendMessage(json);
+        String msg = "true";
         // TODO: chech
         if("true".equals(msg))
         	return false;
@@ -330,7 +335,9 @@ public class SignUpController implements Initializable{
     	String name = this.nickname.getText();
     	String json =encoder.checkNameRequest(name);
     	System.out.println("name_check: " + json);
-    	String msg = client.getConnect().sendAndReceive(json);
+    	//String msg = client.getConnect().sendAndReceive(json);
+    	client.getConnect().sendMessage(json);
+    	String msg = "true";
     	if("true".equals(msg))
     		return false;
     	return true;
