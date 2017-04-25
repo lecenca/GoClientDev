@@ -1,16 +1,20 @@
 package src.main.view;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.Room;
+import src.main.UserInfo;
 
 import java.io.IOException;
+import java.net.InterfaceAddress;
 import java.net.URL;
 import java.util.*;
 
@@ -73,6 +77,22 @@ public class LobbyController implements Initializable {
         client.gotoCreateRoom(roomList);
     }
 
+    @FXML
+    private void clickRoom(MouseEvent mouseEvent) throws Exception
+    {
+        if(mouseEvent.getClickCount()==2){
+            Room room = roomList.getSelectionModel().getSelectedItem();
+            UserInfo player02 = new UserInfo();
+            player02.setNickname("玩家二");
+            room.setPlayer02(player02);
+            room.setPlayer02Property("玩家二");
+            room.setState(1);
+            room.setStateProperty(1);
+            System.out.println("you click");
+            client.gotoGame();
+        }
+    }
+
     public void setClient(Client client) {
         this.client = client;
     }
@@ -80,27 +100,81 @@ public class LobbyController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         /************* test ********************/
-        StringConverter<Object> sc = new StringConverter<Object>() {
-            @Override
-            public String toString(Object t) {
-                return t == null ? null : t.toString();
-            }
-
-            @Override
-            public Object fromString(String string) {
-                return string;
-            }
-        };
 
         roomList.setItems(FXCollections.observableArrayList());
         roomIdCol.setCellValueFactory(new PropertyValueFactory("roomId"));
-        roomIdCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+        roomIdCol.setCellFactory(column->{
+                  return new TableCell<Room,Integer>(){
+                  protected void updateItem(Integer item, boolean empty){
+                      super.updateItem(item, empty);
+                      if(item==null){
+                          setText("");
+                      }else{
+                          setText(item.toString());
+                      }
+                 }
+            };
+        });
 
         roomNameCol.setCellValueFactory(new PropertyValueFactory("roomName"));
-        roomNameCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+        roomNameCol.setCellFactory(column->{
+            return new TableCell<Room,String>(){
+                protected void updateItem(String item, boolean empty){
+                    super.updateItem(item, empty);
+                    if(item==null){
+                        setText("");
+                    }else{
+                        setText(item);
+                    }
+                }
+            };
+        });
 
-        player01Col.setCellFactory(new PropertyValueFactory("player01"));
-        player01Col.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+        player01Col.setCellValueFactory(new PropertyValueFactory("player01Property"));
+        player01Col.setCellFactory(column->{
+            return new TableCell<Room, String>(){
+                protected void updateItem(String item, boolean empty){
+                    super.updateItem(item, empty);
+                    if(item==null){
+                        setText("");
+                    }else{
+                        setText(item);
+                    }
+                }
+            };
+        });
+
+        player02Col.setCellValueFactory(new PropertyValueFactory("player02Property"));
+        player02Col.setCellFactory(column->{
+            return new TableCell<Room, String>(){
+                protected void updateItem(String item, boolean empty){
+                    super.updateItem(item, empty);
+                    if(item==null){
+                        setText("");
+                    }else{
+                        setText(item);
+                    }
+                }
+            };
+        });
+
+        stateCol.setCellValueFactory(new PropertyValueFactory("stateProperty"));
+        stateCol.setCellFactory(column->{
+            return new TableCell<Room, Integer>(){
+                protected void updateItem(Integer item, boolean empty){
+                    super.updateItem(item, empty);
+                    if(item==null){
+                        setText("");
+                    }else{
+                        if(item==0){
+                            setText("待挑战");
+                        }else if(item==1){
+                            setText("对战中");
+                        }
+                    }
+                }
+            };
+        });
 
         /************* test ********************/
     }
