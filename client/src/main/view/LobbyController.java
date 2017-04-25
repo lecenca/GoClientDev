@@ -18,25 +18,38 @@ import java.util.*;
 /**
  * Created by touhoudoge on 2017/3/20.
  */
-public class LobbyController implements Initializable{
+public class LobbyController implements Initializable {
 
     private Client client;
 
-    @FXML private TextField inputField;
-    @FXML private Button sentBtn;
-    @FXML private Button createRoomBtn;
-    @FXML private Button autoMatch;
-    @FXML private ListView<String> chatBox;
-    @FXML private TableView<Room> roomList;
-    @FXML private TableColumn roomIdCol;
-    @FXML private TableColumn roomNameCol;
-    @FXML private TableColumn player01Col;
-    @FXML private TableColumn player02Col;
-    @FXML private TableColumn stateCol;
+    @FXML
+    private TextField inputField;
+    @FXML
+    private Button sentBtn;
+    @FXML
+    private Button createRoomBtn;
+    @FXML
+    private Button autoMatch;
+    @FXML
+    private ListView<String> chatBox;
+    @FXML
+    private TableView<Room> roomList;
+    @FXML
+    private TableColumn roomIdCol;
+    @FXML
+    private TableColumn roomNameCol;
+    @FXML
+    private TableColumn player01Col;
+    @FXML
+    private TableColumn player02Col;
+    @FXML
+    private TableColumn stateCol;
 
-    @FXML private ChatBox chatBoxController;
+    @FXML
+    private ChatBox chatBoxController;
 
-    @FXML private void sent(){
+    @FXML
+    private void sent() {
         /************* test ********************/
         chatBoxController.sentSentence(inputField.getText());
         client.getConnect().sendMessage(inputField.getText());
@@ -44,10 +57,11 @@ public class LobbyController implements Initializable{
     }
 
     @FXML
-    private void logout() throws Exception{
+    private void logout() throws Exception {
         /************* release *****************/
-    	client.getLobbyStage().close();
-        client.getPrimaryStage().show();
+        client.getLobbyStage().close();
+        //client.getPrimaryStage().show();
+        client.gotoLogin();
         /************* release *****************/
     }
 
@@ -61,12 +75,12 @@ public class LobbyController implements Initializable{
         client.gotoCreateRoom(roomList);
     }
 
-    public void setClient(Client client){
+    public void setClient(Client client) {
         this.client = client;
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources){
+    public void initialize(URL location, ResourceBundle resources) {
         /************* test ********************/
         StringConverter<Object> sc = new StringConverter<Object>() {
             @Override

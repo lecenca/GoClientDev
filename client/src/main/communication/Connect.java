@@ -9,10 +9,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-/**
- * Created by 鍒樹繆寤�? on 2017/4/10.
- */
-
 public class Connect {
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	private final static String IP = "172.16.90.242";
@@ -32,7 +28,7 @@ public class Connect {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("连接服务器失�?");
+			System.out.println("服务器连接失败");
 		}
 	}
     public String sendAndReceive(String args) throws Exception {
@@ -40,13 +36,13 @@ public class Connect {
     	//BufferedReader br = null;
     	//PrintWriter pw = null;
         try {
-            //2.寰楀埌socket璇诲啓娴�?
+            //2.寰楀埌socket璇诲啓娴�?
             //OutputStream os=socket.getOutputStream();
            // pw=new PrintWriter(os);
-            //杈撳叆娴�?
+            //杈撳叆娴�?
            // InputStream is=socket.getInputStream();
           //  br=new BufferedReader(new InputStreamReader(is));
-            //3.鍒╃敤娴佹寜鐓т竴瀹氱殑鎿嶄綔锛屽socket杩涜璇诲啓鎿嶄�?
+            //3.鍒╃敤娴佹寜鐓т竴瀹氱殑鎿嶄綔锛屽socket杩涜璇诲啓鎿嶄�?
             String info = new String(toHH(args.length())) + args;
             System.out.println("info:" + info);
             os.write(info.getBytes());
@@ -82,7 +78,6 @@ public class Connect {
     //
     public static String receiveMessage() {
     	String msg = null;
-    	//创建字节数组缓冲�?
     	byte[] buff = new byte[1024];
     	try {
 			int len = is.read(buff);

@@ -27,7 +27,7 @@ public class LoginController implements Initializable
     @FXML private void login() throws Exception{
         if(checkInfo()){
         	String msg = encoder.getPlayerListRequest();
-        	String resMsg = client.getConnect().sendAndReceive(msg);
+        	//String resMsg = client.getConnect().sendAndReceive(msg);
         	//ArrayList list = Decoder.parseJsontoArray(msg);
         	//client.getPlayerList().addAll(list);
         	client.getPrimaryStage().close();
@@ -79,6 +79,16 @@ public class LoginController implements Initializable
         tip.setVisible(true);
         tip.setTextFill(Color.RED);
         tip.setText(msg);
+    }
+
+    @FXML
+    public void resetAccount() {
+        account.setText("");
+    }
+
+    @FXML
+    public void resetPassword() {
+        account.setText("");
     }
 
     public void setClient(Client client){
