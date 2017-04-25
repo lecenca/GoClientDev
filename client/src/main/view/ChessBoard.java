@@ -21,10 +21,11 @@ import java.util.ResourceBundle;
 /**
  * Created by touhoudoge on 2017/4/7.
  */
-public class ChessBox implements Initializable {
+public class ChessBoard implements Initializable {
 
-    private Timer timer01;
-    private Timer timer02;
+    private static boolean ready;
+    private Timer player1timer;
+    private Timer player2timer;
     private Board board = new Board();
     private Circle[][] stonesCircle = new Circle[19][19];
     private int turns = -1;
@@ -74,7 +75,7 @@ public class ChessBox implements Initializable {
 
     private void place(int x, int y, int color) {
         Circle stone = stonesCircle[x][y];
-        System.out.println("ChessBox Place: (" + x + "," + y + ")");
+        System.out.println("ChessBoard Place: (" + x + "," + y + ")");
         if (color == Stone.Black) {
             stone.setFill(Color.BLACK);
         } else {
@@ -89,7 +90,7 @@ public class ChessBox implements Initializable {
 
     private void remove(int chain) {
         HashSet<Stone> stones = Board.stoneMap.get(chain);
-        System.out.print("ChessBox remove chain " + chain + " : ");
+        System.out.print("ChessBoard remove chain " + chain + " : ");
         for (Stone s : stones) {
             System.out.print("Stone(" + s.x + "," + s.y + ") ");
             chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
@@ -125,12 +126,17 @@ public class ChessBox implements Initializable {
         return board.action(index, turns);
     }
 
+    public void setReady(boolean ready){
+        this.ready = ready;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         drawBoard();
         drawLine();
         drawStar();
         initStonesCircle();
+        ready = false;
     }
 
     private void drawBoard() {
@@ -180,7 +186,7 @@ public class ChessBox implements Initializable {
     }
 
     public void setTimer(Timer timer01,Timer timer02) {
-        this.timer01 = timer01;
-        this.timer02 = timer02;
+        this.player1timer = timer01;
+        this.player2timer = timer02;
     }
 }
