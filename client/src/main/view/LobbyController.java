@@ -50,7 +50,7 @@ public class LobbyController implements Initializable {
     private void sent() {
         /************* test ********************/
         chatBoxController.sentSentence(inputField.getText());
-        client.getConnect().sendMessage(inputField.getText());
+        client.getConnect().send(inputField.getText());
         /************* test ********************/
     }
 

@@ -3,6 +3,7 @@ package src.main.communication;
 import com.alibaba.fastjson.JSONObject;
 import src.main.ThreadLock;
 import src.main.view.ChatBox;
+import src.main.view.SignUpController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Connect {
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -28,6 +28,9 @@ public class Connect {
 	private String registerMessage;
 	private String chatMessage = "hello";
 	private ChatBox chatBox;
+
+	public static boolean recv = false;
+
 	public Connect() {
 		try {
 			socket = new Socket(IP,PORT);
@@ -36,16 +39,20 @@ public class Connect {
 			pw = new PrintWriter(os);
 			br = new BufferedReader(new InputStreamReader(is));
 			receiveThread = new Thread(new Runnable() {
-				
 				@Override
 				public void run() {
 					System.out.println("接收线程启动");
-					while(true) 
-						receiveMessage();
+					while(true) {
+                        receive();
+                        /*try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }*/
+                    }
 				}
 			});
 			chatThread = new Thread(new Runnable() {
-				
 				@Override
 				public void run() {
 					System.out.println("聊天线程启动");
@@ -57,7 +64,11 @@ public class Connect {
 						System.out.println(msg);
 						if(chatBox != null)
 							chatBox.sentSentence(msg);
-						//chatMessage = null;
+                        /*try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }*/
 					}
 				}
 			});
@@ -67,93 +78,68 @@ public class Connect {
 			System.out.println("服务器连接失败");
 		}
 	}
-    public String sendAndReceive(String args) throws Exception {
-    	String msg=null;
-    	//BufferedReader br = null;
-    	//PrintWriter pw = null;
-        try {
-            //2.寰楀埌socket璇诲啓娴�?
-            //OutputStream os=socket.getOutputStream();
-           // pw=new PrintWriter(os);
-            //杈撳叆娴�?
-           // InputStream is=socket.getInputStream();
-          //  br=new BufferedReader(new InputStreamReader(is));
-            //3.鍒╃敤娴佹寜鐓т竴瀹氱殑鎿嶄綔锛屽socket杩涜璇诲啓鎿嶄�?
-            String info = new String(toHH(args.length())) + args;
-            System.out.println("info:" + info);
-            os.write(info.getBytes());
-            //pw.flush();
-            //socket.shutdownOutput();
-            //鎺ユ敹鏈嶅姟鍣ㄧ殑鐩稿簲
-            /*String reply=null;
-            while(!((reply=br.readLine())==null)){
-                System.out.println("鎺ユ敹鏈嶅姟鍣ㄧ殑淇℃伅锛�"+reply);
-            }*/
-            //create the buff 
-            byte[] buff = new byte[1024];
-            int len= is.read(buff);
-            msg = new String(buff,0,len);
-            //msg = br.readLine();
-           // socket.close();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-        	return msg;
-        }
-    }
     
-    public static void sendMessage(String msg) {
+    public static void send(String msg) {
     	//get the outputStream of socket
 		//OutputStream outputStream = socket.getOutputStream();
 		//create the printwriter
 		//pw = new PrintWriter(os,true);
 		pw.write(msg + LINE_SEPARATOR);
 		pw.flush();
+		recv = false;
     }
-    //
-    public void receiveMessage() {
+
+    public void receive() {
     	String msg = null;
     	byte[] buff = new byte[1024];
     	try {
 			int len = is.read(buff);
 			msg = new String(buff,0,len);
-			System.out.println("来自服务器" + msg);
-			JSONObject jsonObject = Decoder.jsonToJsonObject(msg);
-			int response_type = jsonObject.getIntValue("response_type");
-			System.out.println("解析：" + response_type);
-			switch(response_type) {
-				case ResponseType.LOGIN_SUCCESS:
-					ThreadLock.lock.lock();
-					loginMessage = "false";
-					ThreadLock.client.signalAll();
-					ThreadLock.lock.unlock();
-					break;
-				case ResponseType.LOGIN_FAILED:
-					loginMessage = "false";
-					break;
-				case ResponseType.REGISTER_FAILED:
-					registerMessage = "false";
-					break;
-				case ResponseType.REGISTER_SUCCESS:
-					registerMessage = "true";
-					break;
-				default:
-					break;
-			}
-			//loginMessage = msg;
-			System.out.println("server:" + msg);
-			registerMessage = msg;
-			chatMessage = msg;
-			//System.out.println("chatMessage:" + chatMessage);
-			
-    		//msg = br.readLine();
+            System.out.println("从服务器收到: " + msg);
+            JSONObject jsonObject = Decoder.parseObject(msg);
+            int response_type = jsonObject.getIntValue("response_type");
+            System.out.println("response_type：" + response_type);
+            switch(response_type) {
+                case ResponseType.ACCOUNT_CHECK_SUCCESS:
+                    handleAccountCheck(true);break;
+                case ResponseType.ACCOUNT_CHECK_FAILED:
+                    handleAccountCheck(false);break;
+                case ResponseType.REGIST_SUCCESS:
+                    handleRegist(true);break;
+                case ResponseType.REGIST_FAILED:
+                    handleRegist(false);break;
+                case ResponseType.LOGIN_SUCCESS:
+                    ThreadLock.lock.lock();
+                    loginMessage = "false";
+                    ThreadLock.client.signalAll();
+                    ThreadLock.lock.unlock();
+                    break;
+                case ResponseType.LOGIN_FAILED:
+                    loginMessage = "false";
+                    break;
+                default:
+                    break;
+            }
+            recv = true;
+            //loginMessage = msg;
+            registerMessage = msg;
+            chatMessage = msg;
+            //System.out.println("chatMessage:" + chatMessage);
+            //msg = br.readLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
+
+    private void handleAccountCheck(boolean state){
+        SignUpController.accountExist = state;
+    }
+
+    private void handleRegist(boolean state){
+        SignUpController.registSuccess = state;
+    }
+
     private byte[] toLH(int n) {
         byte[] b = new byte[4];
         b[0] = (byte) (n & 0xff);
