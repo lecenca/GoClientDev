@@ -32,6 +32,7 @@ public class CreateRoomController implements Initializable {
 
     @FXML
     private void createRoom() {
+        /************* test ********************/
         Room room = new Room();
         room.setRoomId(1111);
         String name = roomNameField.getText();
@@ -40,10 +41,15 @@ public class CreateRoomController implements Initializable {
         String password = passwordField.getText();
         if (password != null)
             room.setPassword(password);
-        UserInfo player01 = client.getAccount();
+        UserInfo player01 = new UserInfo();
+        player01.setNickname("玩家一");
         room.setPlayer01(player01);
         room.setState(0);
+        room.setStateProperty(0);
+        room.setPlayer01Property("玩家一");
         roomList.getItems().add(room);
+        client.backToLobby();
+        /************* test ********************/
     }
 
     @FXML
