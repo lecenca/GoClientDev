@@ -34,14 +34,14 @@
             <Font size="21.0" />
          </font>
       </Label>
-      <PasswordField fx:id="password" layoutX="135.0" layoutY="138.0" onKeyReleased="#checkPassword" prefHeight="31.0" prefWidth="230.0" promptText="密码由数字和字母组成，至少6位" />
+      <PasswordField fx:id="password" layoutX="135.0" layoutY="138.0" onKeyReleased="#checkPasswordOK" prefHeight="31.0" prefWidth="230.0" promptText="密码由数字和字母组成，至少6位" />
       <Label fx:id="passwordFormatTips" layoutX="377.0" layoutY="142.0" prefHeight="24.0" prefWidth="148.0" text="无效密码提示" textFill="RED" />
       <Label layoutX="32.0" layoutY="186.0" prefHeight="31.0" prefWidth="92.0" text="重复密码">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
-      <PasswordField fx:id="repeatPassword" layoutX="136.0" layoutY="188.0" onKeyReleased="#checkRepeatPassword" prefHeight="31.0" prefWidth="230.0" promptText="请输入重复密码" />
+      <PasswordField fx:id="repeatPassword" layoutX="136.0" layoutY="188.0" onKeyReleased="#checkRepeatPasswordOK" prefHeight="31.0" prefWidth="230.0" promptText="请输入重复密码" />
       <Label fx:id="repeatPasswordFormatTips" layoutX="380.0" layoutY="194.0" prefHeight="15.0" prefWidth="92.0" text="重复密码不一致" textFill="RED" />
       <Label layoutX="32.0" layoutY="241.0" prefHeight="31.0" prefWidth="92.0" text="生       日">
          <font>
@@ -60,7 +60,7 @@
             <Font size="21.0" />
          </font>
       </Label>
-      <ComboBox fx:id="day" layoutX="337.0" layoutY="241.0" onHidden="#checkDate" prefHeight="31.0" prefWidth="50.0" />
+      <ComboBox fx:id="day" layoutX="337.0" layoutY="241.0" onHidden="#checkDateOK" prefHeight="31.0" prefWidth="50.0" />
       <Label layoutX="395.0" layoutY="242.0" prefHeight="31.0" prefWidth="25.0" text="日">
          <font>
             <Font size="21.0" />
