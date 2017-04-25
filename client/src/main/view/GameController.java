@@ -15,7 +15,7 @@ public class GameController implements Initializable {
 
     private Client client;
 
-    @FXML private ChessBox chessPaneController;
+    @FXML private ChessBoard chessPaneController;
     @FXML private TextField inputField;
     @FXML private Button sentBtn;
     @FXML private ListView<String> chatBox;
@@ -28,6 +28,22 @@ public class GameController implements Initializable {
     @FXML
     private void sent(){
         chatBoxController.sentSentence(inputField.getText());
+    }
+
+    @FXML
+    private void ready(){
+        chessPaneController.setReady(true);
+        // TODO: 向服务器发送准备信息
+    }
+
+    @FXML
+    private void surrender(){
+        // TODO: 向服务器发送认输信息
+    }
+
+    @FXML
+    private void judge(){
+        // TODO: 向服务器发送判子请求信息
     }
 
     @Override

@@ -1,5 +1,9 @@
 package src.main.communication;
 
+import com.alibaba.fastjson.JSONObject;
+import src.main.ThreadLock;
+import src.main.view.ChatBox;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
