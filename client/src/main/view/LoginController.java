@@ -5,6 +5,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import src.main.Client;
+
+import src.main.ThreadLock;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.communication.Encoder;
@@ -27,7 +29,7 @@ public class LoginController implements Initializable
     @FXML private void login() throws Exception{
         if(checkInfo()){
         	String msg = encoder.getPlayerListRequest();
-        	String resMsg = client.getConnect().sendAndReceive(msg);
+        	//String resMsg = client.getConnect().sendAndReceive(msg);
         	//ArrayList list = Decoder.parseJsontoArray(msg);
         	//client.getPlayerList().addAll(list);
         	client.getPrimaryStage().close();
@@ -79,6 +81,16 @@ public class LoginController implements Initializable
         tip.setVisible(true);
         tip.setTextFill(Color.RED);
         tip.setText(msg);
+    }
+
+    @FXML
+    public void resetAccount() {
+        account.setText("");
+    }
+
+    @FXML
+    public void resetPassword() {
+        account.setText("");
     }
 
     public void setClient(Client client){
