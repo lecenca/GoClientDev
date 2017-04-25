@@ -1,5 +1,8 @@
 package src.main;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  * Created by touhoudoge on 2017/4/16.
  */
@@ -10,6 +13,12 @@ public class Room {
     private UserInfo player02;
     private int state;
     private String password;
+
+    /************* test ********************/
+    private SimpleStringProperty player01Property = new SimpleStringProperty();
+    private SimpleStringProperty player02Property = new SimpleStringProperty();
+    private SimpleIntegerProperty stateProperty = new SimpleIntegerProperty();
+    /************* test ********************/
 
     public Room(){}
 
@@ -62,4 +71,49 @@ public class Room {
     {
         this.password = password;
     }
+
+    /************* test ********************/
+    public String getPlayer01Property() {return player01Property.get();}
+
+    public SimpleStringProperty player01PropertyProperty()
+    {
+        return player01Property;
+    }
+
+    public void setPlayer01Property(String player01Property)
+    {
+        this.player01Property.set(player01Property);
+    }
+
+    public String getPlayer02Property()
+    {
+        return player02Property.get();
+    }
+
+    public SimpleStringProperty player02PropertyProperty()
+    {
+        return player02Property;
+    }
+
+    public void setPlayer02Property(String player02Property)
+    {
+        this.player02Property.set(player02Property);
+    }
+
+    public int getStateProperty()
+    {
+        return stateProperty.get();
+    }
+
+    public SimpleIntegerProperty statePropertyProperty()
+    {
+        return stateProperty;
+    }
+
+    public void setStateProperty(int stateProperty)
+    {
+        this.stateProperty.set(stateProperty);
+    }
+
+    /************* test ********************/
 }
