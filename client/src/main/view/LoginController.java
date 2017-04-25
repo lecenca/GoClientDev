@@ -5,6 +5,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import src.main.Client;
+
+import src.main.ThreadLock;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.communication.Encoder;
