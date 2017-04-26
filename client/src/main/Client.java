@@ -33,7 +33,7 @@ public class Client extends Application {
     private UserInfo account;
     private Connect connect;
     private ArrayList playerList = new ArrayList();
-
+    
     public Client() {
         connect = new Connect();
         lobbyStage = new Stage();
