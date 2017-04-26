@@ -18,24 +18,43 @@ import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import src.main.view.SignUpController;
+import src.main.view.SignupController;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Client extends Application {
+
+    // Shit
+    /*private volatile static Client instance = new Client();
+
+    private static class SingletonHolder{
+        private static final Client instance = new Client();
+    }
+    public static Client getInstance(){
+        //return SingletonHolder.instance;
+        if(instance == null){
+            synchronized (Client.class){
+                if(instance == null){
+                    instance = new Client();
+                }
+            }
+        }
+        return instance;
+    }*/
+
     private Stage primaryStage;
     private Stage createRoomStage;
     private Stage gameStage;
     private Stage lobbyStage = null;
     private Stage signupStage = null;
-    private UserInfo account;
+    private User account;
     private Connect connect;
     private ArrayList playerList = new ArrayList();
 
     public Client() {
-//        connect = new Connect();
+        connect = new Connect();
         lobbyStage = new Stage();
         signupStage = new Stage();
     }
@@ -45,6 +64,9 @@ public class Client extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
+        if(connect != null){
+            getConnect().getReceiveThread().start();
+        }
     }
 
     public void gotoLogin() throws Exception {
@@ -59,9 +81,10 @@ public class Client extends Application {
         lobbyController.setClient(this);
     }
 
-    public void gotoSignUp() throws Exception {
-        SignUpController signUpController = (SignUpController) changeStage("view/SignUp.fxml", signupStage);
-        signUpController.setClient(this);
+    public void gotoSignup() throws Exception {
+        SignupController signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
+        signupController.setClient(this);
+        //getConnect().getReceiveThread().start();
     }
 
     public void backToLobby() {
@@ -137,11 +160,15 @@ public class Client extends Application {
         return connect;
     }
 
-    public void setAccount(UserInfo account) {
+    public void resetConnect(){
+        connect = new Connect();
+    }
+
+    public void setAccount(User account) {
         this.account = account;
     }
 
-    public UserInfo getAccount() {
+    public User getAccount() {
         return account;
     }
 

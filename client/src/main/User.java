@@ -4,7 +4,8 @@ package src.main;
  * Created by touhoudoge on 2017/3/25.
  */
 
-public class UserInfo {
+public class User {
+
     class Birthday{
         int year;
         int month;
@@ -16,6 +17,9 @@ public class UserInfo {
     String password;
     Birthday birthday = new Birthday();
     String sex;
+    //int state;
+    //int roomId;
+
 
     public void setAccount(String account) {
         this.account = account;

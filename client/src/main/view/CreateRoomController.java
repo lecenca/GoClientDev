@@ -7,7 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import src.main.Client;
 import src.main.Room;
-import src.main.UserInfo;
+import src.main.User;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,16 +34,16 @@ public class CreateRoomController implements Initializable {
     private void createRoom() {
         /************* test ********************/
         Room room = new Room();
-        room.setRoomId(1111);
+        room.setId(1111);
         String name = roomNameField.getText();
         if (name != null)
-            room.setRoomName(name);
+            room.setName(name);
         String password = passwordField.getText();
         if (password != null)
             room.setPassword(password);
-        UserInfo player01 = new UserInfo();
+        User player01 = new User();
         player01.setNickname("玩家一");
-        room.setPlayer01(player01);
+        room.setPlayer1(player01);
         room.setState(0);
         room.setStateProperty(0);
         room.setPlayer01Property("玩家一");

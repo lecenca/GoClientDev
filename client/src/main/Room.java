@@ -7,12 +7,14 @@ import javafx.beans.property.SimpleStringProperty;
  * Created by touhoudoge on 2017/4/16.
  */
 public class Room {
-    private int roomId;
-    private String roomName;
-    private UserInfo player01;
-    private UserInfo player02;
+
+    private int id;
+    private String name;
+    private User player1;
+    private User player2;
     private int state;
     private String password;
+    private String remark;
 
     /************* test ********************/
     private SimpleStringProperty player01Property = new SimpleStringProperty();
@@ -22,36 +24,36 @@ public class Room {
 
     public Room(){}
 
-    public int getRoomId() {
-        return roomId;
+    public int getId() {
+        return id;
     }
 
-    public void setRoomId(int roomId) {
-        this.roomId = roomId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getRoomName() {
-        return roomName;
+    public String getName() {
+        return name;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public UserInfo getPlayer01() {
-        return player01;
+    public User getPlayer1() {
+        return player1;
     }
 
-    public void setPlayer01(UserInfo player01) {
-        this.player01 = player01;
+    public void setPlayer1(User player1) {
+        this.player1 = player1;
     }
 
-    public UserInfo getPlayer02() {
-        return player02;
+    public User getPlayer2() {
+        return player2;
     }
 
-    public void setPlayer02(UserInfo player02) {
-        this.player02 = player02;
+    public void setPlayer2(User player2) {
+        this.player2 = player2;
     }
 
     public int getState() {
