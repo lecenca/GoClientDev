@@ -6,9 +6,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import src.main.Client;
 
-import src.main.ThreadLock;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
 import java.net.URL;
@@ -24,36 +24,31 @@ public class LoginController implements Initializable
     @FXML private Label         emptyPasswordTips;
     @FXML private Label         invaildMessageTips;
 
+    public  static boolean correct;
     private Encoder encoder   = new Encoder();
 
     @FXML private void login() throws Exception{
-        if(checkInfo()){
-        	String msg = encoder.getPlayerListRequest();
-        	//String resMsg = client.getConnect().sendAndReceive(msg);
-        	//ArrayList list = Decoder.parseJsontoArray(msg);
-        	//client.getPlayerList().addAll(list);
+        if(checkValid()){
         	client.getPrimaryStage().close();
             client.gotoLobby();
-           
         }
     }
 
     @FXML
-    private void signUp() throws Exception{
+    private void signup() throws Exception{
     	client.getPrimaryStage().close();
-        client.gotoSignUp();
+        client.gotoSignup();
     }
 
     @FXML
-    private boolean checkInfo() throws Exception {
-      //  boolean isValid = true;
+    private boolean checkValid() throws Exception {
+        correct = false;
         String account = this.account.getText();
         String password = this.password.getText();
         if(account.isEmpty()){
             emptyAccountTips.setVisible(true);
             //isValid = false;
             return false;
-            
         }
         else{
             emptyAccountTips.setVisible(false);
@@ -69,12 +64,13 @@ public class LoginController implements Initializable
         if(!account.isEmpty() && !password.isEmpty()){
             String json = encoder.loginRequest(this.account.getText(),this.password.getText());
             System.out.println(json);
-            //connector.send(json);
-//            String msg = client.getConnect().sendAndReceive(json);
-//            if(!"true".equals(msg))
-//            	return false;
+            client.getConnect().send(json);
+            Connect.waitForRec();
+            if(!correct){
+                setTipsError(invaildMessageTips,"账号或密码错误");
+            }
         }
-        return true;
+        return correct;
     }
 
     @FXML

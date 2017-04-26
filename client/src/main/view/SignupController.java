@@ -1,32 +1,32 @@
 package src.main.view;
 
+import javax.swing.JOptionPane;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
-import src.main.UserInfo;
+import src.main.User;
 import src.main.Client;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
-//import src.main.communication.Connect;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
 /**
  * Created by touhoudoge on 2017/3/23.
  */
-public class SignUpController implements Initializable {
+public class SignupController implements Initializable {
 
     private Client client;
 
-    private UserInfo user = new UserInfo();
+    private User user = new User();
     private Encoder encoder = new Encoder();
     //private Connect  connector = new Connect();
 
-    private boolean validInfo = true;
+    private boolean validInfo = false;
     private boolean signUpCall = false;
 
     // User input information
@@ -70,15 +70,11 @@ public class SignUpController implements Initializable {
     private boolean validPassword = false;
     private boolean validRepeatPassowrd = false;
 
-    public static boolean accountExist;
+    public static boolean accountCheckSuccess;
     public static boolean registSuccess;
 
     @FXML
-    private void goToLogin() throws Exception {
-        /************* test ********************/
-        //client.gotoLobby();
-        /************* test ********************/
-
+    private void signup() throws Exception {
         /************* release *****************/
         signUpCall = true;
         synchronousCheck();
@@ -96,49 +92,27 @@ public class SignUpController implements Initializable {
             user.setPassword(pw);
             user.setBirthday(year, month, day);
             client.setAccount(user);
-            String json = encoder.signUpRequest(user);
+            String json = Encoder.signupRequest(user);
             System.out.println("user signup info: " + json);
-            //client.getConnect().send(json);
-            while (!Connect.recv){
-                Thread.currentThread().sleep(100);
-            }
-            if(registSuccess){
+            client.getConnect().send(json);
+            Connect.waitForRec();
+            if (registSuccess) {
                 client.getsignupStage().close();
                 client.getPrimaryStage().show();
+            } else {
+                JOptionPane.showMessageDialog(null, "服务器发生未知错误，请重试");
             }
         }
         /************* release *****************/
     }
 
-    // TODO: �?查账号格式：16个字符，只能是字母�?�数字或下划�?'_'。若无效，设置相�? Lable 的文本并返回 false
-    @FXML
-    private boolean checkAccount() throws Exception {
-        if (this.account.getText().isEmpty()) {
-            if (signUpCall) {
-                setTipsError(accountFormatTips, "账号不能为空");
-            } else {
-                accountFormatTips.setVisible(false);
-            }
-            return false;
-        } else {
-            if (!accountIsExist()) {
-                setTipsError(accountFormatTips, "该账号已被注册");
-                return false;
-            }
-            // TODO
-        }
-        setTipsOk(accountFormatTips);
-        return true;
-    }
-
+    // TODO: 检查账号格式：16个字符。若无效，设置 Lable 的文本并返回 false
     @FXML
     private boolean checkAccountOK() throws Exception {
         if (signUpCall) {
             if (this.account.getText().isEmpty() || this.account.getText() == null || "".equals(this.account.getText())) {
                 setTipsError(accountFormatTips, "账号不能为空");
-            
                 return false;
-                
             }
             return validAccount;
         } else {
@@ -146,7 +120,7 @@ public class SignUpController implements Initializable {
                 accountFormatTips.setVisible(false);
                 return false;
             }
-            if (accountIsExist()) {
+            if (!accountCheckOK()) {
                 setTipsError(accountFormatTips, "账号已被注册");
                 validAccount = false;
                 return false;
@@ -157,25 +131,9 @@ public class SignUpController implements Initializable {
         return true;
     }
 
-    // TODO: �?查昵称：不超�?12个显示字符（�?个汉字占2个字符，非汉字占1个字符）只支持汉字�?�字母�?�数字和下划�?'_'。若无效，设置相�? Lable 的文本并返回 false
+    // TODO: 检查昵称：不超过12个显示字符（一个汉字占2个字符，非汉字占1个字符）只支持汉字 字母 数字和下划线'_'
     @FXML
-    private boolean checkName() {
-        if (this.nickname.getText().isEmpty() || this.nickname.getText() == null || "".equals(this.nickname.getText())) {
-            if (signUpCall) {
-                setTipsError(nameFormatTips, "昵称不能为空");
-            } else {
-                nameFormatTips.setVisible(false);
-            }
-            return false;
-        } else {
-            // TODO
-        }
-        setTipsOk(nameFormatTips);
-        return true;
-    }
-
-    @FXML
-    private boolean checkNameOK2() throws Exception {
+    private boolean checkNameOK() throws Exception {
         if (signUpCall) {
             if (this.nickname.getText().isEmpty() || this.nickname.getText() == null || "".equals(this.nickname.getText())) {
                 setTipsError(nameFormatTips, "昵称不能为空");
@@ -187,32 +145,15 @@ public class SignUpController implements Initializable {
                 nameFormatTips.setVisible(false);
                 return false;
             }
-//            if (isNameExist()) {
-//                setTipsError(nameFormatTips, "该昵称已经被使用�?");
-//                validName = false;
-//                return false;
-//            }
         }
         setTipsOk(nameFormatTips);
         validName = true;
         return true;
     }
 
-    // TODO: �?查密码格式：长度 8-16 位，若无效，设置相关 Lable 的文本并返回 false
+    // TODO: 检查密码格式：长度 8-16 位，若无效，设置相关 Lable 的文本并返回 false
     @FXML
     private boolean checkPasswordOK() {
-        /*if(this.password.getText().isEmpty()){
-            if(signUpCall){
-                // TODO
-            }
-            else{
-                // TODO
-            }
-            return false;
-        }
-        else{
-
-        }*/
         if (signUpCall) {
             if (password.getText().isEmpty()) {
                 setTipsError(passwordFormatTips, "密码不能为空");
@@ -255,21 +196,9 @@ public class SignUpController implements Initializable {
         return true;
     }
 
-    // TODO: �?查重复密码是否一致，若无效，设置相关 Lable 的文本并返回 false
+    // TODO: 检查重复密码是否一致，若无效，设置相关 Lable 的文本并返回 false
     @FXML
     private boolean checkRepeatPasswordOK() {
-        /*if(this.repeatPassword.getText().isEmpty()){
-            if(signUpCall){
-                // TODO
-            }
-            else{
-                // TODO
-            }
-            return false;
-        }
-        else{
-            // TODO
-        }*/
         if (signUpCall) {
             if (validPassword && (repeatPassword.getText().isEmpty() || repeatPassword.getText() == null || "".equals(repeatPassword.getText()))) {
                 setTipsError(repeatPasswordFormatTips, "请确认密码");
@@ -296,24 +225,9 @@ public class SignUpController implements Initializable {
         return true;
     }
 
-    // TODO: �?查生日格式：月份天数是否正常。若无效，设置相�? Lable 的文本并返回 false
+    // TODO: 检查生日格式：月份天数是否正常。若无效，设置 Lable 的文本并返回 false
     @FXML
     private boolean checkDateOK() {
-       /* if (this.year.getValue() == null
-                || this.month.getValue() == null
-                || this.day.getValue() == null){
-            if(signUpCall){
-                // TODO
-            }
-            else{
-                // TODO
-            }
-            return false;
-        }
-        else {
-            // TODO
-        }*/
-
         if (this.year.getValue() == null || this.month.getValue() == null || this.day.getValue() == null) {
             setTipsError(dateFormatTips, "请选择择生日");
             return false;
@@ -322,23 +236,15 @@ public class SignUpController implements Initializable {
         return true;
     }
 
-    private boolean accountIsExist() throws Exception {
-        accountExist = false;
+    private boolean accountCheckOK() throws Exception {
+        accountCheckSuccess = false;
         String account = this.account.getText();
-        String json = encoder.chechAccountRequest(account);
+        String json = Encoder.chechAccountRequest(account);
+        client.getConnect().send(json);
         System.out.println("account check: " + json);
-        return accountExist;
+        Connect.waitForRec();
+        return accountCheckSuccess;
     }
-
-//    private boolean isNameExist() throws Exception {
-//        String name = this.nickname.getText();
-//        String json = encoder.checkNameRequest(name);
-//        System.out.println("name_check: " + json);
-//        String msg = client.getConnect().sendAndReceive(json);
-//        if ("true".equals(msg))
-//            return false;
-//        return true;
-//    }
 
     @FXML
     private void synchronousCheck() throws Exception {
@@ -346,7 +252,7 @@ public class SignUpController implements Initializable {
         if (!checkAccountOK()) {
             validInfo = false;
         }
-        if (!checkNameOK2()) {
+        if (!checkNameOK()) {
             validInfo = false;
         }
         if (!checkPasswordOK()) {
@@ -376,24 +282,12 @@ public class SignUpController implements Initializable {
 
     @FXML
     private void selectMale() {
-        /************* test ********************/
-        //System.out.println("male");
-        /************* test ********************/
-
-        /************* release *****************/
         user.setSex("male");
-        /************* release *****************/
     }
 
     @FXML
     private void selectFemale() {
-        /************* test ********************/
-        //System.out.println("female");
-        /************* test ********************/
-
-        /************* release *****************/
         user.setSex("female");
-        /************* release *****************/
     }
 
     @FXML
@@ -456,7 +350,7 @@ public class SignUpController implements Initializable {
         	}
         	});*/
        /* account.hoverProperty().addListener(new InvalidationListener() {
-			
+
 			@Override
 			public void invalidated(Observable observable) {
 				// TODO Auto-generated method stub
@@ -493,7 +387,7 @@ public class SignUpController implements Initializable {
             } else {
 
                 try {
-                    checkNameOK2();
+                    checkNameOK();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

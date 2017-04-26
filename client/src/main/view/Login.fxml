@@ -36,7 +36,7 @@
             <font>
                 <Font size="20.0" />
             </font></Button>
-        <Button fx:id="registerBtn" layoutX="305.0" layoutY="200.0" mnemonicParsing="false" onAction="#signUp" prefHeight="40.0" prefWidth="95.0" text="注册">
+        <Button fx:id="registerBtn" layoutX="305.0" layoutY="200.0" mnemonicParsing="false" onAction="#signup" prefHeight="40.0" prefWidth="95.0" text="注册">
             <font>
                 <Font size="20.0" />
             </font></Button>
