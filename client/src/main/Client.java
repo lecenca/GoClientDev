@@ -31,7 +31,7 @@ public class Client extends Application {
     private Stage lobbyStage = null;
     private Stage signupStage = null;
     private UserInfo account;
-    private Connect connect;
+    private static Connect connect;
     private ArrayList playerList = new ArrayList();
     
     public Client() {
@@ -45,6 +45,7 @@ public class Client extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
+        connect.getReceiveThread().start();
     }
 
     public void gotoLogin() throws Exception {
