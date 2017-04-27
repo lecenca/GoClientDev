@@ -99,4 +99,9 @@ public class RoomListCell {
     {
         this.state.set(state);
     }
+
+	public void setPassword(String password) {
+		// TODO Auto-generated method stub
+		
+	}
 }

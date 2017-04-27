@@ -34,24 +34,21 @@ public class CreateRoomController implements Initializable {
     @FXML
     private void createRoom() {
         /************* test ********************/
-        Room room = new Room();
-        room.setId(1111);
+        RoomListCell room = new RoomListCell();
+        room.setRoomId(1111);
         String name = roomNameField.getText();
         if (name != null)
-            room.setName(name);
+            room.setRoomName(name);
         String password = passwordField.getText();
         if (password != null)
             room.setPassword(password);
         User player01 = new User();
         player01.setNickname("玩家一");
-        room.setPlayer1(player01);
+        //room.setPlayer1(player01);
         room.setState(0);
-        RoomListCell cell = new RoomListCell(room);
-        cell.setPlayer01("玩家一");
-        cell.setState(0);
-        cell.setRoomId(1111);
-        cell.setRoomName(room.getName());
-        roomList.getItems().add(cell);
+        room.setState(0);
+        room.setPlayer01("玩家一");
+        roomList.getItems().add(room);
         client.backToLobby();
         /************* test ********************/
     }
@@ -61,7 +58,7 @@ public class CreateRoomController implements Initializable {
         client.backToLobby();
     }
 
-    public void setRoomList(TableView<RoomListCell> roomList) {this.roomList = roomList;}
+    public void setRoomList(TableView<RoomListCell> roomList2) {this.roomList = roomList2;}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {}
