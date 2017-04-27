@@ -54,7 +54,9 @@ public class Client extends Application {
     private ArrayList playerList = new ArrayList();
 
     public Client() {
-        connect = new Connect();
+        /********* 这是要的 ***********/
+        //connect = new Connect();
+        /*****************************/
         lobbyStage = new Stage();
         signupStage = new Stage();
     }
@@ -65,11 +67,7 @@ public class Client extends Application {
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
         if(connect != null){
-        	try {
-            connect.getReceiveThread().start();
-        	}catch(NullPointerException e) {
-        		System.out.println("连接异常！");
-        	}
+            getConnect().getReceiveThread().start();
         }
     }
 
@@ -95,7 +93,7 @@ public class Client extends Application {
         createRoomStage.close();
     }
 
-    public void gotoCreateRoom(TableView<Room> roomList) throws IOException {
+    public void gotoCreateRoom(TableView<RoomListCell> roomList) throws IOException {
         createRoomStage = new Stage();
         createRoomStage.initModality(Modality.APPLICATION_MODAL);
         createRoomStage.initOwner(primaryStage);

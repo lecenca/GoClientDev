@@ -10,6 +10,7 @@ import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.Room;
+import src.main.RoomListCell;
 import src.main.User;
 import src.main.User2;
 import src.main.communication.Connect;
@@ -39,7 +40,7 @@ public class LobbyController implements Initializable {
     @FXML
     private ListView<String> chatBox;
     @FXML
-    private TableView<Room> roomList;
+    private TableView<RoomListCell> roomList;
     @FXML
     private TableColumn roomIdCol;
     @FXML
@@ -62,7 +63,7 @@ public class LobbyController implements Initializable {
     private TableColumn<User2,String> status;
     @FXML
     private ChatBox chatBoxController;
-    private ObservableList<Room> roomData = FXCollections.observableArrayList();
+    private ObservableList<RoomListCell> roomData = FXCollections.observableArrayList();
     private ObservableList<User2> playerData = FXCollections.observableArrayList();
     /*@FXML
     private ProgressBar progress = new ProgressBar();*/
@@ -101,13 +102,13 @@ public class LobbyController implements Initializable {
     @FXML
     private void clickRoom(MouseEvent mouseEvent) throws Exception {
         if (mouseEvent.getClickCount() == 2) {
-            Room room = roomList.getSelectionModel().getSelectedItem();
+            RoomListCell room = roomList.getSelectionModel().getSelectedItem();
             User player02 = new User();
             player02.setNickname("玩家二");
             //room.setPlayer2(player02);
-            room.setPlayer02Property("玩家二");
+            room.setPlayer02("玩家二");
             room.setState(1);
-            room.setStateProperty(1);
+            room.setState(1);
             System.out.println("you click");
             client.gotoGame();
         }
@@ -237,7 +238,7 @@ public class LobbyController implements Initializable {
         
     }
 
-	public ObservableList<Room> getRoomData() {
+	public ObservableList<RoomListCell> getRoomData() {
 		return roomData;
 	}
 
