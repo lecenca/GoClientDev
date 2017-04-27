@@ -83,9 +83,8 @@ public class Connect {
         //pw = new PrintWriter(os,true);
         byte[] len = new byte[4];
         len = toHH(msg.length());
-
         String sendMsg = new String(len, 0, 4);
-        System.out.println("send msg: " + sendMsg + msg);
+        System.out.println("len:" + msg.length() + "msg: " + sendMsg);
         pw.write(sendMsg + msg);
         pw.flush();
         recv = false;
