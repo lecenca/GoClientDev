@@ -7,6 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import src.main.Client;
 import src.main.Room;
+import src.main.RoomListCell;
 import src.main.User;
 
 import java.net.URL;
@@ -18,7 +19,7 @@ import java.util.ResourceBundle;
 public class CreateRoomController implements Initializable {
 
     private Client client;
-    private TableView<Room> roomList;
+    private TableView<RoomListCell> roomList;
 
     @FXML private TextField roomNameField;
     @FXML private TextField passwordField;
@@ -45,9 +46,12 @@ public class CreateRoomController implements Initializable {
         player01.setNickname("玩家一");
         room.setPlayer1(player01);
         room.setState(0);
-        room.setStateProperty(0);
-        room.setPlayer01Property("玩家一");
-        roomList.getItems().add(room);
+        RoomListCell cell = new RoomListCell(room);
+        cell.setPlayer01("玩家一");
+        cell.setState(0);
+        cell.setRoomId(1111);
+        cell.setRoomName(room.getName());
+        roomList.getItems().add(cell);
         client.backToLobby();
         /************* test ********************/
     }
@@ -57,7 +61,7 @@ public class CreateRoomController implements Initializable {
         client.backToLobby();
     }
 
-    public void setRoomList(TableView<Room> roomList) {this.roomList = roomList;}
+    public void setRoomList(TableView<RoomListCell> roomList) {this.roomList = roomList;}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {}
