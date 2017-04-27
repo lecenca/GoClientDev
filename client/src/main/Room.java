@@ -10,8 +10,8 @@ public class Room {
 
     private int id;
     private String name;
-    private User player1;
-    private User player2;
+    private String player1;
+    private String player2;
     private int state;
     private String password;
     private String remark;
@@ -40,19 +40,19 @@ public class Room {
         this.name = name;
     }
 
-    public User getPlayer1() {
+    public String getPlayer1() {
         return player1;
     }
 
-    public void setPlayer1(User player1) {
+    public void setPlayer1(String player1) {
         this.player1 = player1;
     }
 
-    public User getPlayer2() {
+    public String getPlayer2() {
         return player2;
     }
 
-    public void setPlayer2(User player2) {
+    public void setPlayer2(String player2) {
         this.player2 = player2;
     }
 

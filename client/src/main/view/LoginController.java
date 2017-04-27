@@ -66,6 +66,13 @@ public class LoginController implements Initializable
             System.out.println(json);
             client.getConnect().send(json);
             Connect.waitForRec();
+            json = encoder.getPlayerListRequest();
+            client.getConnect().send(json);
+            Connect.waitForRec();
+            json=encoder.getRoomListRequest();
+            client.getConnect().send(json);
+            Connect.waitForRec();
+            System.out.println("at loginontroller correct:" + correct );
             if(!correct){
                 setTipsError(invaildMessageTips,"账号或密码错误");
             }
@@ -100,5 +107,5 @@ public class LoginController implements Initializable
         emptyPasswordTips.setVisible(false);
         invaildMessageTips.setVisible(false);
     }
-
+ 
 }
