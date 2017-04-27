@@ -1,5 +1,7 @@
 package src.main.view;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -8,6 +10,7 @@ import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.Room;
+import src.main.RoomListCell;
 import src.main.User;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
@@ -35,7 +38,7 @@ public class LobbyController implements Initializable {
     @FXML
     private ListView<String> chatBox;
     @FXML
-    private TableView<Room> roomList;
+    private TableView<RoomListCell> roomList;
     @FXML
     private TableColumn roomIdCol;
     @FXML
@@ -86,13 +89,14 @@ public class LobbyController implements Initializable {
     @FXML
     private void clickRoom(MouseEvent mouseEvent) throws Exception {
         if (mouseEvent.getClickCount() == 2) {
-            Room room = roomList.getSelectionModel().getSelectedItem();
+            RoomListCell cell = roomList.getSelectionModel().getSelectedItem();
+            Room room = cell.getRoom();
             User player02 = new User();
             player02.setNickname("玩家二");
             room.setPlayer2(player02);
-            room.setPlayer02Property("玩家二");
+            cell.setPlayer02("玩家二");
             room.setState(1);
-            room.setStateProperty(1);
+            cell.setState(1);
             System.out.println("you click");
             client.gotoGame();
         }
@@ -137,7 +141,7 @@ public class LobbyController implements Initializable {
         roomList.setItems(FXCollections.observableArrayList());
         roomIdCol.setCellValueFactory(new PropertyValueFactory("roomId"));
         roomIdCol.setCellFactory(column -> {
-            return new TableCell<Room, Integer>() {
+            return new TableCell<RoomListCell, Integer>() {
                 protected void updateItem(Integer item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
@@ -151,21 +155,21 @@ public class LobbyController implements Initializable {
 
         roomNameCol.setCellValueFactory(new PropertyValueFactory("roomName"));
         roomNameCol.setCellFactory(column -> {
-            return new TableCell<Room, String>() {
+            return new TableCell<RoomListCell, String>() {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
                         setText("");
                     } else {
-                        setText(item);
+                        setText(item.toString());
                     }
                 }
             };
         });
 
-        player01Col.setCellValueFactory(new PropertyValueFactory("player01Property"));
+        player01Col.setCellValueFactory(new PropertyValueFactory("player01"));
         player01Col.setCellFactory(column -> {
-            return new TableCell<Room, String>() {
+            return new TableCell<RoomListCell, String>() {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
@@ -177,9 +181,9 @@ public class LobbyController implements Initializable {
             };
         });
 
-        player02Col.setCellValueFactory(new PropertyValueFactory("player02Property"));
+        player02Col.setCellValueFactory(new PropertyValueFactory("player02"));
         player02Col.setCellFactory(column -> {
-            return new TableCell<Room, String>() {
+            return new TableCell<RoomListCell, String>() {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
@@ -191,9 +195,9 @@ public class LobbyController implements Initializable {
             };
         });
 
-        stateCol.setCellValueFactory(new PropertyValueFactory("stateProperty"));
+        stateCol.setCellValueFactory(new PropertyValueFactory("state"));
         stateCol.setCellFactory(column -> {
-            return new TableCell<Room, Integer>() {
+            return new TableCell<RoomListCell, Integer>() {
                 protected void updateItem(Integer item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
