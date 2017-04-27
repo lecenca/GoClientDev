@@ -100,5 +100,7 @@ public class Encoder {
     private static String requestJson(String json, int type) {
         return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
     }
-
+    public static String getRoomListRequest() {
+    	return "{\"request_type\":" + String.valueOf(RequestType.FETCH_ROOM_INFO) + "}";
+    }
 }
