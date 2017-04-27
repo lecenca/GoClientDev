@@ -9,9 +9,9 @@ import src.main.User;
 
 public class Decoder {
 
-		public static ArrayList parseJsontoArray(String  json) {
-			ArrayList<User> list = (ArrayList<User>) JSON.parseArray(json,User.class);
-			System.out.println(list);
+		public static ArrayList parseJsontoArray(String  json,Class clazz) {
+			ArrayList<User> list = (ArrayList<User>) JSON.parseArray(json,clazz);
+			//System.out.println(list);
 			return list;
 		}
 

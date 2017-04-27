@@ -65,7 +65,11 @@ public class Client extends Application {
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
         if(connect != null){
-            getConnect().getReceiveThread().start();
+        	try {
+            connect.getReceiveThread().start();
+        	}catch(NullPointerException e) {
+        		System.out.println("连接异常！");
+        	}
         }
     }
 

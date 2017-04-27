@@ -43,7 +43,7 @@ public class CreateRoomController implements Initializable {
             room.setPassword(password);
         User player01 = new User();
         player01.setNickname("玩家一");
-        room.setPlayer1(player01);
+        //room.setPlayer1(player01);
         room.setState(0);
         room.setStateProperty(0);
         room.setPlayer01Property("玩家一");
