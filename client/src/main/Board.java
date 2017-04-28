@@ -52,7 +52,7 @@ public class Board {
         if (stones[x][y].color != Stone.None) {
             return Type.Action.INVALID;
         }
-        return Core.action(x, y, color);
+        return Core.action(this, x, y, color);
     }
 
     // Adds a stone at the Point (x, y)
@@ -63,7 +63,7 @@ public class Board {
         initStone(stones[x][y]);
         update(stones[x][y]);
         System.out.println("Board add stone(" + x + "," + y + ") in chain " + chainMap.get(stones[x][y])
-                + " has liberty " + Core.liberty(stones[x][y]));
+                + " has liberty " + Core.liberty(this, stones[x][y]));
     }
 
     // Removes the stones that were killed.
@@ -161,11 +161,11 @@ public class Board {
     private void updateNeighbor(Stone stone, Stone neighbor) {
         reduceLiberty(chainMap.get(neighbor), new Point(stone.x, stone.y));
         if (stone.color == neighbor.color) {
-            link(stone, neighbor);
+            connect(stone, neighbor);
         }
     }
 
-    private void link(Stone stone, Stone neighbor) {
+    private void connect(Stone stone, Stone neighbor) {
         int oldChain = chainMap.get(neighbor);
         int newChain = chainMap.get(stone);
         if (newChain != oldChain) {

@@ -104,12 +104,8 @@ public class Connect {
         // OutputStream outputStream = socket.getOutputStream();
         // create the printwriter
         // pw = new PrintWriter(os,true);
-        byte[] len = new byte[4];
-        len = toHH(msg.length());
-
-        String sendMsg = new String(len, 0, 4);
-        int length = sendMsg.length() + msg.length();
-        System.out.println("send msg: " + sendMsg + msg + "length: " + length);
+        String sendMsg = new String(toHH(msg.length()), 0, 4);
+        System.out.println("len: " + sendMsg.length() + msg.length() + ", msg: " + sendMsg + msg);
         pw.write(sendMsg + msg);
         pw.flush();
         recv = false;
@@ -196,42 +192,24 @@ public class Connect {
 
     private void handleLogin(boolean state) {
         LoginController.correct = state;
-        System.out.println("corect:" + LoginController.correct);
     }
 
     private void handleFetchRoom(JSONObject jsonObject) {
-        JSONArray jsonArray = jsonObject.getJSONArray("rooms_list");
-        ArrayList<Room> roomList = null;
-        if (jsonArray != null)
-            roomList = Decoder.parseJsontoArray(jsonArray.toJSONString(),Room.class);
-        if(roomList != null) {
+        ArrayList<Room> roomList = Decoder.parseRoomList(jsonObject);
+        if(roomList.size() != 0){
             for (Room room : roomList) {
                 MessageQueue<Room> rooms = LobbyController.getRooms();
-                //LobbyController.rooms.add(room);
                 rooms.add(room);
             }
             System.out.println("handle list:" + roomList);
-
         }
     }
 
     private void handleFetchPlayer(JSONObject jsonObject) {
-        JSONArray jsonArray = jsonObject.getJSONArray("players_list");
-        ArrayList<User2> playerList = null;
-        if (jsonArray != null)
-            playerList = Decoder.parseJsontoArray(jsonArray.toJSONString(),User2.class);
-        if (playerList != null) {
-            for (User2 user : playerList) {
-                user.setAccount2(user.getAccount());
-                user.setNickname2(user.getNickname());
-                user.setPassword2(user.getPassword());
-                user.setSex2(user.getSex());
-                user.setIntegral2(Integer.toString(user.getIntegral()));
-                user.setLevel2(Integer.toString(user.getLevel()));
-                user.setStatus2(user.getStatus());
-                MessageQueue<User2> players = LobbyController.getPlayers();
-                //LobbyController.players.add(user);
-                //System.out.println(user);
+        ArrayList<User> playerList = Decoder.parsePlayerList(jsonObject);
+        if(playerList.size() != 0){
+            for(User user : playerList){
+                MessageQueue<User> players = LobbyController.getPlayers();
                 players.add(user);
             }
             System.out.println("handle list:" + playerList);
