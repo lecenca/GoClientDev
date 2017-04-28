@@ -1,26 +1,42 @@
-
 package src.main;
-
-/**
- * Created by touhoudoge on 2017/3/25.
- */
 
 public class User {
 
     class Birthday{
-        int year;
-        int month;
-        int day;
+        public int year;
+        public int month;
+        public int day;
+    }
+
+    class GameData{
+        public int win;
+        public int lose;
+        public int draw;
+        public int segment;
+        public int rank;
+
+        public GameData(){
+            win = 0;
+            lose = 0;
+            draw = 0;
+            segment = 0;
+            rank = 1000;
+        }
     }
 
     String account;
     String nickname;
     String password;
     Birthday birthday = new Birthday();
-    String sex;
-    //int state;
-    //int roomId;
+    boolean sex;  // true for man, false for woman
+    int state;
+    int room;
+    GameData data = new GameData();
 
+    public User(){
+        state = Type.State.OTHER;
+        room = 0;
+    }
 
     public void setAccount(String account) {
         this.account = account;
@@ -30,7 +46,7 @@ public class User {
         this.nickname = nickname;
     }
 
-    public void setSex(String sex){
+    public void setSex(boolean sex){
         this.sex = sex;
     }
 
@@ -59,7 +75,7 @@ public class User {
         return String.format("%4d-%02d-%02d",this.birthday.year,this.birthday.month,this.birthday.day);
     }
 
-    public String getSex(){
+    public boolean getSex(){
         return this.sex;
     }
 }

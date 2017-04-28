@@ -2,10 +2,7 @@ package src.main.communication;
 
 import com.google.gson.Gson;
 
-import src.main.Action;
-import src.main.Board;
-import src.main.Stone;
-import src.main.User;
+import src.main.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,64 +10,43 @@ import java.util.Map;
 
 public class Encoder {
 
-    private static class RequestType {
-
-        public static int
-                CHECK_ACCOUNT = 0,
-                REGIST = 3,
-                LOGIN = 4,
-                LOGOUT = 5,
-                FETCH_PLAYER_INFO = 2,
-                FETCH_LOBBY_INFO,
-                FETCH_ROOM_INFO = 7,
-                ACTION = 8,
-                SITDOWN,
-                LEAVE,
-                READGO,
-                GIVEUP,
-                PLACECHESS,
-                GAMEOVER_WINNER,
-                GAMEOVER_LOSER,
-                SEND_MSG;
-    }
-
     private static Gson gson = new Gson();
 
     public static String chechAccountRequest(String account) {
         Map map = new HashMap();
         map.put("account", account);
-        return requestJson(gson.toJson(map), RequestType.CHECK_ACCOUNT);
+        return requestJson(gson.toJson(map), Type.Request.CHECK_ACCOUNT);
     }
 
     public static String signupRequest(User u) {
-        return requestJson(gson.toJson(u), RequestType.REGIST);
+        return requestJson(gson.toJson(u), Type.Request.REGIST);
     }
 
     public static String loginRequest(String account, String password) {
         Map map = new HashMap();
         map.put("account", account);
         map.put("password", password);
-        return requestJson(gson.toJson(map), RequestType.LOGIN);
+        return requestJson(gson.toJson(map), Type.Request.LOGIN);
     }
 
     public static String updateRoomRequest(){
-        return "{\"request_type\":" + String.valueOf(RequestType.FETCH_ROOM_INFO) + "}";
+        return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_ROOM_INFO) + "}";
     }
 
     public static String updatePlayersRequest(){
-        return "{\"request_type\":" + String.valueOf(RequestType.FETCH_PLAYER_INFO) + "}";
+        return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_PLAYER_INFO) + "}";
     }
 
     public static String actionRequest(int action, int color, int x, int y) {
         Map map = new HashMap();
-        if (action == Action.PLACE) {
+        if (action == Type.Action.PLACE) {
             map.put("action", "place");
             Map placeMap = new HashMap();
             placeMap.put("x", x);
             placeMap.put("y", y);
             placeMap.put("color", color);
             map.put("place", placeMap);
-        } else if (action == Action.KILL) {
+        } else if (action == Type.Action.KILL) {
             map.put("action", "kill");
             Map placeMap = new HashMap();
             placeMap.put("x", x);
@@ -90,17 +66,17 @@ public class Encoder {
             }
             map.put("kill", killList);
         }
-        return requestJson(gson.toJson(map), RequestType.ACTION);
+        return requestJson(gson.toJson(map), Type.Request.ACTION);
     }
 
     public static String getPlayerListRequest() {
-        return "{\"request_type\":" + String.valueOf(RequestType.FETCH_PLAYER_INFO) + "}";
+        return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_PLAYER_INFO) + "}";
     }
 
     private static String requestJson(String json, int type) {
         return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
     }
     public static String getRoomListRequest() {
-    	return "{\"request_type\":" + String.valueOf(RequestType.FETCH_ROOM_INFO) + "}";
+    	return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_ROOM_INFO) + "}";
     }
 }

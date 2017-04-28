@@ -50,7 +50,7 @@ public class Board {
 
     public int action(int x, int y, int color) {
         if (stones[x][y].color != Stone.None) {
-            return Action.INVALID;
+            return Type.Action.INVALID;
         }
         return Core.action(x, y, color);
     }

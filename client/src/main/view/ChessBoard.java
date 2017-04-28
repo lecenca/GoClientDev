@@ -8,9 +8,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import src.main.Action;
 import src.main.Board;
 import src.main.Stone;
+import src.main.Type;
 import src.main.communication.Encoder;
 
 import java.awt.Point;
@@ -47,11 +47,11 @@ public class ChessBoard implements Initializable {
     private void onClick(MouseEvent event) {
         getPixelPos(event);
         int action = action();
-        if (action != Action.INVALID) {
+        if (action != Type.Action.INVALID) {
             //System.out.println("iX=" + index.x + ", iY=" + index.y);
             String jsonmsg = encoder.actionRequest(action, turns, index.x, index.y);
             System.out.println(jsonmsg);
-            if (action == Action.KILL) {
+            if (action == Type.Action.KILL) {
                 place(index.x, index.y, turns);
                 for (int chain : Board.killed) {
                     remove(chain);
@@ -101,7 +101,7 @@ public class ChessBoard implements Initializable {
     private int action() {
         if (pixel.x < borderGap - stoneRadius || pixel.x > xLen - borderGap + stoneRadius
                 || pixel.y < borderGap - stoneRadius || pixel.y > yLen - borderGap + stoneRadius) {
-            return Action.INVALID;
+            return Type.Action.INVALID;
         }
         int gridX = (pixel.x - borderGap) % stoneGap;
         int gridY = (pixel.y - borderGap) % stoneGap;
@@ -120,7 +120,7 @@ public class ChessBoard implements Initializable {
             pixel.x = (indexX + 1) * stoneGap + borderGap;
             pixel.y = (indexY + 1) * stoneGap + borderGap;
         } else {
-            return Action.INVALID;
+            return Type.Action.INVALID;
         }
         getIndexPos();
         return board.action(index, turns);

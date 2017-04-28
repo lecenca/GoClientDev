@@ -35,9 +35,9 @@ public class Core {
             actionWith(x, y, right, color);
         }
         if (hasKo) {
-            return Action.INVALID;
+            return Type.Action.INVALID;
         }
-        return hasKilled ? Action.KILL : hasLiberty ? Action.PLACE : Action.INVALID;
+        return hasKilled ? Type.Action.KILL : hasLiberty ? Type.Action.PLACE : Type.Action.INVALID;
     }
 
     public static ArrayList<Number> inventory(){
