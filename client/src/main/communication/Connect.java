@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import src.main.Room;
 import src.main.Type;
 import src.main.User;
-import src.main.User2;
+
 import src.main.view.ChatBox;
 import src.main.view.LobbyController;
 import src.main.view.LoginController;

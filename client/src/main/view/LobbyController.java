@@ -11,7 +11,6 @@ import javafx.fxml.Initializable;
 import src.main.Room;
 import src.main.RoomListCell;
 import src.main.User;
-import src.main.User2;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
