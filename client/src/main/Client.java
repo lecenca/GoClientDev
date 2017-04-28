@@ -81,6 +81,7 @@ public class Client extends Application {
     public void gotoLobby() throws Exception {
         LobbyController lobbyController = (LobbyController) changeStage("view/Lobby.fxml", lobbyStage);
         lobbyController.setClient(this);
+        lobbyController.getListenPlayerList().start();
     }
 
     public void gotoSignup() throws Exception {

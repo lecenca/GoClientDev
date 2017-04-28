@@ -216,22 +216,30 @@ public class Connect {
 
 	private void handleFetchPlayer(JSONObject jsonObject) {
 		JSONArray jsonArray = jsonObject.getJSONArray("players_list");
-		ArrayList<User2> playerList = null;
+		ArrayList<User> playerList = null;
 		if (jsonArray != null)
-			playerList = Decoder.parseJsontoArray(jsonArray.toJSONString(),User2.class);
+			playerList = Decoder.parseJsontoArray(jsonArray.toJSONString(),User.class);
 		if (playerList != null) {
-			for (User2 user : playerList) {
-				user.setAccount2(user.getAccount());
+			for (User user : playerList) {
+				/*user.setAccount2(user.getAccount());
 				user.setNickname2(user.getNickname());
 				user.setPassword2(user.getPassword());
 				user.setSex2(user.getSex());
 				user.setIntegral2(Integer.toString(user.getIntegral()));
 				user.setLevel2(Integer.toString(user.getLevel()));
-				user.setStatus2(user.getStatus());
+				user.setStatus2(user.getStatus());*/
+				User2 user2 = new User2();
+				user2.setAccount2(user.getAccount());
+				user2.setIntegral2(Integer.toString(user.getIntegral()));
+				user2.setLevel2(Integer.toString(user.getLevel()));
+				user2.setNickname2(user.getNickname());
+				user2.setPassword2(user.getPassword());
+				user2.setSex2(user.getSex());
+				user2.setStatus2(user.getStatus());
 				MessageQueue<User2> players = LobbyController.getPlayers();
-				//LobbyController.players.add(user);
+				//LobbyController.players.add(user2);
 				//System.out.println(user);
-				players.add(user);
+				players.add(user2);
 			}
 			System.out.println("handle list:" + playerList);
 		}

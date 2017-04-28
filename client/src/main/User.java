@@ -13,11 +13,14 @@ public class User {
         int day;
     }
 
-    String account;
-    String nickname;
-    String password;
-    Birthday birthday = new Birthday();
-    String sex;
+    private String account;
+    private String nickname;
+    private String password;
+    private Birthday birthday = new Birthday();
+    private String sex;
+    private int level;
+    private int integral;
+    private String status;
     //int state;
     //int roomId;
 
@@ -62,5 +65,30 @@ public class User {
     public String getSex(){
         return this.sex;
     }
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public int getIntegral() {
+		return integral;
+	}
+
+	public void setIntegral(int integral) {
+		this.integral = integral;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+    
 }
 
