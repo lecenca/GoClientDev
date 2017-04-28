@@ -5,37 +5,51 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="267.0" prefWidth="497.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.CreateRoomController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="382.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.CreateRoomController">
    <children>
-      <TextField fx:id="roomNameField" layoutX="207.0" layoutY="66.0" prefHeight="32.0" prefWidth="161.0">
+      <TextField fx:id="roomNameField" layoutX="152.0" layoutY="67.0" prefHeight="32.0" prefWidth="243.0">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="passwordField" layoutX="207.0" layoutY="129.0" prefHeight="32.0" prefWidth="161.0">
+      <TextField fx:id="passwordField" layoutX="152.0" layoutY="130.0" prefHeight="32.0" prefWidth="243.0">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Label layoutX="102.0" layoutY="60.0" prefHeight="43.0" prefWidth="90.0" text="房间名称">
+      <Label layoutX="37.0" layoutY="62.0" prefHeight="43.0" prefWidth="90.0" text="房间名称">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="99.0" layoutY="123.0" prefHeight="43.0" prefWidth="90.0" text="密码(选填)">
+      <Label layoutX="37.0" layoutY="125.0" prefHeight="43.0" prefWidth="90.0" text="密码(选填)">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="createRoomBtn" layoutX="287.0" layoutY="205.0" mnemonicParsing="false" onAction="#createRoom" prefHeight="30.0" prefWidth="71.0" text="创建">
+      <Button fx:id="createRoomBtn" layoutX="257.0" layoutY="306.0" mnemonicParsing="false" onAction="#createRoom" prefHeight="30.0" prefWidth="71.0" text="创建">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="backBtn" layoutX="394.0" layoutY="205.0" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="71.0" text="取消">
+      <Button fx:id="backBtn" layoutX="350.0" layoutY="306.0" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="71.0" text="取消">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
+      <ComboBox fx:id="mainTime" layoutX="127.0" layoutY="255.0" prefHeight="23.0" prefWidth="71.0" />
+      <ComboBox fx:id="periodTimes" layoutX="328.0" layoutY="255.0" prefHeight="23.0" prefWidth="71.0" />
+      <ComboBox fx:id="poriod" layoutX="227.0" layoutY="255.0" prefHeight="23.0" prefWidth="71.0" />
+      <ComboBox fx:id="komi" layoutX="127.0" layoutY="196.0" prefHeight="23.0" prefWidth="136.0" />
+      <Label layoutX="37.0" layoutY="251.0" prefHeight="30.0" prefWidth="72.0" text="时间控制">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="37.0" layoutY="195.0" text="贴目规则">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
