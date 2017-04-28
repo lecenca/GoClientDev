@@ -231,7 +231,7 @@ public class LobbyController implements Initializable {
         level.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
         //integral.setCellValueFactory(cellData -> cellData.getValue().getIntegral2());
         state.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
-        
+
         
     }
 

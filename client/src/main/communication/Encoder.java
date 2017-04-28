@@ -54,8 +54,8 @@ public class Encoder {
             placeMap.put("color", color);
             map.put("place", placeMap);
             ArrayList killList = new ArrayList();
-            for (int chain : Board.killed) {
-                for (Stone stone : Board.stoneMap.get(chain)) {
+            for (int chain : Board.dead) {
+                for (Stone stone : Board.stonesMap.get(chain)) {
                     Map killStone = new HashMap();
                     killStone.put("x", stone.x);
                     killStone.put("y", stone.y);

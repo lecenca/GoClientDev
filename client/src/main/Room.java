@@ -39,7 +39,9 @@ public class Room {
     public Room(){
 
     }
-
+    public String getPlayer1Form(Room room){
+        return room.player1;
+    }
     public int getId() {
         return id;
     }

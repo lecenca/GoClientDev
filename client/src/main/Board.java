@@ -13,9 +13,9 @@ public class Board {
 
     public static Stone[][] stones = new Stone[19][19];
     public static Map<Stone, Integer> chainMap = new HashMap<>();
-    public static Map<Integer, HashSet<Stone>> stoneMap = new HashMap<>();
-    public static Map<Integer, HashSet<Point>> liberty = new HashMap<>();
-    public static HashSet<Integer> killed = new HashSet<>();
+    public static Map<Integer, HashSet<Stone>> stonesMap = new HashMap<>();
+    public static Map<Integer, HashSet<Point>> libertyMap = new HashMap<>();
+    public static HashSet<Integer> dead = new HashSet<>();
     public static Stone[] maybeKo = new Stone[2];
 
     private static int step;
@@ -38,9 +38,9 @@ public class Board {
             }
         }
         chainMap.clear();
-        stoneMap.clear();
-        liberty.clear();
-        killed.clear();
+        stonesMap.clear();
+        libertyMap.clear();
+        dead.clear();
     }
 
     // Checks if the stones in color can be placed in the Point p.
@@ -63,13 +63,13 @@ public class Board {
         initStone(stones[x][y]);
         update(stones[x][y]);
         System.out.println("Board add stone(" + x + "," + y + ") in chain " + chainMap.get(stones[x][y])
-                + " has liberty " + Core.liberty(this, stones[x][y]));
+                + " has libertyMap " + Core.liberty(this, stones[x][y]));
     }
 
-    // Removes the stones that were killed.
+    // Removes the stones that were dead.
     public void remove() {
-        for (int chain : killed) {
-            HashSet<Stone> ss = stoneMap.get(chain);
+        for (int chain : dead) {
+            HashSet<Stone> ss = stonesMap.get(chain);
             for (Stone s : ss) {
                 System.out.println("Board remove stone(" + s.x + "," + s.y + ") in chain " + chainMap.get(s));
                 if (s.up() != null && s.up().color == -s.color) {
@@ -87,17 +87,17 @@ public class Board {
                 s.color = Stone.None;
                 chainMap.remove(s);
             }
-            stoneMap.remove(chain);
-            liberty.remove(chain);
+            stonesMap.remove(chain);
+            libertyMap.remove(chain);
             used[chain] = false;
         }
-        killed.clear();
+        dead.clear();
     }
 
-    // Adds the stones that were killed in the killed.
+    // Adds the stones that were dead in the dead.
     public void addKilled(ArrayList<HashMap> list) {
         for (HashMap stone : list) {
-            killed.add(chainMap.get(stones[(int) stone.get("x")][(int) stone.get("y")]));
+            dead.add(chainMap.get(stones[(int) stone.get("x")][(int) stone.get("y")]));
         }
     }
 
@@ -111,7 +111,7 @@ public class Board {
         maybeKo[1].color = -color;
     }
 
-    // Initializes a new stone for chainMap, stoneMap and liberty.
+    // Initializes a new stone for chainMap, stonesMap and libertyMap.
     private void initStone(Stone stone) {
         // Initializes the chain where the stone is.
         int chain = 0;
@@ -124,10 +124,10 @@ public class Board {
         // Initializes the stonesList of the chain where the stone is.
         HashSet<Stone> stonesList = new HashSet<>();
         stonesList.add(stone);
-        stoneMap.put(chain, stonesList);
+        stonesMap.put(chain, stonesList);
 
-        // Initializes the liberty of the stone.
-        liberty.put(chain, new HashSet<>());
+        // Initializes the libertyMap of the stone.
+        libertyMap.put(chain, new HashSet<>());
         if (stone.up() != null && stone.up().color == Stone.None) {
             extendLiberty(chain, new Point(stone.x, stone.y - 1));
         }
@@ -169,10 +169,10 @@ public class Board {
         int oldChain = chainMap.get(neighbor);
         int newChain = chainMap.get(stone);
         if (newChain != oldChain) {
-            HashSet<Stone> oldStoneSet = stoneMap.get(oldChain);
-            HashSet<Stone> newStoneSet = stoneMap.get(newChain);
-            HashSet<Point> oldPointSet = liberty.get(oldChain);
-            HashSet<Point> newPointSet = liberty.get(newChain);
+            HashSet<Stone> oldStoneSet = stonesMap.get(oldChain);
+            HashSet<Stone> newStoneSet = stonesMap.get(newChain);
+            HashSet<Point> oldPointSet = libertyMap.get(oldChain);
+            HashSet<Point> newPointSet = libertyMap.get(newChain);
             for (Stone s : oldStoneSet) {
                 chainMap.put(s, newChain);
                 newStoneSet.add(s);
@@ -180,17 +180,17 @@ public class Board {
             for (Point p : oldPointSet) {
                 newPointSet.add(p);
             }
-            stoneMap.remove(oldChain);
-            liberty.remove(oldChain);
+            stonesMap.remove(oldChain);
+            libertyMap.remove(oldChain);
             used[oldChain] = false;
         }
     }
 
     private void reduceLiberty(int chain, Point point) {
-        liberty.get(chain).remove(point);
+        libertyMap.get(chain).remove(point);
     }
 
     private void extendLiberty(int chain, Point point) {
-        liberty.get(chain).add(point);
+        libertyMap.get(chain).add(point);
     }
 }

@@ -52,7 +52,7 @@ public class Client extends Application {
     private User account;
     private Connect connect;
     private ArrayList playerList = new ArrayList();
-
+    private LobbyController lobbyController;
     public Client() {
         /********* 这是要的 ***********/
         //connect = new Connect();
