@@ -28,20 +28,10 @@ public class LoginController implements Initializable
     private Encoder encoder   = new Encoder();
 
     @FXML private void login() throws Exception{
-        /******************************/
-        if(true){
-            client.getPrimaryStage().close();
-            client.gotoLobby();
-        }
-        /******************************/
-        /********* 这是要的 ***********/
-        /*
         if(checkValid()){
         	client.getPrimaryStage().close();
             client.gotoLobby();
         }
-        */
-        /*****************************/
     }
 
     @FXML
@@ -76,6 +66,13 @@ public class LoginController implements Initializable
             System.out.println(json);
             client.getConnect().send(json);
             Connect.waitForRec();
+            json = encoder.getPlayerListRequest();
+            client.getConnect().send(json);
+            Connect.waitForRec();
+            json=encoder.getRoomListRequest();
+            client.getConnect().send(json);
+            Connect.waitForRec();
+            System.out.println("at loginontroller correct:" + correct );
             if(!correct){
                 setTipsError(invaildMessageTips,"账号或密码错误");
             }
@@ -110,5 +107,5 @@ public class LoginController implements Initializable
         emptyPasswordTips.setVisible(false);
         invaildMessageTips.setVisible(false);
     }
-
+ 
 }

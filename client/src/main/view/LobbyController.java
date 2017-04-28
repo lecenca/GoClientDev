@@ -1,8 +1,7 @@
 package src.main.view;
 
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -14,8 +13,8 @@ import src.main.RoomListCell;
 import src.main.User;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
+import src.util.MessageQueue;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -44,21 +43,32 @@ public class LobbyController implements Initializable {
     @FXML
     private TableColumn roomNameCol;
     @FXML
-    private TableColumn player01Col;
+    private TableColumn player1Col;
     @FXML
-    private TableColumn player02Col;
+    private TableColumn player2Col;
     @FXML
     private TableColumn stateCol;
-
+    @FXML
+    private TableView<User> playerList;
+    @FXML
+    private TableColumn<User,String> nickname;
+    @FXML
+    private TableColumn<User,String> level;
+    @FXML
+    private TableColumn<User,String> integral;
+    @FXML
+    private TableColumn<User,String> state;
     @FXML
     private ChatBox chatBoxController;
-
+    private ObservableList<RoomListCell> roomData = FXCollections.observableArrayList();
+    private ObservableList<User> playerData = FXCollections.observableArrayList();
     /*@FXML
     private ProgressBar progress = new ProgressBar();*/
 
-    private static ArrayList<Room> rooms;
-    private static ArrayList<User> players;
-
+    /*private static ArrayList<Room> rooms;
+    private static ArrayList<User> players;*/
+    public static MessageQueue<Room> rooms = new MessageQueue<>();
+    public static MessageQueue<User> players = new MessageQueue<>();
     @FXML
     private void send() {
         /************* test ********************/
@@ -89,14 +99,13 @@ public class LobbyController implements Initializable {
     @FXML
     private void clickRoom(MouseEvent mouseEvent) throws Exception {
         if (mouseEvent.getClickCount() == 2) {
-            RoomListCell cell = roomList.getSelectionModel().getSelectedItem();
-            Room room = cell.getRoom();
+            RoomListCell room = roomList.getSelectionModel().getSelectedItem();
             User player02 = new User();
             player02.setNickname("玩家二");
-            room.setPlayer2(player02);
-            cell.setPlayer02("玩家二");
+            //room.setPlayer2(player02);
+            room.setPlayer02("玩家二");
             room.setState(1);
-            cell.setState(1);
+            room.setState(1);
             System.out.println("you click");
             client.gotoGame();
         }
@@ -132,25 +141,16 @@ public class LobbyController implements Initializable {
         //progress.setProgress(1.0);
     }
 
-    private void addToRoomList(Room room){
-        RoomListCell cell = new RoomListCell(room);
-        cell.setRoomName(room.getName());
-        cell.setRoomId(room.getId());
-        cell.setPlayer01(room.getPlayer1().getNickname());
-        cell.setState(room.getState());
-        roomList.getItems().add(cell);
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //fetchLobbyInfo();
         //progress.setProgress(1.0);
         /************* test ********************/
 
-        roomList.setItems(FXCollections.observableArrayList());
+        roomList.setItems(roomData);
         roomIdCol.setCellValueFactory(new PropertyValueFactory("roomId"));
         roomIdCol.setCellFactory(column -> {
-            return new TableCell<RoomListCell, Integer>() {
+            return new TableCell<Room, Integer>() {
                 protected void updateItem(Integer item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
@@ -164,21 +164,7 @@ public class LobbyController implements Initializable {
 
         roomNameCol.setCellValueFactory(new PropertyValueFactory("roomName"));
         roomNameCol.setCellFactory(column -> {
-            return new TableCell<RoomListCell, String>() {
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null) {
-                        setText("");
-                    } else {
-                        setText(item.toString());
-                    }
-                }
-            };
-        });
-
-        player01Col.setCellValueFactory(new PropertyValueFactory("player01"));
-        player01Col.setCellFactory(column -> {
-            return new TableCell<RoomListCell, String>() {
+            return new TableCell<Room, String>() {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
@@ -190,9 +176,9 @@ public class LobbyController implements Initializable {
             };
         });
 
-        player02Col.setCellValueFactory(new PropertyValueFactory("player02"));
-        player02Col.setCellFactory(column -> {
-            return new TableCell<RoomListCell, String>() {
+        player1Col.setCellValueFactory(new PropertyValueFactory("player01Property"));
+        player1Col.setCellFactory(column -> {
+            return new TableCell<Room, String>() {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
@@ -204,9 +190,23 @@ public class LobbyController implements Initializable {
             };
         });
 
-        stateCol.setCellValueFactory(new PropertyValueFactory("state"));
+        player2Col.setCellValueFactory(new PropertyValueFactory("player02Property"));
+        player2Col.setCellFactory(column -> {
+            return new TableCell<Room, String>() {
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null) {
+                        setText("");
+                    } else {
+                        setText(item);
+                    }
+                }
+            };
+        });
+
+        stateCol.setCellValueFactory(new PropertyValueFactory("stateProperty"));
         stateCol.setCellFactory(column -> {
-            return new TableCell<RoomListCell, Integer>() {
+            return new TableCell<Room, Integer>() {
                 protected void updateItem(Integer item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item == null) {
@@ -221,7 +221,35 @@ public class LobbyController implements Initializable {
                 }
             };
         });
-
+        
+        playerList.setItems(playerData);
+       /* firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
+        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());*/
+       // nickname.setCellValueFactory(cellData -> cellData.getValue().getNickname());
         /************* test ********************/
+        nickname.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
+        level.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
+        //integral.setCellValueFactory(cellData -> cellData.getValue().getIntegral2());
+        state.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
+        
+        
     }
+
+	public ObservableList<RoomListCell> getRoomData() {
+		return roomData;
+	}
+
+	public ObservableList<User> getPlayerData() {
+		return playerData;
+	}
+
+	public static MessageQueue<Room> getRooms() {
+		return rooms;
+	}
+
+	public static MessageQueue<User> getPlayers() {
+		return players;
+	}
+
+    
 }
