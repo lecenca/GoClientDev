@@ -1,5 +1,7 @@
 package src.main;
 
+
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -8,13 +10,27 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class Room {
 
+    private class Config{
+        public int komi;         // 贴目规则
+        public int mainTime;    // 主时间 [1,5,10,15,20,30,40,60,90](单位：分)
+        public int period;      // 读秒时间 [15,20,30,40,50,60]（单位：秒）
+        public int periodTime; // 读秒次数 [1,3,5,7,10]
+        public Config(){
+            this.komi = Type.KOMI.SIX_FIVE;
+            this.mainTime = 20;
+            this.period = 30;
+            this.periodTime = 3;
+        }
+    }
+
     private int id;
     private String name;
+    private String password;
     private String player1;
     private String player2;
     private int state;
-    private String password;
-    private String remark;
+    private boolean player1Black;
+    private Config config = new Config();
 
     /************* test ********************/
     private SimpleStringProperty player01Property = new SimpleStringProperty();
@@ -22,7 +38,9 @@ public class Room {
     private SimpleIntegerProperty stateProperty = new SimpleIntegerProperty();
     /************* test ********************/
 
-    public Room(){}
+    public Room(){
+
+    }
 
     public int getId() {
         return id;

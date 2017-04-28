@@ -3,17 +3,13 @@ package src.main.communication;
 import java.util.ArrayList;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import src.main.Room;
 import src.main.User;
 
 public class Decoder {
-
-		public static ArrayList parseJsontoArray(String  json,Class clazz) {
-			ArrayList<User> list = (ArrayList<User>) JSON.parseArray(json,clazz);
-			//System.out.println(list);
-			return list;
-		}
 
 		public static JSONObject parseObject(String json) {
 			//String s = "{'name':'王五','age':'19'}";
@@ -21,7 +17,13 @@ public class Decoder {
 			return jsonObject;
 		}
 
-		public static int registResponse(String json){
-		    return (int)JSON.parseObject(json).get("id");
+		public static ArrayList<Room> parseRoomList(JSONObject object){
+			JSONArray rooms = object.getJSONArray("rooms_list");
+			return new ArrayList<Room>(JSON.parseArray(rooms.toJSONString(),Room.class));
+		}
+
+		public static ArrayList<User> parsePlayerList(JSONObject object){
+		    JSONArray players = object.getJSONArray("players_list");
+		    return new ArrayList<>(JSON.parseArray(players.toJSONString(),User.class));
         }
 }

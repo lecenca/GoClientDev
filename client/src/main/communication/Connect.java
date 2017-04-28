@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import src.main.Room;
+import src.main.Type;
 import src.main.User;
 import src.main.User2;
 import src.main.view.ChatBox;
@@ -98,22 +99,18 @@ public class Connect {
 		}
 	}
 
-	public static void send(String msg) {
-		// get the outputStream of socket
-		// OutputStream outputStream = socket.getOutputStream();
-		// create the printwriter
-		// pw = new PrintWriter(os,true);
-		byte[] len = new byte[4];
-		len = toHH(msg.length());
-
-		String sendMsg = new String(len, 0, 4);
-		int length = sendMsg.length() + msg.length();
-		System.out.println("send msg: " + sendMsg + msg + "length: " + length);
-		pw.write(sendMsg + msg);
-		pw.flush();
-		recv = false;
-		System.out.println("发送成功！");
-	}
+    public static void send(String msg) {
+        // get the outputStream of socket
+        // OutputStream outputStream = socket.getOutputStream();
+        // create the printwriter
+        // pw = new PrintWriter(os,true);
+        String sendMsg = new String(toHH(msg.length()), 0, 4);
+        System.out.println("len: " + sendMsg.length() + msg.length() + ", msg: " + sendMsg + msg);
+        pw.write(sendMsg + msg);
+        pw.flush();
+        recv = false;
+        System.out.println("发送成功！");
+    }
 
 	public static void waitForRec() {
 		int i = 0;
@@ -133,56 +130,56 @@ public class Connect {
 
 	public void receive() {
 		String msg = null;
-		byte[] buff = new byte[1024];
-		try {
-			int len = is.read(buff);
-			msg = new String(buff, 4, len - 4);
-			System.out.println("receive from server: " + msg);
-			JSONObject jsonObject = Decoder.parseObject(msg);
-			int response_type = jsonObject.getIntValue("response_type");
-			// System.out.println("response_type：" + response_type);
-			switch (response_type) {
-			case ResponseType.ACCOUNT_CHECK_SUCCESS:
-				handleAccountCheck(true);
-				break;
-			case ResponseType.ACCOUNT_CHECK_FAILED:
-				handleAccountCheck(false);
-				break;
-			case ResponseType.REGIST_SUCCESS:
-				handleRegist(true);
-				break;
-			case ResponseType.REGIST_FAILED:
-				handleRegist(false);
-				break;
-			case ResponseType.LOGIN_SUCCESS:
-				handleLogin(true);
-				break;
-			case ResponseType.LOGIN_FAILED:
-				handleLogin(false);
-				break;
-			case ResponseType.FETCH_ROOM_INFO_SUCCESS:
-				handleFetchRoom(jsonObject);
-				break;
-			case ResponseType.FETCH_PLAYERS_INFO_SUCCESS:
-				handleFetchPlayer(jsonObject);
-				break;
-			default:
-				break;
-			}
-			recv = true;
-			// loginMessage = msg;
-			registerMessage = msg;
-			chatMessage = msg;
-			// System.out.println("chatMessage:" + chatMessage);
-			// msg = br.readLine();
-		} 
-		catch (ConnectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("与服务器断开连接！");
-		}catch (IOException e) {
-			System.out.println("与服务器连接异常！");
-		}
+        byte[] buff = new byte[1024];
+        try {
+            int len = is.read(buff);
+            msg = new String(buff, 4, len - 4);
+            System.out.println("receive from server: " + msg);
+            JSONObject jsonObject = Decoder.parseObject(msg);
+            int response_type = jsonObject.getIntValue("response_type");
+            // System.out.println("response_type：" + response_type);
+            switch (response_type) {
+                case Type.Response.ACCOUNT_CHECK_SUCCESS:
+                    handleAccountCheck(true);
+                    break;
+                case Type.Response.ACCOUNT_CHECK_FAILED:
+                    handleAccountCheck(false);
+                    break;
+                case Type.Response.REGIST_SUCCESS:
+                    handleRegist(true);
+                    break;
+                case Type.Response.REGIST_FAILED:
+                    handleRegist(false);
+                    break;
+                case Type.Response.LOGIN_SUCCESS:
+                    handleLogin(true);
+                    break;
+                case Type.Response.LOGIN_FAILED:
+                    handleLogin(false);
+                    break;
+                case Type.Response.FETCH_ROOM_INFO_SUCCESS:
+                    handleFetchRoom(jsonObject);
+                    break;
+                case Type.Response.FETCH_PLAYERS_INFO_SUCCESS:
+                    handleFetchPlayer(jsonObject);
+                    break;
+                default:
+                    break;
+            }
+            recv = true;
+            // loginMessage = msg;
+            registerMessage = msg;
+            chatMessage = msg;
+            // System.out.println("chatMessage:" + chatMessage);
+            // msg = br.readLine();
+        }
+        catch (ConnectException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.out.println("与服务器断开连接！");
+        }catch (IOException e) {
+            System.out.println("与服务器连接异常！");
+        }
 	}
 
 	private void handleAccountCheck(boolean state) {
@@ -199,51 +196,27 @@ public class Connect {
 	}
 
 	private void handleFetchRoom(JSONObject jsonObject) {
-		JSONArray jsonArray = jsonObject.getJSONArray("rooms_list");
-		ArrayList<Room> roomList = null;
-		if (jsonArray != null)
-			roomList = Decoder.parseJsontoArray(jsonArray.toJSONString(),Room.class);
-		if(roomList != null) {
-			for (Room room : roomList) {
-				MessageQueue<Room> rooms = LobbyController.getRooms();
-				//LobbyController.rooms.add(room);
-				rooms.add(room);
-			}
-			System.out.println("handle list:" + roomList);
-			
-		}
+		ArrayList<Room> roomList = Decoder.parseRoomList(jsonObject);
+        if(roomList.size() != 0){
+            for (Room room : roomList) {
+                MessageQueue<Room> rooms = LobbyController.getRooms();
+                rooms.add(room);
+            }
+            System.out.println("handle list:" + roomList);
+        }
 	}
 
 	private void handleFetchPlayer(JSONObject jsonObject) {
-		JSONArray jsonArray = jsonObject.getJSONArray("players_list");
-		ArrayList<User> playerList = null;
-		if (jsonArray != null)
-			playerList = Decoder.parseJsontoArray(jsonArray.toJSONString(),User.class);
-		if (playerList != null) {
-			for (User user : playerList) {
-				/*user.setAccount2(user.getAccount());
-				user.setNickname2(user.getNickname());
-				user.setPassword2(user.getPassword());
-				user.setSex2(user.getSex());
-				user.setIntegral2(Integer.toString(user.getIntegral()));
-				user.setLevel2(Integer.toString(user.getLevel()));
-				user.setStatus2(user.getStatus());*/
-				User2 user2 = new User2();
-				user2.setAccount2(user.getAccount());
-				user2.setIntegral2(Integer.toString(user.getIntegral()));
-				user2.setLevel2(Integer.toString(user.getLevel()));
-				user2.setNickname2(user.getNickname());
-				user2.setPassword2(user.getPassword());
-				user2.setSex2(user.getSex());
-				user2.setStatus2(user.getStatus());
-				MessageQueue<User2> players = LobbyController.getPlayers();
-				//LobbyController.players.add(user2);
-				//System.out.println(user);
-				players.add(user2);
-			}
-			System.out.println("handle list:" + playerList);
+		ArrayList<User> playerList = Decoder.parsePlayerList(jsonObject);
+        if(playerList.size() != 0){
+            for(User user : playerList){
+                MessageQueue<User> players = LobbyController.getPlayers();
+                players.add(user);
+            }
+            System.out.println("handle list:" + playerList);
+        }
 		}
-	}
+	
 
 	// For C/C++ on Windows.
 	private static byte[] toLH(int n) {

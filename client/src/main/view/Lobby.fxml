@@ -38,8 +38,8 @@
         <columns>
           <TableColumn fx:id="roomIdCol" prefWidth="74.0" text="房间ID" />
           <TableColumn fx:id="roomNameCol" prefWidth="163.0" text="房间名称" />
-            <TableColumn fx:id="player01Col" prefWidth="123.0" text="玩家1/白" />
-            <TableColumn fx:id="player02Col" prefWidth="123.0" text="玩家2/黑" />
+            <TableColumn fx:id="player1Col" prefWidth="123.0" text="玩家1/白" />
+            <TableColumn fx:id="player2Col" prefWidth="123.0" text="玩家2/黑" />
             <TableColumn fx:id="stateCol" prefWidth="140.0" text="状态" />
         </columns>
       </TableView>
@@ -48,7 +48,7 @@
           <TableColumn fx:id="nickname" prefWidth="100.0" text="昵称" />
           <TableColumn fx:id="level" prefWidth="65.0" text="级别" />
             <TableColumn fx:id="integral" prefWidth="65.0" text="积分" />
-            <TableColumn fx:id="status" prefWidth="65.0" text="状态" />
+            <TableColumn fx:id="state" prefWidth="65.0" text="状态" />
         </columns>
       </TableView>
        <!--

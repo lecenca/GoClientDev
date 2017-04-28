@@ -1,6 +1,5 @@
 package src.main.view;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -75,7 +74,7 @@ public class LobbyController implements Initializable {
 	 * players;
 	 */
 	public static MessageQueue<Room> rooms = new MessageQueue<>();
-	public static MessageQueue<User2> players = new MessageQueue<>();
+	public static MessageQueue<User> players = new MessageQueue<>();
 	private Thread listenPlayerList = new Thread(new Runnable() {
 
 		@Override
@@ -289,7 +288,7 @@ public class LobbyController implements Initializable {
 		return rooms;
 	}
 
-	public static MessageQueue<User2> getPlayers() {
+	public static MessageQueue<User> getPlayers() {
 		return players;
 	}
 //	

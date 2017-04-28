@@ -23,8 +23,6 @@ public class SignupController implements Initializable {
     private Client client;
 
     private User user = new User();
-    private Encoder encoder = new Encoder();
-    //private Connect  connector = new Connect();
 
     private boolean validInfo = false;
     private boolean signUpCall = false;
@@ -83,7 +81,6 @@ public class SignupController implements Initializable {
             String ac = this.account.getText();
             String nn = this.nickname.getText();
             String pw = this.password.getText();
-            String rpw = this.repeatPassword.getText();
             int year = Integer.parseInt(this.year.getValue().toString());
             int month = Integer.parseInt(this.month.getValue().toString());
             int day = Integer.parseInt(this.day.getValue().toString());
@@ -91,6 +88,13 @@ public class SignupController implements Initializable {
             user.setNickname(nn);
             user.setPassword(pw);
             user.setBirthday(year, month, day);
+            // Auto set.
+            /*if(male.isSelected()){
+                user.setSex(true);
+            }
+            else{
+                user.setSex(false);
+            }*/
             client.setAccount(user);
             String json = Encoder.signupRequest(user);
             System.out.println("user signup info: " + json);
@@ -281,16 +285,6 @@ public class SignupController implements Initializable {
     }
 
     @FXML
-    private void selectMale() {
-        user.setSex("male");
-    }
-
-    @FXML
-    private void selectFemale() {
-        user.setSex("female");
-    }
-
-    @FXML
     private void backToLogin() throws Exception {
         client.getsignupStage().close();
         client.gotoLogin();
@@ -298,6 +292,16 @@ public class SignupController implements Initializable {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    @FXML
+    private void selectMale(){
+        user.setSex(true);
+    }
+
+    @FXML
+    private void selectFemale(){
+        user.setSex(false);
     }
 
     @FXML
@@ -326,7 +330,7 @@ public class SignupController implements Initializable {
         male.setToggleGroup(tg);
         female.setToggleGroup(tg);
         male.setSelected(true);
-        user.setSex("male");
+        selectMale();
         //year.getSelectionModel().select(30);
         //month.getSelectionModel().select(0);
         //day.getSelectionModel().select(0);

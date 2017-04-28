@@ -1,17 +1,19 @@
-MicroOnlineGo
-====
+# MicroOnlineGo
 
-# Introduction
+## Introduction
 
-This is a miniature **instant online game** for **Go**.
+This is a mini **multiplayer instant online game** for **Go**.
 
-# schedule
+## Completion
 
-| Finished | Module |
-|:---:|:---:|
-| | Log in |
-| | Games lobby |
-| | Game interface |
-| | Chat room |
-| | Internet connection |
+| Finished           | Module         |
+| :----------------: | :-------------:|
+| :white_check_mark: | Log in         |
+| :white_check_mark: | Sign up        | 
+| :white_check_mark: | Games lobby    |
+| :white_check_mark: | Game interface |
+| :white_check_mark: | Game logic     |
+| :white_check_mark: | Chat Windows   |
+| :white_check_mark: | Connection     |
+| :x:                | Encode/Decode  |
 
