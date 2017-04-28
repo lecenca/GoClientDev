@@ -28,7 +28,7 @@ public class LoginController implements Initializable
     private Encoder encoder   = new Encoder();
 
     @FXML private void login() throws Exception{
-        if(checkValid()){
+        if(/*checkValid()*/true){
         	client.getPrimaryStage().close();
             client.gotoLobby();
         }

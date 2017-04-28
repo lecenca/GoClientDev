@@ -3,6 +3,8 @@ package src.util;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import src.main.User;
+
 public class MessageQueue<T> {
 	private ConcurrentLinkedQueue<T> queue;
 	public MessageQueue() {
