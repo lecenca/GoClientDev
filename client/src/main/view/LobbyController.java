@@ -132,6 +132,15 @@ public class LobbyController implements Initializable {
         //progress.setProgress(1.0);
     }
 
+    private void addToRoomList(Room room){
+        RoomListCell cell = new RoomListCell(room);
+        cell.setRoomName(room.getName());
+        cell.setRoomId(room.getId());
+        cell.setPlayer01(room.getPlayer1().getNickname());
+        cell.setState(room.getState());
+        roomList.getItems().add(cell);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //fetchLobbyInfo();
