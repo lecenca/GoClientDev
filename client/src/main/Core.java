@@ -42,17 +42,17 @@ public class Core {
         double whiteEyes = 0;
         Set<Point> blackLiberty = new HashSet<>();
         Set<Point> whiteLiberty = new HashSet<>();
-        for (int chain : board.stoneMap.keySet()) {
-            if (board.stoneMap.get(chain).size() != 0) {
-                for (Stone stone : board.stoneMap.get(chain)) {
+        for (int chain : board.stonesMap.keySet()) {
+            if (board.stonesMap.get(chain).size() != 0) {
+                for (Stone stone : board.stonesMap.get(chain)) {
                     if (stone.color == Stone.Black) {
-                        blackEyes += (double) board.stoneMap.get(chain).size();
-                        for (Point p : board.liberty.get(chain)) {
+                        blackEyes += (double) board.stonesMap.get(chain).size();
+                        for (Point p : board.libertyMap.get(chain)) {
                             blackLiberty.add(p);
                         }
                     } else if (stone.color == Stone.White) {
-                        whiteEyes += (double) board.stoneMap.get(chain).size();
-                        for (Point p : board.liberty.get(chain)) {
+                        whiteEyes += (double) board.stonesMap.get(chain).size();
+                        for (Point p : board.libertyMap.get(chain)) {
                             whiteLiberty.add(p);
                         }
                     }
@@ -78,7 +78,7 @@ public class Core {
         } else if (stone.color == -color && liberty(board, stone) == 1) {
             if (!isKo(board, x, y, stone)) {
                 hasKilled = true;
-                board.killed.add(board.chainMap.get(stone));
+                board.dead.add(board.chainMap.get(stone));
             }
         }
     }
@@ -87,7 +87,7 @@ public class Core {
         if (x == board.maybeKo[1].x && y == board.maybeKo[1].y
                 && stone.x == board.maybeKo[0].x && stone.y == board.maybeKo[0].y
                 && stone.color == board.maybeKo[0].color
-                && board.stoneMap.get(board.chainMap.get(stone)).size() == 1) {
+                && board.stonesMap.get(board.chainMap.get(stone)).size() == 1) {
             hasKo = true;
             return true;
         }
@@ -96,8 +96,8 @@ public class Core {
 
     public static int liberty(Board board, Stone stone) {
         int chain = board.chainMap.get(stone);
-        System.out.println("Point (" + stone.x + "," + stone.y + ") in chain " + chain + " has liberty " + board.liberty.get(chain).size());
-        return board.liberty.get(board.chainMap.get(stone)).size();
+        System.out.println("Point (" + stone.x + "," + stone.y + ") in chain " + chain + " has libertyMap " + board.libertyMap.get(chain).size());
+        return board.libertyMap.get(board.chainMap.get(stone)).size();
     }
 
 }

@@ -39,7 +39,7 @@ public class Connect {
      */
     private final static String LINE_SEPARATOR = System.getProperty("line.separator");
     // private final static String IP = "172.16.90.242";
-    private final static String IP = "110.120.143.235";
+    private final static String IP = "123.64.10.15";
     private final static int PORT = 60000;
     private static Socket socket;
     private static OutputStream os;
