@@ -1,6 +1,5 @@
 package src.main.view;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -12,12 +11,10 @@ import javafx.fxml.Initializable;
 import src.main.Room;
 import src.main.RoomListCell;
 import src.main.User;
-import src.main.User2;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -46,32 +43,32 @@ public class LobbyController implements Initializable {
     @FXML
     private TableColumn roomNameCol;
     @FXML
-    private TableColumn player01Col;
+    private TableColumn player1Col;
     @FXML
-    private TableColumn player02Col;
+    private TableColumn player2Col;
     @FXML
     private TableColumn stateCol;
     @FXML
-    private TableView<User2> playerList;
+    private TableView<User> playerList;
     @FXML
-    private TableColumn<User2,String> nickname;
+    private TableColumn<User,String> nickname;
     @FXML
-    private TableColumn<User2,String> level;
+    private TableColumn<User,String> level;
     @FXML
-    private TableColumn<User2,String> integral;
+    private TableColumn<User,String> integral;
     @FXML
-    private TableColumn<User2,String> status;
+    private TableColumn<User,String> state;
     @FXML
     private ChatBox chatBoxController;
     private ObservableList<RoomListCell> roomData = FXCollections.observableArrayList();
-    private ObservableList<User2> playerData = FXCollections.observableArrayList();
+    private ObservableList<User> playerData = FXCollections.observableArrayList();
     /*@FXML
     private ProgressBar progress = new ProgressBar();*/
 
     /*private static ArrayList<Room> rooms;
     private static ArrayList<User> players;*/
     public static MessageQueue<Room> rooms = new MessageQueue<>();
-    public static MessageQueue<User2> players = new MessageQueue<>();
+    public static MessageQueue<User> players = new MessageQueue<>();
     @FXML
     private void send() {
         /************* test ********************/
@@ -179,8 +176,8 @@ public class LobbyController implements Initializable {
             };
         });
 
-        player01Col.setCellValueFactory(new PropertyValueFactory("player01Property"));
-        player01Col.setCellFactory(column -> {
+        player1Col.setCellValueFactory(new PropertyValueFactory("player01Property"));
+        player1Col.setCellFactory(column -> {
             return new TableCell<Room, String>() {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -193,8 +190,8 @@ public class LobbyController implements Initializable {
             };
         });
 
-        player02Col.setCellValueFactory(new PropertyValueFactory("player02Property"));
-        player02Col.setCellFactory(column -> {
+        player2Col.setCellValueFactory(new PropertyValueFactory("player02Property"));
+        player2Col.setCellFactory(column -> {
             return new TableCell<Room, String>() {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -230,10 +227,10 @@ public class LobbyController implements Initializable {
         lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());*/
        // nickname.setCellValueFactory(cellData -> cellData.getValue().getNickname());
         /************* test ********************/
-        nickname.setCellValueFactory(cellData -> cellData.getValue().getNickname2());
-        level.setCellValueFactory(cellData -> cellData.getValue().getLevel2());
-        integral.setCellValueFactory(cellData -> cellData.getValue().getIntegral2());
-        status.setCellValueFactory(cellData -> cellData.getValue().getStatus2());
+        nickname.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
+        level.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
+        //integral.setCellValueFactory(cellData -> cellData.getValue().getIntegral2());
+        state.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
         
         
     }
@@ -242,7 +239,7 @@ public class LobbyController implements Initializable {
 		return roomData;
 	}
 
-	public ObservableList<User2> getPlayerData() {
+	public ObservableList<User> getPlayerData() {
 		return playerData;
 	}
 
@@ -250,7 +247,7 @@ public class LobbyController implements Initializable {
 		return rooms;
 	}
 
-	public static MessageQueue<User2> getPlayers() {
+	public static MessageQueue<User> getPlayers() {
 		return players;
 	}
 
