@@ -25,15 +25,28 @@ public class User {
             level = 0;
             rank = 1000;
         }
+
+		public void setWin(int win) {
+			this.win = win;
+		}
+
+		public void setLose(int lose) {
+			this.lose = lose;
+		}
+
+		public void setLevel(int level) {
+			this.level = level;
+		}
+        
     }
 
     private String account;
     private String nickname;
     private String password;
     private Birthday birthday = new Birthday();
-    private int level;
-    private int integral;
-    private String status;
+    //private int level;
+    //private int integral;
+    //private String status;
     boolean sex;  // true for man, false for woman
     int state;
     int room;
@@ -43,7 +56,13 @@ public class User {
         state = Type.State.OTHER;
         room = 0;
     }
-
+    public User(String nickname,int level,int win,int lose,int state) {
+    	this.nickname = nickname;
+    	data.setLevel(level);
+    	data.setWin(win);
+    	data.setLose(lose);
+    	this.state = state;
+    }
     public void setAccount(String account) {
         this.account = account;
     }
@@ -114,5 +133,12 @@ public class User {
         }
         return new SimpleStringProperty("在房间"+Integer.toString(this.room)+"游戏中");
     }
+    public StringProperty getWinProperty() {
+    	return new SimpleStringProperty(Integer.toString(this.data.win));
+    }
+    public StringProperty getLoseProperty() {
+    	return new SimpleStringProperty(Integer.toString(this.data.lose));
+    }
+    
 }
 

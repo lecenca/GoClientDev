@@ -51,19 +51,23 @@ public class LobbyController implements Initializable {
 	@FXML
 	private TableColumn stateCol;
 	@FXML
-	private TableView<User2> playerList;
+	private TableView<User> playerList;
 	@FXML
-	private TableColumn<User2, String> nickname;
+	private TableColumn<User, String> nicknameCol;
 	@FXML
-	private TableColumn<User2, String> level;
+	private TableColumn<User, String> levelCol;
+	/*@FXML
+	private TableColumn<User2, String> integral;*/
 	@FXML
-	private TableColumn<User2, String> integral;
+	private TableColumn<User, String> winCol;
 	@FXML
-	private TableColumn<User2, String> status;
+	private TableColumn<User, String> loseCol;
+	@FXML
+	private TableColumn<User, String> statusCol;
 	@FXML
 	private ChatBox chatBoxController;
 	private ObservableList<RoomListCell> roomData = FXCollections.observableArrayList();
-	private ObservableList<User2> playerData = FXCollections.observableArrayList();
+	private ObservableList<User> playerData = FXCollections.observableArrayList();
 
 	/*
 	 * @FXML private ProgressBar progress = new ProgressBar();
@@ -86,7 +90,7 @@ public class LobbyController implements Initializable {
 				}*/
 				try {
 					Thread.currentThread().sleep(1000);
-					playerData.add(new User2("tom","19","1000","online"));
+					playerData.add(new User("tom",30,100,60,1));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -98,12 +102,12 @@ public class LobbyController implements Initializable {
 	public LobbyController() {
 		// TODO Auto-generated constructor stub
 		//test data as bellow
-		playerData.add(new User2("zhangsan","8","300","online"));
-		playerData.add(new User2("wangwu","18","3000","online"));
-		playerData.add(new User2("lisi","19","6000","online"));
-		playerData.add(new User2("zhangsan","8","300","online"));
-		playerData.add(new User2("wangwu","18","3000","online"));
-		playerData.add(new User2("lisi","19","6000","online"));
+		playerData.add(new User("zhangsan",8,30,10,1));
+		playerData.add(new User("wangwu",18,30,20,1));
+		playerData.add(new User("lisi",19,60,30,1));
+		playerData.add(new User("zhangsan",8,30,40,1));
+		playerData.add(new User("wangwu",18,30,50,1));
+		playerData.add(new User("lisi",19,60,60,1));
 		
 	}
 	@FXML
@@ -269,10 +273,12 @@ public class LobbyController implements Initializable {
 		// nickname.setCellValueFactory(cellData ->
 		// cellData.getValue().getNickname());
 		/************* test ********************/
-		nickname.setCellValueFactory(cellData -> cellData.getValue().getNickname2());
-		level.setCellValueFactory(cellData -> cellData.getValue().getLevel2());
-		integral.setCellValueFactory(cellData -> cellData.getValue().getIntegral2());
-		status.setCellValueFactory(cellData -> cellData.getValue().getStatus2());
+		nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
+		levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
+		//integral.setCellValueFactory(cellData -> cellData.getValue().getIntegral2());
+		winCol.setCellValueFactory(cellData ->cellData.getValue().getWinProperty());
+		loseCol.setCellValueFactory(cellData ->cellData.getValue().getLoseProperty());
+		statusCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
 
 	}
 
@@ -280,7 +286,7 @@ public class LobbyController implements Initializable {
 		return roomData;
 	}
 
-	public ObservableList<User2> getPlayerData() {
+	public ObservableList<User> getPlayerData() {
 		return playerData;
 	}
 

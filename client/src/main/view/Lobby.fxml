@@ -43,12 +43,13 @@
             <TableColumn fx:id="stateCol" prefWidth="140.0" text="状态" />
         </columns>
       </TableView>
-      <TableView fx:id="playerList" layoutX="669.0" layoutY="73.0" prefHeight="495.0" prefWidth="297.0">
+      <TableView fx:id="playerList" layoutX="669.0" layoutY="73.0" prefHeight="495.0" prefWidth="368.0">
         <columns>
-          <TableColumn fx:id="nickname" prefWidth="100.0" text="昵称" />
-          <TableColumn fx:id="level" prefWidth="65.0" text="级别" />
-            <TableColumn fx:id="integral" prefWidth="65.0" text="积分" />
-            <TableColumn fx:id="state" prefWidth="65.0" text="状态" />
+          <TableColumn fx:id="nicknameCol" prefWidth="87.0" text="昵称" />
+          <TableColumn fx:id="levelCol" prefWidth="78.0" text="段位" />
+            <TableColumn fx:id="winCol" prefWidth="65.0" text="胜场" />
+            <TableColumn fx:id="loseCol" prefWidth="65.0" text="负场" />
+            <TableColumn fx:id="statusCol" prefWidth="75.0" text="状态" />
         </columns>
       </TableView>
        <!--
