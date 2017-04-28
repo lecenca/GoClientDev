@@ -1,5 +1,8 @@
 package src.main;
 
+import com.sun.xml.internal.fastinfoset.algorithm.IntegerEncodingAlgorithm;
+
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.property.StringProperty;
 import src.main.User.Birthday;
@@ -19,13 +22,13 @@ public class User2 {
 	private StringProperty level2;
 	private StringProperty integral2;
 	private StringProperty status2;
-	private String account;
-	private String nickname;
-	private String password;
-	private String sex;
-	private int level;
-	private int integral;
-	private String status;
+	public User2(){}
+	public User2(String nickname,String level2,String integral2,String status2){
+		this.nickname2 = new SimpleStringProperty(nickname);
+		this.level2 = new SimpleStringProperty(level2);
+		this.integral2 = new SimpleStringProperty(integral2);
+		this.status2 = new SimpleStringProperty(status2);
+	}
 	public StringProperty getAccount2() {
 		return account2;
 	}
@@ -68,53 +71,4 @@ public class User2 {
 	public void setStatus2(String status2) {
 		this.status2.set(status2);
 	}
-	public String getAccount() {
-		return account;
-	}
-	public void setAccount(String account) {
-		this.account = account;
-	}
-	public String getNickname() {
-		return nickname;
-	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getSex() {
-		return sex;
-	}
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
-	public int getLevel() {
-		return level;
-	}
-	public void setLevel(int level) {
-		this.level = level;
-	}
-	public int getIntegral() {
-		return integral;
-	}
-	public void setIntegral(int integral) {
-		this.integral = integral;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	@Override
-	public String toString() {
-		return "User2 [birthday=" + birthday + ", account=" + account + ", nickname=" + nickname + ", password="
-				+ password + ", sex=" + sex + ", level=" + level + ", integral=" + integral + ", status=" + status
-				+ "]";
-	}
-
 }
