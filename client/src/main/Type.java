@@ -5,21 +5,21 @@ public class Type {
     public static class Request {
         public static int
                 CHECK_ACCOUNT = 0,
+                FETCH_PLAYER_INFO = 1,
+                FETCH_PLAYERS_INFO = 2,
                 REGIST = 3,
                 LOGIN = 4,
                 LOGOUT = 5,
-                FETCH_PLAYER_INFO = 2,
-                FETCH_LOBBY_INFO,
-                FETCH_ROOM_INFO = 7,
-                ACTION = 8,
-                SITDOWN,
-                LEAVE,
-                READGO,
-                GIVEUP,
-                PLACECHESS,
-                GAMEOVER_WINNER,
-                GAMEOVER_LOSER,
-                SEND_MSG;
+                FETCH_LOBBY_INFO = 6,
+                FETCH_ROOMS_INFO = 7,
+                SITDOWN = 8,
+                LEAVE = 9,
+                READY = 10,
+                ACTION = 11,
+                GAMERESULT = 12,
+                SEND_MSG = 13,
+                GROUP_CHAT = 14,
+                NICKNAME_CHECK = 15;
     }
 
     public static class Response {
