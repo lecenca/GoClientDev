@@ -55,7 +55,7 @@ public class Client extends Application {
     private LobbyController lobbyController;
     public Client() {
         /********* 这是要的 ***********/
-        //connect = new Connect();
+       // connect = new Connect();
         /*****************************/
         lobbyStage = new Stage();
         signupStage = new Stage();
@@ -67,7 +67,9 @@ public class Client extends Application {
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
         if(connect != null){
-            getConnect().getReceiveThread().start();
+            Thread receiveThread = getConnect().getReceiveThread();
+            receiveThread.setDaemon(true);
+            receiveThread.start();
         }
     }
 
@@ -81,7 +83,12 @@ public class Client extends Application {
     public void gotoLobby() throws Exception {
         LobbyController lobbyController = (LobbyController) changeStage("view/Lobby.fxml", lobbyStage);
         lobbyController.setClient(this);
-        lobbyController.getListenPlayerList().start();
+        Thread listenPlayerList = lobbyController.getListenPlayerList();
+        listenPlayerList.setDaemon(true);
+        listenPlayerList.start();
+        Thread listenRoomList = lobbyController.getListenRoomList();
+        listenRoomList.setDaemon(true);
+        listenRoomList.start();
     }
 
     public void gotoSignup() throws Exception {
@@ -94,7 +101,7 @@ public class Client extends Application {
         createRoomStage.close();
     }
 
-    public void gotoCreateRoom(TableView<RoomListCell> roomList) throws IOException {
+    public void gotoCreateRoom(TableView<Room> roomList) throws IOException {
         createRoomStage = new Stage();
         createRoomStage.initModality(Modality.APPLICATION_MODAL);
         createRoomStage.initOwner(primaryStage);

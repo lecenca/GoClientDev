@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 public class CreateRoomController implements Initializable {
 
     private Client client;
-    private TableView<RoomListCell> roomList;
+    private TableView<Room> roomList;
 
     @FXML private TextField roomNameField;
     @FXML private TextField passwordField;
@@ -47,16 +47,17 @@ public class CreateRoomController implements Initializable {
         String password = passwordField.getText();
         if (password != null)
             room.setPassword(password);
-        room.setPlayer1("玩家一");
+        User player1 = new User();
+        player1.setNickname("玩家一");
+        room.setPlayer1(player1.getAccount());
         room.setState(0);
-        RoomListCell cell = new RoomListCell(room);
+        Room cell = new Room();
         cell.setPlayer1("玩家一");
         cell.setState(0);
-        cell.setRoomId(1111);
-        cell.setRoomName(room.getName());
+        cell.setId(1111);
+        cell.setName(room.getName());
         roomList.getItems().add(cell);
         client.backToLobby();
-        System.out.println("you create");
         /************* test ********************/
     }
 
@@ -98,7 +99,7 @@ public class CreateRoomController implements Initializable {
         client.backToLobby();
     }
 
-    public void setRoomList(TableView<RoomListCell> roomList) {this.roomList = roomList;}
+    public void setRoomList(TableView<Room> roomList) {this.roomList = roomList;}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
