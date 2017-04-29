@@ -51,7 +51,9 @@ public class User {
     int state;
     int room;
     GameData data = new GameData();
-
+    private static String[] level = {"十八级","十七级","十六级","十五级","十四级","十三级","十二级","十一级","十级"
+            ,"九级","八级","七级","六级","五级","四级","三级","二级","一级",
+    "一段","二段","三段","四段","五段","六段","七段","八段","九段"};
     public User() {
         state = Type.State.OTHER;
         room = 0;
@@ -119,9 +121,6 @@ public class User {
         return this.data.level;
     }
     public StringProperty getLevelProperty(){
-        String[] level = {"十八级","十七级","十六级","十五级","十四级","十三级","十二级","十一级","十级"
-                ,"九级","八级","七级","六级","五级","四级","三级","二级","一级",
-        "一段","二段","三段","四段","五段","六段","七段","八段","九段"};
         return new SimpleStringProperty(level[this.data.level]);
     }
     public StringProperty getStateProperty(){
