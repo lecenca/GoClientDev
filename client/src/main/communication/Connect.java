@@ -41,7 +41,7 @@ public class Connect {
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	// private final static String IP = "172.16.90.242";
 	private  static String IP;
-	private  static int PORT = 60000;
+	private  static int PORT;
 	private static Socket socket;
 	private static OutputStream os;
 	private static InputStream is;
@@ -62,7 +62,7 @@ public class Connect {
 			Properties pro = new Properties();
 			pro.load(inputStream);
 			IP=pro.getProperty("IP");
-			PORT=Integer.parseInt(pro.getProperty("PROT"));
+			PORT=Integer.parseInt(pro.getProperty("PORT"));
 			socket = new Socket(IP, PORT);
 			os = socket.getOutputStream();
 			is = socket.getInputStream();
