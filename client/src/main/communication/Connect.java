@@ -24,6 +24,7 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Connect {
@@ -39,8 +40,8 @@ public class Connect {
 	 */
 	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	// private final static String IP = "172.16.90.242";
-	private final static String IP = "123.64.10.15";
-	private final static int PORT = 60000;
+	private  static String IP;
+	private  static int PORT = 60000;
 	private static Socket socket;
 	private static OutputStream os;
 	private static InputStream is;
@@ -57,6 +58,11 @@ public class Connect {
 
 	public Connect() {
 		try {
+			InputStream inputStream = this.getClass().getResourceAsStream("Connect.properties");
+			Properties pro = new Properties();
+			pro.load(inputStream);
+			IP=pro.getProperty("IP");
+			PORT=Integer.parseInt(pro.getProperty("PROT"));
 			socket = new Socket(IP, PORT);
 			os = socket.getOutputStream();
 			is = socket.getInputStream();
