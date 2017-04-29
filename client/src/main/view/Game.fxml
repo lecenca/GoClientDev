@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="1076.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.GameController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="1094.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.GameController">
    <children>
       <fx:include fx:id="chessPane" layoutX="38" layoutY="25" source="ChessBoard.fxml" />
       <Button fx:id="sentBtn" layoutX="991.0" layoutY="651.0" mnemonicParsing="false" onAction="#sent" prefHeight="30.0" prefWidth="65.0" text="发送">
@@ -19,12 +19,12 @@
          </font>
       </TextField>
       <fx:include fx:id="chatBox" layoutX="684" layoutY="431" prefHeight="220" prefWidth="371" source="ChatBox.fxml" />
-      <ListView disable="true" layoutX="38.0" layoutY="25.0" prefHeight="616.0" prefWidth="616.0" visible="false" />
+      <ListView layoutX="38.0" layoutY="25.0" prefHeight="616.0" prefWidth="616.0" visible="false" />
       <Button layoutX="83.0" layoutY="651.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="112.0" text="认输">
          <font>
             <Font size="15.0" />
          </font></Button>
-      <Button layoutX="284.0" layoutY="651.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="112.0" text="准备">
+      <Button layoutX="284.0" layoutY="651.0" mnemonicParsing="false" onMouseClicked="#ready" prefHeight="30.0" prefWidth="112.0" text="准备">
          <font>
             <Font size="15.0" />
          </font></Button>
@@ -32,18 +32,16 @@
          <font>
             <Font size="15.0" />
          </font></Button>
-      <Label fx:id="hhhh" disable="true" layoutX="684.0" layoutY="286.0" prefHeight="61.0" prefWidth="125.0" text="00 秒" visible="false">
+      <Label fx:id="hhhh" layoutX="661.0" layoutY="301.0" prefHeight="46.0" prefWidth="154.0" text="00 分 00 秒" visible="false">
          <font>
-            <Font size="48.0" />
+            <Font size="28.0" />
          </font>
       </Label>
-      <Label fx:id="uuuuuuuuuuuu" disable="true" layoutX="937.0" layoutY="286.0" prefHeight="61.0" prefWidth="125.0" text="00 秒" visible="false">
+      <Label fx:id="uuuuuuuuuuuu" layoutX="926.0" layoutY="301.0" prefHeight="46.0" prefWidth="154.0" text="00 分 00 秒" visible="false">
          <font>
-            <Font size="48.0" />
+            <Font size="28.0" />
          </font>
       </Label>
-      <Label layoutX="829.0" layoutY="286.0" prefHeight="36.0" prefWidth="82.0" text=" 0次 读秒 0次 " />
-      <Label layoutX="829.0" layoutY="326.0" prefHeight="15.0" prefWidth="82.0" text=" 0子 提子 0子 " />
       <Label layoutX="723.0" layoutY="39.0" prefHeight="76.0" prefWidth="65.0" text="黑">
          <font>
             <Font size="40.0" />
@@ -64,7 +62,28 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <fx:include fx:id="timeLabel01" layoutX="684.0" layoutY="286.0" prefHeight="61.0" prefWidth="125.0" source="Timer.fxml" />
-      <fx:include fx:id="timeLabel02" layoutX="937.0" layoutY="286.0" prefHeight="61.0" prefWidth="125.0" source="Timer.fxml" />
+      <fx:include fx:id="timeLabel01" layoutX="661.0" layoutY="286.0" prefHeight="46.0" prefWidth="154.0" source="Timer.fxml" />
+      <fx:include fx:id="timeLabel02" layoutX="926.0" layoutY="286.0" prefHeight="46.0" prefWidth="154.0" source="Timer.fxml" />
+      <Label layoutX="858.0" layoutY="302.0" text="读秒" />
+      <Label layoutX="828.0" layoutY="302.0" text="0次" />
+      <Label layoutX="896.0" layoutY="302.0" text="0次" />
+      <Label layoutX="858.0" layoutY="326.0" text="提子" />
+      <Label layoutX="828.0" layoutY="326.0" text="0子" />
+      <Label layoutX="896.0" layoutY="326.0" text="0子" />
+      <Label layoutX="838.0" layoutY="110.0" prefHeight="46.0" prefWidth="65.0" text="黑贴3.5">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="844.0" layoutY="156.0" prefHeight="46.0" prefWidth="53.0" text="30分">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="833.0" layoutY="202.0" prefHeight="37.0" prefWidth="75.0" text="30秒3次">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

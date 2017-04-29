@@ -4,8 +4,8 @@
 <?import javafx.scene.control.*?>
 
 
-<Label fx:id="timeLabel" prefHeight="45.0" prefWidth="109.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.Timer">
+<Label fx:id="timeLabel" prefHeight="45.0" prefWidth="120.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.Timer">
    <font>
-      <Font size="48.0" />
+      <Font size="28.0" />
    </font>
 </Label>

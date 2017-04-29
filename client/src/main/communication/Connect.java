@@ -57,12 +57,9 @@ public class Connect {
             InputStream inputStream = this.getClass().getResourceAsStream("Connect.properties");
             Properties pro = new Properties();
             pro.load(inputStream);
-            //IP = pro.getProperty("IP");
-            //PORT = Integer.parseInt(pro.getProperty("PORT"));
-            /*********test********/
-            IP = "192.168.56.1";
-            PORT = 10005;
-            /*********test********/
+            IP = pro.getProperty("IP");
+            PORT = Integer.parseInt(pro.getProperty("PORT"));
+
             socket = new Socket(IP, PORT);
             os = socket.getOutputStream();
             is = socket.getInputStream();

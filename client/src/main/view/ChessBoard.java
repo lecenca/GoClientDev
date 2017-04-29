@@ -25,7 +25,7 @@ public class ChessBoard implements Initializable {
     private Timer player2timer;
     private Board board = new Board();
     private Circle[][] stonesCircle = new Circle[19][19];
-    private int color;
+    private int color = -1;
 
     @FXML
     private Pane chessPane;
@@ -41,6 +41,15 @@ public class ChessBoard implements Initializable {
 
     @FXML
     private void onClick(MouseEvent event) {
+        /*********** test ***********/
+        if(color==-1){
+            player1timer.pause();
+            player2timer.start();
+        }else{
+            player2timer.pause();
+            player1timer.start();
+        }
+        /*********** test ***********/
         getPixelPos(event);
         int action = action();
         if (action != Type.Action.INVALID) {

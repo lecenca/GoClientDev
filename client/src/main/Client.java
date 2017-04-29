@@ -34,7 +34,7 @@ public class Client extends Application {
 
     public Client() {
         /********* 这是要的 ***********/
-        connect = new Connect();
+        //connect = new Connect();
         /*****************************/
         signupStage = new Stage();
         lobbyStage = new Stage();
