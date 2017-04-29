@@ -39,15 +39,15 @@ public class LobbyController implements Initializable {
 	@FXML
 	private TableView<RoomListCell> roomList;
 	@FXML
-	private TableColumn<Room, Integer> roomIdCol;
+	private TableColumn<RoomListCell,Integer> roomIdCol;
 	@FXML
-	private TableColumn<Room, String> roomNameCol;
+	private TableColumn<RoomListCell, String> roomNameCol;
 	@FXML
-	private TableColumn<Room, String> player1Col;
+	private TableColumn<RoomListCell, String> player1Col;
 	@FXML
-	private TableColumn<Room, String> player2Col;
+	private TableColumn<RoomListCell, String> player2Col;
 	@FXML
-	private TableColumn<Room, Integer> roomStateCol;
+	private TableColumn<RoomListCell, Integer> roomStateCol;
 	@FXML
 	private TableView<User> playerList;
 	@FXML
@@ -86,7 +86,7 @@ public class LobbyController implements Initializable {
 				}*/
 				try {
 					Thread.currentThread().sleep(1000);
-					playerData.add(new User("tom",30,100,60,1));
+					playerData.add(new User("tom",18,100,60,1));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -136,13 +136,12 @@ public class LobbyController implements Initializable {
 	@FXML
 	private void clickRoom(MouseEvent mouseEvent) throws Exception {
 		if (mouseEvent.getClickCount() == 2) {
-			RoomListCell room = roomList.getSelectionModel().getSelectedItem();
-			User player02 = new User();
-			player02.setNickname("玩家二");
-			// room.setPlayer2(player02);
-			room.setPlayer02("玩家二");
+			RoomListCell cell = roomList.getSelectionModel().getSelectedItem();
+			Room room = cell.getRoom();
+			room.setPlayer2("玩家二");
 			room.setState(1);
-			room.setState(1);
+			cell.setPlayer2("玩家二");
+			cell.setState(1);
 			System.out.println("you click");
 			client.gotoGame();
 		}
@@ -187,7 +186,7 @@ public class LobbyController implements Initializable {
 		roomList.setItems(roomData);
 		roomIdCol.setCellValueFactory(new PropertyValueFactory("roomId"));
 		roomIdCol.setCellFactory(column -> {
-			return new TableCell<Room, Integer>() {
+			return new TableCell<RoomListCell, Integer>() {
 				protected void updateItem(Integer item, boolean empty) {
 					super.updateItem(item, empty);
 					if (item == null) {
@@ -199,9 +198,10 @@ public class LobbyController implements Initializable {
 			};
 		});
 
+
 		roomNameCol.setCellValueFactory(new PropertyValueFactory("roomName"));
 		roomNameCol.setCellFactory(column -> {
-			return new TableCell<Room, String>() {
+			return new TableCell<RoomListCell, String>() {
 				protected void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
 					if (item == null) {
@@ -213,9 +213,9 @@ public class LobbyController implements Initializable {
 			};
 		});
 
-		player1Col.setCellValueFactory(new PropertyValueFactory("player1Property"));
+		player1Col.setCellValueFactory(new PropertyValueFactory("player1"));
 		player1Col.setCellFactory(column -> {
-			return new TableCell<Room, String>() {
+			return new TableCell<RoomListCell, String>() {
 				protected void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
 					if (item == null) {
@@ -227,9 +227,9 @@ public class LobbyController implements Initializable {
 			};
 		});
 
-		player2Col.setCellValueFactory(new PropertyValueFactory("player2Property"));
+		player2Col.setCellValueFactory(new PropertyValueFactory("player2"));
 		player2Col.setCellFactory(column -> {
-			return new TableCell<Room, String>() {
+			return new TableCell<RoomListCell, String>() {
 				protected void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
 					if (item == null) {
@@ -241,9 +241,9 @@ public class LobbyController implements Initializable {
 			};
 		});
 
-		roomStateCol.setCellValueFactory(new PropertyValueFactory("stateProperty"));
+		roomStateCol.setCellValueFactory(new PropertyValueFactory("state"));
 		roomStateCol.setCellFactory(column -> {
-			return new TableCell<Room, Integer>() {
+			return new TableCell<RoomListCell, Integer>() {
 				protected void updateItem(Integer item, boolean empty) {
 					super.updateItem(item, empty);
 					if (item == null) {

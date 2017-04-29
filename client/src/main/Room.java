@@ -33,9 +33,11 @@ public class Room {
     private Config config = new Config();
 
     /************* test ********************/
+    /*
     private SimpleStringProperty player01Property = new SimpleStringProperty();
     private SimpleStringProperty player02Property = new SimpleStringProperty();
     private SimpleIntegerProperty stateProperty = new SimpleIntegerProperty();
+    */
     /************* test ********************/
 
     public Room(){
@@ -95,6 +97,7 @@ public class Room {
     }
 
     /************* test ********************/
+    /*
     public String getPlayer01Property() {return player01Property.get();}
 
     public SimpleStringProperty player01PropertyProperty()
@@ -136,6 +139,6 @@ public class Room {
     {
         this.stateProperty.set(stateProperty);
     }
-
+    */
     /************* test ********************/
 }

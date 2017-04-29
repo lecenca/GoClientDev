@@ -11,8 +11,8 @@ public class RoomListCell {
     private Room room;
     private SimpleIntegerProperty roomId = new SimpleIntegerProperty();
     private SimpleStringProperty roomName = new SimpleStringProperty();
-    private SimpleStringProperty player01 = new SimpleStringProperty();
-    private SimpleStringProperty player02 = new SimpleStringProperty();
+    private SimpleStringProperty player1 = new SimpleStringProperty();
+    private SimpleStringProperty player2 = new SimpleStringProperty();
     private SimpleIntegerProperty state = new SimpleIntegerProperty();
 
     public RoomListCell(){}
@@ -55,34 +55,34 @@ public class RoomListCell {
         this.roomName.set(roomName);
     }
 
-    public String getPlayer01()
+    public String getPlayer1()
     {
-        return player01.get();
+        return player1.get();
     }
 
-    public SimpleStringProperty player01Property()
+    public SimpleStringProperty player1Property()
     {
-        return player01;
+        return player1;
     }
 
-    public void setPlayer01(String player01)
+    public void setPlayer1(String player01)
     {
-        this.player01.set(player01);
+        this.player1.set(player01);
     }
 
-    public String getPlayer02()
+    public String getPlayer2()
     {
-        return player02.get();
+        return player2.get();
     }
 
-    public SimpleStringProperty player02Property()
+    public SimpleStringProperty player2Property()
     {
-        return player02;
+        return player2;
     }
 
-    public void setPlayer02(String player02)
+    public void setPlayer2(String player02)
     {
-        this.player02.set(player02);
+        this.player2.set(player02);
     }
 
     public int getState()
