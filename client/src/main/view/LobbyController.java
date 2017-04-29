@@ -41,11 +41,11 @@ public class LobbyController implements Initializable {
 	@FXML
 	private TableColumn<Room, String> roomIdCol;
 	@FXML
-	private TableColumn<RoomListCell, String> roomNameCol;
+	private TableColumn<Room, String> roomNameCol;
 	@FXML
-	private TableColumn<RoomListCell, String> player1Col;
+	private TableColumn<Room, String> player1Col;
 	@FXML
-	private TableColumn<RoomListCell, String> player2Col;
+	private TableColumn<Room, String> player2Col;
 	@FXML
 	private TableColumn<Room, String> roomStateCol;
 	@FXML
@@ -170,8 +170,8 @@ public class LobbyController implements Initializable {
 			room.setPlayer2("玩家二");
 			room.setState(1);
 			room.setState(1);
-			cell.setPlayer2("玩家二");
-			cell.setState(1);
+			room.setPlayer2("玩家二");
+			room.setState(1);
 			System.out.println("you click");
 			client.gotoGame();
 		}
