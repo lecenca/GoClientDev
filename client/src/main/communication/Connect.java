@@ -198,8 +198,8 @@ public class Connect {
 	private void handleFetchRoom(JSONObject jsonObject) {
 		ArrayList<Room> roomList = Decoder.parseRoomList(jsonObject);
         if(roomList.size() != 0){
+        	MessageQueue<Room> rooms = LobbyController.getRooms();
             for (Room room : roomList) {
-                MessageQueue<Room> rooms = LobbyController.getRooms();
                 rooms.add(room);
             }
             System.out.println("handle list:" + roomList);
@@ -209,8 +209,8 @@ public class Connect {
 	private void handleFetchPlayer(JSONObject jsonObject) {
 		ArrayList<User> playerList = Decoder.parsePlayerList(jsonObject);
         if(playerList.size() != 0){
+        	MessageQueue<User> players = LobbyController.getPlayers();
             for(User user : playerList){
-                MessageQueue<User> players = LobbyController.getPlayers();
                 players.add(user);
             }
             System.out.println("handle list:" + playerList);
