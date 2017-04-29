@@ -3,14 +3,12 @@ package src.main.view;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.Room;
 import src.main.User;
-import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
@@ -183,13 +181,13 @@ public class LobbyController implements Initializable {
     public void fetchLobbyInfo() {
         progress.setVisible(true);
         progress.setProgress(0.1);
-        String json = Encoder.updateRoomRequest();
+        String json = Encoder.fetchRoomsRequest();
         progress.setProgress(0.2);
         //client.getConnect().send(json);
         progress.setProgress(0.3);
         //Connect.waitForRec();
         progress.setProgress(0.5);
-        String json2 = Encoder.updatePlayersRequest();
+        String json2 = Encoder.fetchPlayersRequest();
         progress.setProgress(0.6);
         //client.getConnect().send(json2);
         progress.setProgress(0.8);
