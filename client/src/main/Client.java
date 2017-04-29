@@ -55,7 +55,6 @@ public class Client extends Application {
     private LobbyController lobbyController;
     public Client() {
         /********* 这是要的 ***********/
-       // connect = new Connect();
         /*****************************/
         lobbyStage = new Stage();
         signupStage = new Stage();
