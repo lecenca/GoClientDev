@@ -55,10 +55,11 @@ public class Client extends Application {
     private LobbyController lobbyController;
     public Client() {
         /********* 这是要的 ***********/
-        //connect = new Connect();
+        connect = new Connect();
         /*****************************/
         lobbyStage = new Stage();
         signupStage = new Stage();
+        
     }
 
     @Override
@@ -74,7 +75,7 @@ public class Client extends Application {
     }
 
     public void gotoLogin() throws Exception {
-        LoginController loginController = (LoginController) changeStage("view/Login.fxml", primaryStage);
+    	LoginController loginController = (LoginController) changeStage("view/Login.fxml", primaryStage);
         loginController.setClient(this);
         loginController.resetAccount();
         loginController.resetPassword();
