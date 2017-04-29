@@ -1,9 +1,5 @@
 package src.main;
 
-/**
- * Created by touhoudoge on 2017/3/20.
- */
-
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -26,24 +22,6 @@ import java.util.ArrayList;
 
 public class Client extends Application {
 
-    // Shit
-    /*private volatile static Client instance = new Client();
-
-    private static class SingletonHolder{
-        private static final Client instance = new Client();
-    }
-    public static Client getInstance(){
-        //return SingletonHolder.instance;
-        if(instance == null){
-            synchronized (Client.class){
-                if(instance == null){
-                    instance = new Client();
-                }
-            }
-        }
-        return instance;
-    }*/
-
     private Stage primaryStage;
     private Stage createRoomStage;
     private Stage gameStage;
@@ -53,12 +31,16 @@ public class Client extends Application {
     private Connect connect;
     private ArrayList playerList = new ArrayList();
     private LobbyController lobbyController;
+
     public Client() {
         /********* 这是要的 ***********/
-       // connect = new Connect();
+        //connect = new Connect();
         /*****************************/
-        lobbyStage = new Stage();
         signupStage = new Stage();
+        lobbyStage = new Stage();
+        lobbyController = (LobbyController) changeStage("view/Lobby.fxml", lobbyStage);
+        lobbyController.setClient(this);
+        lobbyStage.close();
     }
 
     @Override
@@ -66,7 +48,7 @@ public class Client extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
-        if(connect != null){
+        if (connect != null) {
             Thread receiveThread = getConnect().getReceiveThread();
             receiveThread.setDaemon(true);
             receiveThread.start();
@@ -81,14 +63,14 @@ public class Client extends Application {
     }
 
     public void gotoLobby() throws Exception {
-        LobbyController lobbyController = (LobbyController) changeStage("view/Lobby.fxml", lobbyStage);
-        lobbyController.setClient(this);
+        lobbyStage.show();
         Thread listenPlayerList = lobbyController.getListenPlayerList();
         listenPlayerList.setDaemon(true);
         listenPlayerList.start();
         Thread listenRoomList = lobbyController.getListenRoomList();
         listenRoomList.setDaemon(true);
         listenRoomList.start();
+        lobbyController.fetchLobbyInfo();
     }
 
     public void gotoSignup() throws Exception {
@@ -143,7 +125,7 @@ public class Client extends Application {
     private Initializable changeStage(String fxml, Stage stage) {
         //create a new stage
         /*if(stage == null)
-    		stage = new Stage();*/
+            stage = new Stage();*/
         //create the fxml loader
         FXMLLoader loader = new FXMLLoader();
         //set the location of the fxml
@@ -170,7 +152,7 @@ public class Client extends Application {
         return connect;
     }
 
-    public void resetConnect(){
+    public void resetConnect() {
         connect = new Connect();
     }
 
