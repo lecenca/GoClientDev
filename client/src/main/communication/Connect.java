@@ -106,7 +106,7 @@ public class Connect {
 	}
 
     public static void send(String msg) {
-        String sendMsg = new String(toHH(msg.length()), 0, 4);
+        String sendMsg = new String(intToByteHH(msg.length()), 0, 4);
         System.out.println("len: " + sendMsg.length() + msg.length() + ", msg: " + sendMsg + msg);
         pw.write(sendMsg + msg);
         pw.flush();
@@ -130,12 +130,15 @@ public class Connect {
 		}
 	}
 
-	public void receive() {
-		String msg = null;
-        byte[] buff = new byte[1024];
+    public void receive() {
+        String msg = null;
+        byte[] first = new byte[4];
         try {
-            int len = is.read(buff);
-            msg = new String(buff, 4, len - 4);
+            is.read(first);
+            int len = byteToIntHH(first);
+            byte[] buff = new byte[len];
+            is.read(buff);
+            msg = new String(buff, 0, len);
             System.out.println("receive from server: " + msg);
             JSONObject jsonObject = Decoder.parseObject(msg);
             int response_type = jsonObject.getIntValue("response_type");
@@ -226,29 +229,57 @@ public class Connect {
 		return b;
 	}
 
-	// For C/C++ on Linux/Unix.
-	private static byte[] toHH(int n) {
-		byte[] b = new byte[4];
-		b[3] = (byte) (n & 0xff);
-		b[2] = (byte) (n >> 8 & 0xff);
-		b[1] = (byte) (n >> 16 & 0xff);
-		b[0] = (byte) (n >> 24 & 0xff);
-		return b;
-	}
+    // For C/C++ on Windows.
+    public static byte[] intToByteLH(int n) {
+        byte[] b = new byte[4];
+        b[0] = (byte) (n & 0xff);
+        b[1] = (byte) (n >> 8 & 0xff);
+        b[2] = (byte) (n >> 16 & 0xff);
+        b[3] = (byte) (n >> 24 & 0xff);
+        return b;
+    }
 
-	public void closeInputstream() {
-		// TODO Auto-generated method stub
-		try {
-			socket.shutdownInput();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    // For C/C++ on Linux/Unix.
+    public static byte[] intToByteHH(int n) {
+        byte[] b = new byte[4];
+        b[3] = (byte) (n & 0xff);
+        b[2] = (byte) (n >> 8 & 0xff);
+        b[1] = (byte) (n >> 16 & 0xff);
+        b[0] = (byte) (n >> 24 & 0xff);
+        return b;
+    }
 
-	public String getLoginMessage() {
-		return loginMessage;
-	}
+    public static int byteToIntLH(byte[] bytes) {
+        int result = 0;
+        result += bytes[3] << 24;
+        result += bytes[2] << 16;
+        result += bytes[1] << 8;
+        result += bytes[0];
+        return result;
+    }
+
+    public static int byteToIntHH(byte[] bytes) {
+        int result = 0;
+        result += bytes[0] << 24;
+        result += bytes[1] << 16;
+        result += bytes[2] << 8;
+        result += bytes[3];
+        return result;
+    }
+
+    public void closeInputstream() {
+        // TODO Auto-generated method stub
+        try {
+            socket.shutdownInput();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public String getLoginMessage() {
+        return loginMessage;
+    }
 
 	public void setLoginMessage(String loginMessage) {
 		this.loginMessage = loginMessage;
