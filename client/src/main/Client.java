@@ -55,7 +55,7 @@ public class Client extends Application {
     private LobbyController lobbyController;
     public Client() {
         /********* 这是要的 ***********/
-       // connect = new Connect();
+        //connect = new Connect();
         /*****************************/
         lobbyStage = new Stage();
         signupStage = new Stage();
@@ -85,10 +85,10 @@ public class Client extends Application {
         lobbyController.setClient(this);
         Thread listenPlayerList = lobbyController.getListenPlayerList();
         listenPlayerList.setDaemon(true);
-        listenPlayerList.start();
+        //listenPlayerList.start();
         Thread listenRoomList = lobbyController.getListenRoomList();
         listenRoomList.setDaemon(true);
-        listenRoomList.start();
+        //listenRoomList.start();
     }
 
     public void gotoSignup() throws Exception {
