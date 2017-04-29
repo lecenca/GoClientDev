@@ -15,7 +15,6 @@ import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -40,29 +39,27 @@ public class LobbyController implements Initializable {
 	@FXML
 	private TableView<RoomListCell> roomList;
 	@FXML
-	private TableColumn roomIdCol;
+	private TableColumn<Room, Integer> roomIdCol;
 	@FXML
-	private TableColumn roomNameCol;
+	private TableColumn<Room, String> roomNameCol;
 	@FXML
-	private TableColumn player01Col;
+	private TableColumn<Room, String> player1Col;
 	@FXML
-	private TableColumn player02Col;
+	private TableColumn<Room, String> player2Col;
 	@FXML
-	private TableColumn stateCol;
+	private TableColumn<Room, Integer> roomStateCol;
 	@FXML
 	private TableView<User> playerList;
 	@FXML
 	private TableColumn<User, String> nicknameCol;
 	@FXML
 	private TableColumn<User, String> levelCol;
-	/*@FXML
-	private TableColumn<User2, String> integral;*/
 	@FXML
 	private TableColumn<User, String> winCol;
 	@FXML
 	private TableColumn<User, String> loseCol;
 	@FXML
-	private TableColumn<User, String> statusCol;
+	private TableColumn<User, String> playerStateCol;
 	@FXML
 	private ChatBox chatBoxController;
 	private ObservableList<RoomListCell> roomData = FXCollections.observableArrayList();
@@ -216,8 +213,8 @@ public class LobbyController implements Initializable {
 			};
 		});
 
-		player01Col.setCellValueFactory(new PropertyValueFactory("player01Property"));
-		player01Col.setCellFactory(column -> {
+		player1Col.setCellValueFactory(new PropertyValueFactory("player1Property"));
+		player1Col.setCellFactory(column -> {
 			return new TableCell<Room, String>() {
 				protected void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
@@ -230,8 +227,8 @@ public class LobbyController implements Initializable {
 			};
 		});
 
-		player02Col.setCellValueFactory(new PropertyValueFactory("player02Property"));
-		player02Col.setCellFactory(column -> {
+		player2Col.setCellValueFactory(new PropertyValueFactory("player2Property"));
+		player2Col.setCellFactory(column -> {
 			return new TableCell<Room, String>() {
 				protected void updateItem(String item, boolean empty) {
 					super.updateItem(item, empty);
@@ -244,8 +241,8 @@ public class LobbyController implements Initializable {
 			};
 		});
 
-		stateCol.setCellValueFactory(new PropertyValueFactory("stateProperty"));
-		stateCol.setCellFactory(column -> {
+		roomStateCol.setCellValueFactory(new PropertyValueFactory("stateProperty"));
+		roomStateCol.setCellFactory(column -> {
 			return new TableCell<Room, Integer>() {
 				protected void updateItem(Integer item, boolean empty) {
 					super.updateItem(item, empty);
@@ -263,21 +260,12 @@ public class LobbyController implements Initializable {
 		});
 
 		playerList.setItems(playerData);
-		/*
-		 * firstNameColumn.setCellValueFactory(cellData ->
-		 * cellData.getValue().firstNameProperty());
-		 * lastNameColumn.setCellValueFactory(cellData ->
-		 * cellData.getValue().lastNameProperty());
-		 */
-		// nickname.setCellValueFactory(cellData ->
-		// cellData.getValue().getNickname());
 		/************* test ********************/
 		nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
 		levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
-		//integral.setCellValueFactory(cellData -> cellData.getValue().getIntegral2());
 		winCol.setCellValueFactory(cellData ->cellData.getValue().getWinProperty());
 		loseCol.setCellValueFactory(cellData ->cellData.getValue().getLoseProperty());
-		statusCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
+		playerStateCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
 
 	}
 
