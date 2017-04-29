@@ -55,55 +55,50 @@ public class Connect {
 
     public static boolean recv = false;
 
-	public Connect() {
-		try {
-			InputStream inputStream = this.getClass().getResourceAsStream("Connect.properties");
-			Properties pro = new Properties();
-			pro.load(inputStream);
-			System.out.println(pro);
-			IP=pro.getProperty("IP");
-			PORT=Integer.parseInt(pro.getProperty("PORT"));
-			socket = new Socket(IP, PORT);
-			os = socket.getOutputStream();
-			is = socket.getInputStream();
-			pw = new PrintWriter(os);
-			br = new BufferedReader(new InputStreamReader(is));
-			receiveThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					System.out.println("接收线程启动");
-					while (true) {
-						receive();
-					}
-				}
-			});
-			chatThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					System.out.println("聊天线程启动");
-					// TODO Auto-generated method stub
-					while (true) {
-						String msg = null;
-						while (msg == null)
-							msg = chatMessage;
-						System.out.println(msg);
-						if (chatBox != null)
-							chatBox.sentSentence(msg);
-					}
-				}
-			});
-		} catch (ConnectException e) {
-			e.printStackTrace();
-			System.out.println("服务器连接失败");
-			/*
-			 * try { Thread.sleep(5000);
-			 * 
-			 * } catch (InterruptedException e1) { e1.printStackTrace(); }
-			 */
-		}catch(IOException e) {
-			System.out.println("服务器连接失败");
-		}
-	}
+    public Connect() {
+        try {
+            InputStream inputStream = this.getClass().getResourceAsStream("Connect.properties");
+            Properties pro = new Properties();
+            pro.load(inputStream);
+            IP = pro.getProperty("IP");
+            PORT = Integer.parseInt(pro.getProperty("PORT"));
+
+            socket = new Socket(IP, PORT);
+            os = socket.getOutputStream();
+            is = socket.getInputStream();
+            pw = new PrintWriter(os);
+            br = new BufferedReader(new InputStreamReader(is));
+            receiveThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("接收线程启动");
+                    while (true) {
+                        receive();
+                    }
+                }
+            });
+            chatThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("聊天线程启动");
+                    // TODO Auto-generated method stub
+                    while (true) {
+                        String msg = null;
+                        while (msg == null)
+                            msg = chatMessage;
+                        System.out.println(msg);
+                        if (chatBox != null)
+                            chatBox.sentSentence(msg);
+                    }
+                }
+            });
+        } catch (ConnectException e) {
+            e.printStackTrace();
+            System.out.println("服务器连接失败");
+        } catch (IOException e) {
+            System.out.println("服务器连接失败");
+        }
+    }
 
     public static void send(String msg) {
         String sendMsg = new String(intToByteHH(msg.length()), 0, 4);

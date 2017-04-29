@@ -16,48 +16,102 @@ import java.util.ResourceBundle;
  */
 public class Timer implements Initializable {
 
-    private Timeline timeline;
-    private int time;
+    private Timeline mainTimeTimeline;
+    private Timeline periodTimeline;
+    private int mainTime; //以秒的方式计算，如2分钟，mainTime存有120
+    private int period;
+    private int periodTime;
+
+    private int tempPeriod;
 
     @FXML
     private Label timeLabel;
 
-    public Timer() {
-        timeline = new Timeline();
-        timeline.setCycleCount(60);
-        timeline.getKeyFrames().addAll(new KeyFrame(Duration.seconds(1), (ActionEvent ae) -> {
-            --time;
-            displayTime();
-            if (time == 0) {
-                //player lose?
+    public Timer(){}
+
+    private void countintSecond(){
+        System.out.println("countingSecond start");
+        periodTimeline = new Timeline();
+        periodTimeline.setCycleCount(period);
+        tempPeriod = period;
+        periodTimeline.getKeyFrames().addAll(new KeyFrame(Duration.seconds(1), (ActionEvent ae) -> {
+            --tempPeriod;
+            displaySecond(tempPeriod);
+            if (tempPeriod == 0) {
+                --periodTime;
+                if(periodTime==0){
+                    //player lose?
+                }else{
+                    tempPeriod = period;
+                    displaySecond(tempPeriod);
+                    periodTimeline.playFromStart();
+                }
             }
         }));
     }
 
-    private void displayTime() {
-        timeLabel.setText(String.format("%02d", time) + " 秒");
+    private void displayMainTime(int t){
+        int minute = mainTime/60;
+        int second = mainTime%60;
+        timeLabel.setText(String.format("%02d 分 %02d 秒",minute,second));
+    }
+
+    private void displaySecond(int t) {
+        timeLabel.setText(String.format("%02d 秒", t));
     }
 
     public void start() {
-        timeLabel.setText(2 + " : " + 0);
-        time = 120;
-        timeline.playFromStart();
+        //mainTimeTimeline.play();
+        /*********** test ***********/
+        if(mainTime!=0){
+            mainTimeTimeline.play();
+        }else{
+            periodTimeline.play();
+        }
+        /*********** test ***********/
     }
 
     public void stop() {
-        timeline.stop();
+        mainTimeTimeline.stop();
     }
 
     public void pause() {
-        timeline.pause();
+        //mainTimeTimeline.pause();
+        /*********** test ***********/
+        if(mainTime!=0){
+            mainTimeTimeline.pause();
+        }else{
+            periodTimeline.stop();
+            tempPeriod = period;
+            displaySecond(tempPeriod);
+        }
+        /*********** test ***********/
+    }
+
+    public void reset(){
+
+    }
+
+    public void initTimer(int minute,int second,int times){
+        mainTime = 60 * minute;
+        period = second;
+        periodTime = times;
+
+        mainTimeTimeline = new Timeline();
+        mainTimeTimeline.setCycleCount(mainTime);
+        mainTimeTimeline.getKeyFrames().addAll(new KeyFrame(Duration.seconds(1), (ActionEvent ae) -> {
+            --mainTime;
+            displayMainTime(mainTime);
+            if (mainTime == 0) {
+                countintSecond();
+                periodTimeline.play();
+            }
+        }));
+        displayMainTime(mainTime);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /************* test ********************/
-        timeLabel.setText("60 秒");
-        time = 60;
-        timeline.play();
-        /************* test ********************/
+
     }
 }
