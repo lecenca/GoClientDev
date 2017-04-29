@@ -29,11 +29,11 @@ public class Encoder {
         return requestJson(gson.toJson(map), Type.Request.LOGIN);
     }
 
-    public static String updateRoomRequest(){
+    public static String updateRoomRequest() {
         return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_ROOM_INFO) + "}";
     }
 
-    public static String updatePlayersRequest(){
+    public static String updatePlayersRequest() {
         return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_PLAYER_INFO) + "}";
     }
 
@@ -76,7 +76,8 @@ public class Encoder {
     private static String requestJson(String json, int type) {
         return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
     }
+
     public static String getRoomListRequest() {
-    	return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_ROOM_INFO) + "}";
+        return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_ROOM_INFO) + "}";
     }
 }

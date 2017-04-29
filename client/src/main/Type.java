@@ -1,10 +1,5 @@
 package src.main;
 
-import javax.print.attribute.standard.RequestingUserName;
-
-/**
- * Created by 刘俊延 on 2017/4/28.
- */
 public class Type {
 
     public static class Request {
@@ -80,7 +75,7 @@ public class Type {
                 GAMING = 4;     // 已经开始游戏，此时玩家列表状态显示"游戏中"
     }
 
-    public static class KOMI{
+    public static class KOMI {
         public static final int
                 CONCESSION = 0,  // 让先/不贴目
                 THREE_FIVE = 1,  // 黑贴3.5目
