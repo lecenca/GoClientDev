@@ -2,6 +2,7 @@ package src.main.communication;
 
 import com.alibaba.fastjson.JSONObject;
 
+import src.main.Client;
 import src.main.Room;
 import src.main.Type;
 import src.main.User;
@@ -195,7 +196,7 @@ public class Connect {
 	private void handleFetchRoom(JSONObject jsonObject) {
 		ArrayList<Room> roomList = Decoder.parseRoomList(jsonObject);
         if(roomList.size() != 0){
-        	MessageQueue<Room> rooms = LobbyController.getRooms();
+        	MessageQueue<Room> rooms = Client.getRooms();
             for (Room room : roomList) {
                 rooms.add(room);
             }
@@ -206,7 +207,7 @@ public class Connect {
 	private void handleFetchPlayer(JSONObject jsonObject) {
 		ArrayList<User> playerList = Decoder.parsePlayerList(jsonObject);
         if(playerList.size() != 0){
-        	MessageQueue<User> players = LobbyController.getPlayers();
+        	MessageQueue<User> players = Client.getPlayers();
             for(User user : playerList){
                 players.add(user);
             }

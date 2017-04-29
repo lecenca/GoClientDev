@@ -11,7 +11,7 @@ public class User {
         public int day;
     }
 
-    class GameData {
+    public class GameData {
         public int win;
         public int lose;
         public int draw;
@@ -38,6 +38,15 @@ public class User {
             this.level = level;
         }
 
+		public int getWin() {
+			return win;
+		}
+
+		public int getRank() {
+			return rank;
+		}
+        
+        
     }
 
     private String account;
@@ -138,5 +147,9 @@ public class User {
         return new SimpleStringProperty(Integer.toString(this.data.lose));
     }
 
+	public GameData getData() {
+		return data;
+	}
+    
 }
 

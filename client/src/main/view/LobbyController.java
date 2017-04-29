@@ -71,6 +71,7 @@ public class LobbyController implements Initializable {
      */
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
+    public static MessageQueue<String> chatMessage = new MessageQueue<>();
     private Thread listenPlayerList = new Thread(new Runnable() {
 
         @Override
@@ -112,11 +113,34 @@ public class LobbyController implements Initializable {
 
         }
     });
-
+    
+    private Thread chatThread = new Thread(new Runnable() {
+		
+		@Override
+		public void run() {
+			System.out.println("聊天线程启动");
+			// TODO Auto-generated method stub
+			while(true) {
+				/*if(!chatMessage.isEmpty()) {
+					 chatBoxController.sentSentence(chatMessage.remove());
+				}*/
+				
+				 try {	
+					 	chatBoxController.sentSentence("hello");
+	                    Thread.currentThread().sleep(2000);
+	                } catch(IllegalStateException e) {
+	                	System.out.println("异常了");
+	                }catch (InterruptedException e) {
+	                    // TODO Auto-generated catch block
+	                    e.printStackTrace();
+	                }
+			}
+		}
+	});
     public LobbyController() {
         // TODO Auto-generated constructor stub
         //test data as bellow
-        playerData.add(new User("zhangsan", 8, 30, 10, 1));
+        /*playerData.add(new User("zhangsan", 8, 30, 10, 1));
         playerData.add(new User("wangwu", 18, 30, 20, 1));
         playerData.add(new User("lisi", 19, 60, 30, 1));
         playerData.add(new User("zhangsan", 8, 30, 40, 1));
@@ -127,7 +151,7 @@ public class LobbyController implements Initializable {
         roomData.add(new Room(3, "room3", "player1", "player2", 1));
         roomData.add(new Room(4, "room4", "player1", "player2", 1));
         roomData.add(new Room(5, "room5", "player1", "player2", 1));
-        roomData.add(new Room(6, "room6", "player1", "player2", 1));
+        roomData.add(new Room(6, "room6", "player1", "player2", 1));*/
 
     }
 
@@ -201,20 +225,35 @@ public class LobbyController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // fetchLobbyInfo();
         // progress.setProgress(1.0);
-        roomList.setItems(roomData);
+    	/*chatBoxController.setItems(client.getMessageData());
+        roomList.setItems(client.getRoomData());
         roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
         player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
         roomStateCol.setCellValueFactory(cellData -> cellData.getValue().getStatesProperty());
-        playerList.setItems(playerData);
+        playerList.setItems(client.getPlayerData());
+        nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
+        levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
+        winCol.setCellValueFactory(cellData -> cellData.getValue().getWinProperty());
+        loseCol.setCellValueFactory(cellData -> cellData.getValue().getLoseProperty());
+        playerStateCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());*/
+    }
+    public void setAll() {
+    	chatBoxController.setItems(client.getMessageData());
+        roomList.setItems(client.getRoomData());
+        roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
+        roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
+        player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
+        player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
+        roomStateCol.setCellValueFactory(cellData -> cellData.getValue().getStatesProperty());
+        playerList.setItems(client.getPlayerData());
         nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
         levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
         winCol.setCellValueFactory(cellData -> cellData.getValue().getWinProperty());
         loseCol.setCellValueFactory(cellData -> cellData.getValue().getLoseProperty());
         playerStateCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
     }
-
     public ObservableList<Room> getRoomData() {
         return roomData;
     }
@@ -230,8 +269,12 @@ public class LobbyController implements Initializable {
     public static MessageQueue<User> getPlayers() {
         return players;
     }
+    
+    public static MessageQueue<String> getChatMessage() {
+		return chatMessage;
+	}
 
-    public Thread getListenPlayerList() {
+	public Thread getListenPlayerList() {
         return listenPlayerList;
     }
 
@@ -239,4 +282,8 @@ public class LobbyController implements Initializable {
         return listenRoomList;
     }
 
+	public Thread getChatThread() {
+		return chatThread;
+	}
+    
 }

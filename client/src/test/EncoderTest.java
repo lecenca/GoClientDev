@@ -13,5 +13,5 @@ public class EncoderTest {
         String jsonExcept = "{\"request_type\":0,\"account\":\"SimpleTest\"}";
         Assert.assertEquals(jsonExcept, encoder.chechAccountRequest(account));
     }
-
+    
 }
