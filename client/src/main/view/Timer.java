@@ -19,35 +19,36 @@ public class Timer implements Initializable {
     private Timeline timeline;
     private int time;
 
-    @FXML private Label timeLabel;
+    @FXML
+    private Label timeLabel;
 
-    public Timer(){
+    public Timer() {
         timeline = new Timeline();
         timeline.setCycleCount(60);
-        timeline.getKeyFrames().addAll(new KeyFrame(Duration.seconds(1),(ActionEvent ae)->{
+        timeline.getKeyFrames().addAll(new KeyFrame(Duration.seconds(1), (ActionEvent ae) -> {
             --time;
             displayTime();
-            if(time==0){
+            if (time == 0) {
                 //player lose?
             }
         }));
     }
 
-    private void displayTime(){
-        timeLabel.setText(String.format("%02d",time)+" 秒");
+    private void displayTime() {
+        timeLabel.setText(String.format("%02d", time) + " 秒");
     }
 
-    public void start(){
-        timeLabel.setText(2+" : "+0);
+    public void start() {
+        timeLabel.setText(2 + " : " + 0);
         time = 120;
         timeline.playFromStart();
     }
 
-    public void stop(){
+    public void stop() {
         timeline.stop();
     }
 
-    public void pause(){
+    public void pause() {
         timeline.pause();
     }
 

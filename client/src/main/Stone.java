@@ -1,8 +1,5 @@
 package src.main;
 
-/**
- * Created by 刘俊延 on 2017/4/18.
- */
 public class Stone {
 
     public static final int None = 0;

@@ -11,19 +11,18 @@ import src.main.User;
 
 public class Decoder {
 
-		public static JSONObject parseObject(String json) {
-			//String s = "{'name':'王五','age':'19'}";
-			JSONObject jsonObject = JSON.parseObject(json);
-			return jsonObject;
-		}
+    public static JSONObject parseObject(String json) {
+        JSONObject jsonObject = JSON.parseObject(json);
+        return jsonObject;
+    }
 
-		public static ArrayList<Room> parseRoomList(JSONObject object){
-			JSONArray rooms = object.getJSONArray("rooms_list");
-			return new ArrayList<Room>(JSON.parseArray(rooms.toJSONString(),Room.class));
-		}
+    public static ArrayList<Room> parseRoomList(JSONObject object) {
+        JSONArray rooms = object.getJSONArray("rooms_list");
+        return new ArrayList<>(JSON.parseArray(rooms.toJSONString(), Room.class));
+    }
 
-		public static ArrayList<User> parsePlayerList(JSONObject object){
-		    JSONArray players = object.getJSONArray("players_list");
-		    return new ArrayList<>(JSON.parseArray(players.toJSONString(),User.class));
-        }
+    public static ArrayList<User> parsePlayerList(JSONObject object) {
+        JSONArray players = object.getJSONArray("players_list");
+        return new ArrayList<>(JSON.parseArray(players.toJSONString(), User.class));
+    }
 }

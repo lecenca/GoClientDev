@@ -14,29 +14,34 @@ import src.main.communication.Encoder;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoginController implements Initializable
-{
+public class LoginController implements Initializable {
     private Client client;
 
-    @FXML private TextField     account;
-    @FXML private PasswordField password;
-    @FXML private Label         emptyAccountTips;
-    @FXML private Label         emptyPasswordTips;
-    @FXML private Label         invaildMessageTips;
+    @FXML
+    private TextField account;
+    @FXML
+    private PasswordField password;
+    @FXML
+    private Label emptyAccountTips;
+    @FXML
+    private Label emptyPasswordTips;
+    @FXML
+    private Label invaildMessageTips;
 
-    public  static boolean correct;
-    private Encoder encoder   = new Encoder();
+    public static boolean correct;
+    private Encoder encoder = new Encoder();
 
-    @FXML private void login() throws Exception{
-        if(/*checkValid()*/true){
-        	client.getPrimaryStage().close();
+    @FXML
+    private void login() throws Exception {
+        if (/*checkValid()*/true) {
+            client.getPrimaryStage().close();
             client.gotoLobby();
         }
     }
 
     @FXML
-    private void signup() throws Exception{
-    	client.getPrimaryStage().close();
+    private void signup() throws Exception {
+        client.getPrimaryStage().close();
         client.gotoSignup();
     }
 
@@ -45,43 +50,39 @@ public class LoginController implements Initializable
         correct = false;
         String account = this.account.getText();
         String password = this.password.getText();
-        if(account.isEmpty()){
+        if (account.isEmpty()) {
             emptyAccountTips.setVisible(true);
-            //isValid = false;
             return false;
-        }
-        else{
+        } else {
             emptyAccountTips.setVisible(false);
         }
-        if(password.isEmpty()){
+        if (password.isEmpty()) {
             emptyPasswordTips.setVisible(true);
-//            isValid = false;
             return false;
-        }
-        else{
+        } else {
             emptyPasswordTips.setVisible(false);
         }
-        if(!account.isEmpty() && !password.isEmpty()){
-            String json = encoder.loginRequest(this.account.getText(),this.password.getText());
+        if (!account.isEmpty() && !password.isEmpty()) {
+            String json = encoder.loginRequest(this.account.getText(), this.password.getText());
             System.out.println(json);
             client.getConnect().send(json);
             Connect.waitForRec();
             json = encoder.getPlayerListRequest();
             client.getConnect().send(json);
             Connect.waitForRec();
-            json=encoder.getRoomListRequest();
+            json = encoder.getRoomListRequest();
             client.getConnect().send(json);
             Connect.waitForRec();
-            System.out.println("at loginontroller correct:" + correct );
-            if(!correct){
-                setTipsError(invaildMessageTips,"账号或密码错误");
+            System.out.println("at loginontroller correct:" + correct);
+            if (!correct) {
+                setTipsError(invaildMessageTips, "账号或密码错误");
             }
         }
         return correct;
     }
 
     @FXML
-    private void setTipsError(Label tip, String msg){
+    private void setTipsError(Label tip, String msg) {
         tip.setVisible(true);
         tip.setTextFill(Color.RED);
         tip.setText(msg);
@@ -97,15 +98,15 @@ public class LoginController implements Initializable
         account.setText("");
     }
 
-    public void setClient(Client client){
+    public void setClient(Client client) {
         this.client = client;
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources){
+    public void initialize(URL location, ResourceBundle resources) {
         emptyAccountTips.setVisible(false);
         emptyPasswordTips.setVisible(false);
         invaildMessageTips.setVisible(false);
     }
- 
+
 }

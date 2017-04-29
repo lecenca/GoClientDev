@@ -18,9 +18,6 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
-/**
- * Created by touhoudoge on 2017/4/7.
- */
 public class ChessBoard implements Initializable {
 
     private static boolean ready;
@@ -47,7 +44,6 @@ public class ChessBoard implements Initializable {
         getPixelPos(event);
         int action = action();
         if (action != Type.Action.INVALID) {
-            //System.out.println("iX=" + index.x + ", iY=" + index.y);
             String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
             System.out.println(jsonmsg);
             if (action == Type.Action.KILL) {
