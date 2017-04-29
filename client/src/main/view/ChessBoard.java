@@ -28,9 +28,8 @@ public class ChessBoard implements Initializable {
     private Timer player2timer;
     private Board board = new Board();
     private Circle[][] stonesCircle = new Circle[19][19];
-    private int turns = -1;
+    private int color;
 
-    private Encoder encoder = new Encoder();
     @FXML
     private Pane chessPane;
 
@@ -49,19 +48,18 @@ public class ChessBoard implements Initializable {
         int action = action();
         if (action != Type.Action.INVALID) {
             //System.out.println("iX=" + index.x + ", iY=" + index.y);
-            String jsonmsg = encoder.actionRequest(action, turns, index.x, index.y);
+            String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
             System.out.println(jsonmsg);
             if (action == Type.Action.KILL) {
-                place(index.x, index.y, turns);
-                for (int chain : Board.killed) {
+                place(index.x, index.y, color);
+                for (int chain : Board.dead) {
                     remove(chain);
                 }
                 board.remove();
             } else {
-                place(index.x, index.y, turns);
+                place(index.x, index.y, color);
             }
-            //timer.start();
-            turns = -turns;
+            color = -color;
         }
     }
 
@@ -71,31 +69,6 @@ public class ChessBoard implements Initializable {
 
     private void getIndexPos() {
         index.setLocation((pixel.x - borderGap) / stoneGap, (pixel.y - borderGap) / stoneGap);
-    }
-
-    private void place(int x, int y, int color) {
-        Circle stone = stonesCircle[x][y];
-        System.out.println("ChessBoard Place: (" + x + "," + y + ")");
-        if (color == Stone.Black) {
-            stone.setFill(Color.BLACK);
-        } else {
-            stone.setFill(Color.WHITE);
-        }
-        stone.setLayoutX(pixel.x);
-        stone.setLayoutY(pixel.y);
-        stone.setRadius(stoneRadius);
-        chessPane.getChildren().add(stone);
-        board.add(x, y, turns);
-    }
-
-    private void remove(int chain) {
-        HashSet<Stone> stones = Board.stoneMap.get(chain);
-        System.out.print("ChessBoard remove chain " + chain + " : ");
-        for (Stone s : stones) {
-            System.out.print("Stone(" + s.x + "," + s.y + ") ");
-            chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
-        }
-        System.out.println();
     }
 
     private int action() {
@@ -123,11 +96,46 @@ public class ChessBoard implements Initializable {
             return Type.Action.INVALID;
         }
         getIndexPos();
-        return board.action(index, turns);
+        return board.action(index, color);
     }
 
-    public void setReady(boolean ready){
+    private void place(int x, int y, int color) {
+        Circle stone = stonesCircle[x][y];
+        System.out.println("ChessBoard Place: (" + x + "," + y + ")");
+        if (color == Stone.Black) {
+            stone.setFill(Color.BLACK);
+        } else {
+            stone.setFill(Color.WHITE);
+        }
+        stone.setLayoutX(pixel.x);
+        stone.setLayoutY(pixel.y);
+        stone.setRadius(stoneRadius);
+        chessPane.getChildren().add(stone);
+        board.add(x, y, this.color);
+    }
+
+    private void remove(int chain) {
+        HashSet<Stone> stones = Board.stonesMap.get(chain);
+        System.out.print("ChessBoard remove chain " + chain + " : ");
+        for (Stone s : stones) {
+            System.out.print("Stone(" + s.x + "," + s.y + ") ");
+            chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
+        }
+        System.out.println();
+    }
+
+
+    public void setReady(boolean ready) {
         this.ready = ready;
+    }
+
+    public void setTimer(Timer timer01, Timer timer02) {
+        this.player1timer = timer01;
+        this.player2timer = timer02;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     @Override
@@ -185,8 +193,4 @@ public class ChessBoard implements Initializable {
         }
     }
 
-    public void setTimer(Timer timer01,Timer timer02) {
-        this.player1timer = timer01;
-        this.player2timer = timer02;
-    }
 }
