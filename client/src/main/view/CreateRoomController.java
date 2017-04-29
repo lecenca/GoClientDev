@@ -47,17 +47,16 @@ public class CreateRoomController implements Initializable {
         String password = passwordField.getText();
         if (password != null)
             room.setPassword(password);
-        User player1 = new User();
-        player1.setNickname("玩家一");
-        room.setPlayer1(player1.getAccount());
+        room.setPlayer1("玩家一");
         room.setState(0);
         RoomListCell cell = new RoomListCell(room);
-        cell.setPlayer01("玩家一");
+        cell.setPlayer1("玩家一");
         cell.setState(0);
         cell.setRoomId(1111);
         cell.setRoomName(room.getName());
         roomList.getItems().add(cell);
         client.backToLobby();
+        System.out.println("you create");
         /************* test ********************/
     }
 
