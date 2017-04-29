@@ -73,7 +73,6 @@ public class SignupController implements Initializable {
 
     @FXML
     private void signup() throws Exception {
-        /************* release *****************/
         signUpCall = true;
         synchronousCheck();
         signUpCall = false;
@@ -100,7 +99,6 @@ public class SignupController implements Initializable {
                 JOptionPane.showMessageDialog(null, "服务器发生未知错误，请重试");
             }
         }
-        /************* release *****************/
     }
 
     // TODO: 检查账号格式：16个字符。若无效，设置 Lable 的文本并返回 false
@@ -225,13 +223,13 @@ public class SignupController implements Initializable {
     // TODO: 检查生日格式：月份天数是否正常。若无效，设置 Lable 的文本并返回 false
     @FXML
     private boolean checkDateOK() {
-        if(signUpCall){
+        if (signUpCall) {
             if (this.year.getValue() == null || this.month.getValue() == null || this.day.getValue() == null) {
                 setTipsError(dateFormatTips, "请选择择生日");
                 return false;
             }
         }
-        if(this.year.getValue() != null && this.month.getValue() != null && this.day.getValue() != null){
+        if (this.year.getValue() != null && this.month.getValue() != null && this.day.getValue() != null) {
             // TODO：日期合法判断
             if (false) {
                 setTipsError(dateFormatTips, "日期无效");
@@ -298,12 +296,12 @@ public class SignupController implements Initializable {
     }
 
     @FXML
-    private void selectMale(){
+    private void selectMale() {
         user.setSex(true);
     }
 
     @FXML
-    private void selectFemale(){
+    private void selectFemale() {
         user.setSex(false);
     }
 

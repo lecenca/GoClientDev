@@ -1,6 +1,5 @@
 package src.main.communication;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import src.main.Room;
@@ -28,33 +27,32 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Connect {
-	/*
-	 * private final static String LINE_SEPARATOR =
-	 * System.getProperty("line.separator"); private static String IP; private
-	 * static int PORT; private static Socket socket; private static
-	 * OutputStream os; private static InputStream is; private static
-	 * PrintWriter pw; private static BufferedReader br; private Thread
-	 * receiveThread; private Thread chatThread; private String loginMessage;
-	 * private String registerMessage; private String chatMessage = "hello";
-	 * private ChatBox chatBox;
-	 */
-	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-	// private final static String IP = "172.16.90.242";
-	private  static String IP;
-	private  static int PORT;
-	private static Socket socket;
-	private static OutputStream os;
-	private static InputStream is;
-	private static PrintWriter pw;
-	private static BufferedReader br;
-	private Thread receiveThread;
-	private Thread chatThread;
-	private String loginMessage;
-	private String registerMessage;
-	private String chatMessage = "hello";
-	private ChatBox chatBox;
+    /*
+     * private final static String LINE_SEPARATOR =
+     * System.getProperty("line.separator"); private static String IP; private
+     * static int PORT; private static Socket socket; private static
+     * OutputStream os; private static InputStream is; private static
+     * PrintWriter pw; private static BufferedReader br; private Thread
+     * receiveThread; private Thread chatThread; private String loginMessage;
+     * private String registerMessage; private String chatMessage = "hello";
+     * private ChatBox chatBox;
+     */
+    private final static String LINE_SEPARATOR = System.getProperty("line.separator");
+    private static String IP;
+    private static int PORT;
+    private static Socket socket;
+    private static OutputStream os;
+    private static InputStream is;
+    private static PrintWriter pw;
+    private static BufferedReader br;
+    private Thread receiveThread;
+    private Thread chatThread;
+    private String loginMessage;
+    private String registerMessage;
+    private String chatMessage = "hello";
+    private ChatBox chatBox;
 
-	public static boolean recv = false;
+    public static boolean recv = false;
 
 	public Connect() {
 		try {
@@ -107,10 +105,6 @@ public class Connect {
 	}
 
     public static void send(String msg) {
-        // get the outputStream of socket
-        // OutputStream outputStream = socket.getOutputStream();
-        // create the printwriter
-        // pw = new PrintWriter(os,true);
         String sendMsg = new String(toHH(msg.length()), 0, 4);
         System.out.println("len: " + sendMsg.length() + msg.length() + ", msg: " + sendMsg + msg);
         pw.write(sendMsg + msg);
@@ -174,13 +168,9 @@ public class Connect {
                     break;
             }
             recv = true;
-            // loginMessage = msg;
             registerMessage = msg;
             chatMessage = msg;
-            // System.out.println("chatMessage:" + chatMessage);
-            // msg = br.readLine();
-        }
-        catch (ConnectException e) {
+        } catch (ConnectException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             System.out.println("与服务器断开连接！");

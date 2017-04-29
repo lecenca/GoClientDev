@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-/**
- * Created by touhoudoge on 2017/4/16.
- */
 public class Board {
 
     public static Stone[][] stones = new Stone[19][19];
