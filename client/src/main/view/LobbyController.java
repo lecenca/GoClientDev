@@ -163,14 +163,18 @@ public class LobbyController implements Initializable {
     private void clickRoom(MouseEvent mouseEvent) throws Exception {
         if (mouseEvent.getClickCount() == 2) {
             Room room = roomList.getSelectionModel().getSelectedItem();
+            /*
             User player02 = new User();
             player02.setNickname("玩家二");
             // room.setPlayer2(player02);
+            */
             room.setPlayer2("玩家二");
             room.setState(1);
+            /*
             room.setState(1);
             room.setPlayer2("玩家二");
             room.setState(1);
+            */
             System.out.println("you click");
             client.gotoGame();
         }
