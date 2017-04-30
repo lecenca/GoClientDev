@@ -89,8 +89,8 @@ public class Connect {
 						while (msg == null)
 							msg = chatMessage;
 						System.out.println(msg);
-						if (chatBox != null)
-							chatBox.sentSentence(msg);
+						/*if (chatBox != null)
+							chatBox.setItems(msg);*/
 					}
 				}
 			});
