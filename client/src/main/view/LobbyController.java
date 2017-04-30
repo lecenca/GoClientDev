@@ -250,7 +250,7 @@ public class LobbyController implements Initializable {
     }
 
     public void setAll() {
-        chatBoxController.setItems(client.getMessageData());
+    	chatBoxController.setItems(client.getMessageData());
         roomList.setItems(client.getRoomData());
         roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());

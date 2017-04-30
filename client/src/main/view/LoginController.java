@@ -5,7 +5,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import src.main.Client;
-
+import src.main.Type;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.communication.Connect;
@@ -65,7 +65,9 @@ public class LoginController implements Initializable {
             String json = Encoder.loginRequest(this.account.getText(), this.password.getText());
             System.out.println(json);
             client.getConnect().send(json);
-            Connect.waitForRec();
+            //Connect.waitForRec();
+            client.getConnect().waitForRec(Type.Response.LOGIN_SUCCESS,Type.Response.LOGIN_FAILED);
+            
             /*json = Encoder.fetchRoomsRequest();
             client.getConnect().send(json);
             Connect.waitForRec();

@@ -45,6 +45,7 @@ public class Client extends Application {
 
 		@Override
 		public void run() {
+			
 			System.out.println("监听玩家列表线程启动！");
 			while (true) {
 				/*
@@ -124,7 +125,7 @@ public class Client extends Application {
 		roomData.add(new Room(5, "room5", "player1", "player2", 1));
 		roomData.add(new Room(6, "room6", "player1", "player2", 1));
 		/********* 这是要的 ***********/
-        connect = new Connect();
+       // connect = new Connect();
 		/*****************************/
 		signupStage = new Stage();
 		lobbyStage = new Stage();
@@ -172,9 +173,9 @@ public class Client extends Application {
 		Thread listenRoomList = lobbyController.getListenRoomList();
 		listenRoomList.setDaemon(true);
 		listenRoomList.start();*/
-		/*Thread chatThread = lobbyController.getChatThread();
+		Thread chatThread = lobbyController.getChatThread();
 		chatThread.setDaemon(true);
-		chatThread.start();*/
+		chatThread.start();
 		lobbyController.fetchLobbyInfo();
 	}
 
