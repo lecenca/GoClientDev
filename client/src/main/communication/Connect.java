@@ -33,7 +33,7 @@ public class Connect {
      * private ChatBox chatBox;
      */
     private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "192.168.56.1";
+    private static String IP = "192.168.31.235";
     private static int PORT = 10005;
     private static Socket socket;
     private static OutputStream os;
