@@ -87,7 +87,7 @@ public class SignupController implements Initializable {
             user.setNickname(nn);
             user.setPassword(pw);
             user.setBirthday(year, month, day);
-            client.setAccount(user);
+            client.setUser(user);
             String json = Encoder.signupRequest(user);
             System.out.println("user signup info: " + json);
             client.getConnect().send(json);
