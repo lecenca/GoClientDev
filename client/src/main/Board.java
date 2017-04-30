@@ -28,10 +28,10 @@ public class Board {
         maybeKo[1] = new Stone(-1, -1);
     }
 
-    public static void reset() {
+    public static void clear() {
         for (int i = 0; i < 19; ++i) {
             for (int j = 0; j < 19; ++j) {
-                stones[i][j] = new Stone(i, j);
+                stones[i][j].color = Stone.None;
             }
         }
         chainMap.clear();

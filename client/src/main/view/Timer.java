@@ -25,7 +25,7 @@ public class Timer implements Initializable {
     private int tempPeriod;
 
     @FXML
-    private Label timeLabel;
+    private Label timeLabel = new Label();
 
     public Timer(){}
 
@@ -92,9 +92,9 @@ public class Timer implements Initializable {
 
     }
 
-    public void initTimer(int minute,int second,int times){
-        mainTime = 60 * minute;
-        period = second;
+    public void init(int main, int period, int times){
+        mainTime = 60 * main;
+        this.period = period;
         periodTime = times;
 
         mainTimeTimeline = new Timeline();
