@@ -5,13 +5,13 @@ import javafx.beans.property.StringProperty;
 
 public class User {
 
-    class Birthday {
+    private class Birthday {
         public int year;
         public int month;
         public int day;
     }
 
-    class GameData {
+    private class GameData {
         public int win;
         public int lose;
         public int draw;
@@ -31,10 +31,10 @@ public class User {
     private String password;
     private Birthday birthday = new Birthday();
 
-    boolean sex;  // true for man, false for woman
-    int state;
-    int room;
-    GameData data = new GameData();
+    private boolean sex;  // true for man, false for woman
+    private int state;
+    private int room;
+    private GameData data = new GameData();
 
     private static String[] level = {"十八级", "十七级", "十六级", "十五级", "十四级", "十三级", "十二级", "十一级", "十级"
             , "九级", "八级", "七级", "六级", "五级", "四级", "三级", "二级", "一级",
@@ -102,6 +102,12 @@ public class User {
     public int getLevel() {
         return this.data.level;
     }
+
+    public int getRank() {return this.data.rank;}
+
+    public int getWins() {return this.data.win;}
+
+    public int getLoses() {return this.data.lose;}
 
     public StringProperty getLevelProperty() {
         return new SimpleStringProperty(level[this.data.level]);

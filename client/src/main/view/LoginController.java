@@ -29,7 +29,6 @@ public class LoginController implements Initializable {
     private Label invaildMessageTips;
 
     public static boolean correct;
-    private Encoder encoder = new Encoder();
 
     @FXML
     private void login() throws Exception {
@@ -63,17 +62,16 @@ public class LoginController implements Initializable {
             emptyPasswordTips.setVisible(false);
         }
         if (!account.isEmpty() && !password.isEmpty()) {
-            String json = encoder.loginRequest(this.account.getText(), this.password.getText());
+            String json = Encoder.loginRequest(this.account.getText(), this.password.getText());
             System.out.println(json);
             client.getConnect().send(json);
             Connect.waitForRec();
-            json = encoder.getPlayerListRequest();
+            /*json = Encoder.fetchRoomsRequest();
             client.getConnect().send(json);
             Connect.waitForRec();
-            json = encoder.getRoomListRequest();
+            json = Encoder.fetchPlayersRequest();
             client.getConnect().send(json);
-            Connect.waitForRec();
-            System.out.println("at loginontroller correct:" + correct);
+            Connect.waitForRec();*/
             if (!correct) {
                 setTipsError(invaildMessageTips, "账号或密码错误");
             }
