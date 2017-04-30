@@ -18,6 +18,13 @@ public class Stone {
         this.step = 0;
     }
 
+    public Stone(int x, int y, int color, int step) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.step = step;
+    }
+
     public Stone up() {
         if (y == 0) {
             return null;

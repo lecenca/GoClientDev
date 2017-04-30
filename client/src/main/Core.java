@@ -87,6 +87,7 @@ public class Core {
         if (x == board.maybeKo[1].x && y == board.maybeKo[1].y
                 && stone.x == board.maybeKo[0].x && stone.y == board.maybeKo[0].y
                 && stone.color == board.maybeKo[0].color
+                && stone.step == Board.step - 1
                 && board.stonesMap.get(board.chainMap.get(stone)).size() == 1) {
             hasKo = true;
             return true;
