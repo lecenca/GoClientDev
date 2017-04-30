@@ -19,6 +19,8 @@ public class GameController implements Initializable {
     @FXML private TextField inputField;
     @FXML private Button sentBtn;
     @FXML private ListView<String> chatBox;
+    @FXML private Timer timeLabel01Controller;
+    @FXML private Timer timeLabel02Controller;
     @FXML private ChatBox chatBoxController;
 
     public void setClient(Client client){
@@ -34,6 +36,10 @@ public class GameController implements Initializable {
     private void ready(){
         chessPaneController.setReady(true);
         // TODO: 向服务器发送准备信息
+
+        /*********** test **********/
+        timeLabel01Controller.start();
+        /*********** test **********/
     }
 
     @FXML
@@ -48,6 +54,8 @@ public class GameController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
-
+        chessPaneController.setTimer(timeLabel01Controller,timeLabel02Controller);
+        timeLabel01Controller.initTimer(1,10,3);
+        timeLabel02Controller.initTimer(1,10,3);
     }
 }
