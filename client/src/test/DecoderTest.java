@@ -9,20 +9,18 @@ import src.main.Room;
 
 import java.util.ArrayList;
 
-/**
- * Created by 刘俊延 on 2017/4/28.
- */
 public class DecoderTest {
 
     @Test
-    public void parseRoomListTest(){
+    public void parseRoomListTest() {
         String json = "{\"rooms_list\":[]}";
         JSONObject object = JSONObject.parseObject(json);
         JSONArray array = object.getJSONArray("rooms_list");
         Assert.assertNotNull(array);
-        Assert.assertEquals(0,array.size());
-        ArrayList<Room> rooms = new ArrayList<Room>(JSON.parseArray(array.toJSONString(),Room.class));
+        Assert.assertEquals(0, array.size());
+        ArrayList<Room> rooms = new ArrayList<Room>(JSON.parseArray(array.toJSONString(), Room.class));
         Assert.assertNotNull(rooms);
-        Assert.assertEquals(0,rooms.size());
+        Assert.assertEquals(0, rooms.size());
     }
+
 }

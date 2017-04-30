@@ -1,6 +1,8 @@
 package src.main.communication;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import src.main.*;
 
 import java.util.ArrayList;
@@ -42,9 +44,10 @@ public class Encoder {
         return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_PLAYERS_INFO) + "}";
     }
 
-    public static String updateRoomRequest(){
-        // TODO
-        return "";
+    public static String updateRoomRequest(Room room, int type){
+        JSONObject jsonObject = JSONObject.parseObject(gson.toJson(room).toString());
+        jsonObject.put("action",type);
+        return requestJson(gson.toJson(jsonObject),Type.Request.SITDOWN);
     }
 
     public static String readyRequest(Room room, Boolean player1IsReady, Boolean player2IsReady){

@@ -2,6 +2,7 @@ package src.main.communication;
 
 import com.alibaba.fastjson.JSONObject;
 
+import src.main.Client;
 import src.main.Room;
 import src.main.Type;
 import src.main.User;
@@ -22,7 +23,9 @@ import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Connect {
     /*
@@ -36,8 +39,8 @@ public class Connect {
      * private ChatBox chatBox;
      */
     private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP;
-    private static int PORT;
+    private static String IP = "192.168.56.1";
+    private static int PORT = 10005;
     private static Socket socket;
     private static OutputStream os;
     private static InputStream is;
@@ -57,8 +60,9 @@ public class Connect {
             InputStream inputStream = this.getClass().getResourceAsStream("Connect.properties");
             Properties pro = new Properties();
             pro.load(inputStream);
-            IP = pro.getProperty("IP");
-            PORT = Integer.parseInt(pro.getProperty("PORT"));
+            /*IP = pro.getProperty("IP");
+            PORT = Integer.parseInt(pro.getProperty("PORT"));*/
+
 
             socket = new Socket(IP, PORT);
             os = socket.getOutputStream();
@@ -106,21 +110,21 @@ public class Connect {
         System.out.println("发送成功！");
     }
 
-    public static void waitForRec() {
-        int i = 0;
-        while (!Connect.recv) {
-            try {
-                Thread.currentThread().sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            i++;
-            if (i == 100) {
-                JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
-                break;
-            }
-        }
-    }
+	public static void waitForRec() {
+		int i = 0;
+		while (!Connect.recv) {
+			try {
+				Thread.currentThread().sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			i++;
+			if (i == 100) {
+				JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+				break;
+			}
+		}
+	}
 
     public void receive() {
         String msg = null;
@@ -170,45 +174,56 @@ public class Connect {
             // TODO Auto-generated catch block
             e.printStackTrace();
             System.out.println("与服务器断开连接！");
-        } catch (IOException e) {
+        }catch (IOException e) {
             System.out.println("与服务器连接异常！");
         }
-    }
+	}
 
-    private void handleAccountCheck(boolean state) {
-        SignupController.accountCheckSuccess = state;
-    }
+	private void handleAccountCheck(boolean state) {
+		SignupController.accountCheckSuccess = state;
+	}
 
-    private void handleRegist(boolean state) {
-        SignupController.registSuccess = state;
-    }
+	private void handleRegist(boolean state) {
+		SignupController.registSuccess = state;
+	}
 
-    private void handleLogin(boolean state) {
-        LoginController.correct = state;
-    }
+	private void handleLogin(boolean state) {
+		LoginController.correct = state;
+		System.out.println("corect:" + LoginController.correct);
+	}
 
-    private void handleFetchRoom(JSONObject jsonObject) {
-        ArrayList<Room> roomList = Decoder.parseRoomList(jsonObject);
-        if (roomList.size() != 0) {
-            MessageQueue<Room> rooms = LobbyController.getRooms();
+	private void handleFetchRoom(JSONObject jsonObject) {
+		ArrayList<Room> roomList = Decoder.parseRoomList(jsonObject);
+        if(roomList.size() != 0){
+        	MessageQueue<Room> rooms = Client.getRooms();
             for (Room room : roomList) {
                 rooms.add(room);
             }
             System.out.println("handle list:" + roomList);
         }
-    }
+	}
 
-    private void handleFetchPlayer(JSONObject jsonObject) {
-        ArrayList<User> playerList = Decoder.parsePlayerList(jsonObject);
-        if (playerList.size() != 0) {
-            MessageQueue<User> players = LobbyController.getPlayers();
-            for (User user : playerList) {
+	private void handleFetchPlayer(JSONObject jsonObject) {
+		ArrayList<User> playerList = Decoder.parsePlayerList(jsonObject);
+        if(playerList.size() != 0){
+        	MessageQueue<User> players = Client.getPlayers();
+            for(User user : playerList){
                 players.add(user);
             }
             System.out.println("handle list:" + playerList);
         }
-    }
+		}
+	
 
+	// For C/C++ on Windows.
+	private static byte[] toLH(int n) {
+		byte[] b = new byte[4];
+		b[0] = (byte) (n & 0xff);
+		b[1] = (byte) (n >> 8 & 0xff);
+		b[2] = (byte) (n >> 16 & 0xff);
+		b[3] = (byte) (n >> 24 & 0xff);
+		return b;
+	}
 
     // For C/C++ on Windows.
     public static byte[] intToByteLH(int n) {
@@ -217,35 +232,36 @@ public class Connect {
         b[1] = (byte) (n >> 8 & 0xff);
         b[2] = (byte) (n >> 16 & 0xff);
         b[3] = (byte) (n >> 24 & 0xff);
-        return b;
+        return new byte[]{
+                (byte) (n & 0xff),
+                (byte) ((n >> 8) & 0xff),
+                (byte) ((n >> 16) & 0xff),
+                (byte) ((n >> 24) & 0xff)
+        };
     }
 
     // For C/C++ on Linux/Unix.
     public static byte[] intToByteHH(int n) {
-        byte[] b = new byte[4];
-        b[3] = (byte) (n & 0xff);
-        b[2] = (byte) (n >> 8 & 0xff);
-        b[1] = (byte) (n >> 16 & 0xff);
-        b[0] = (byte) (n >> 24 & 0xff);
-        return b;
+        return new byte[]{
+                (byte) ((n >> 24) & 0xff),
+                (byte) ((n >> 16) & 0xff),
+                (byte) ((n >> 8) & 0xff),
+                (byte) (n & 0xff)
+        };
     }
 
     public static int byteToIntLH(byte[] bytes) {
-        int result = 0;
-        result += bytes[3] << 24;
-        result += bytes[2] << 16;
-        result += bytes[1] << 8;
-        result += bytes[0];
-        return result;
+        return ((bytes[3] & 0xFF) << 24) |
+                ((bytes[2] & 0xFF) << 16) |
+                ((bytes[1] & 0xFF) << 8) |
+                (bytes[0] & 0xFF);
     }
 
     public static int byteToIntHH(byte[] bytes) {
-        int result = 0;
-        result += bytes[0] << 24;
-        result += bytes[1] << 16;
-        result += bytes[2] << 8;
-        result += bytes[3];
-        return result;
+        return ((bytes[0] & 0xFF) << 24) |
+                ((bytes[1] & 0xFF) << 16) |
+                ((bytes[2] & 0xFF) << 8) |
+                (bytes[3] & 0xFF);
     }
 
     public void closeInputstream() {
@@ -262,40 +278,40 @@ public class Connect {
         return loginMessage;
     }
 
-    public void setLoginMessage(String loginMessage) {
-        this.loginMessage = loginMessage;
-    }
+	public void setLoginMessage(String loginMessage) {
+		this.loginMessage = loginMessage;
+	}
 
-    public Thread getReceiveThread() {
-        return receiveThread;
-    }
+	public Thread getReceiveThread() {
+		return receiveThread;
+	}
 
-    public String getRegisterMessage() {
-        return registerMessage;
-    }
+	public String getRegisterMessage() {
+		return registerMessage;
+	}
 
-    public void setRegisterMessage(String registerMessage) {
-        this.registerMessage = registerMessage;
-    }
+	public void setRegisterMessage(String registerMessage) {
+		this.registerMessage = registerMessage;
+	}
 
-    public String getChatMessage() {
-        return chatMessage;
-    }
+	public String getChatMessage() {
+		return chatMessage;
+	}
 
-    public void setChatMessage(String chatMessage) {
-        this.chatMessage = chatMessage;
-    }
+	public void setChatMessage(String chatMessage) {
+		this.chatMessage = chatMessage;
+	}
 
-    public void setChatBox(ChatBox chatBox) {
-        this.chatBox = chatBox;
-    }
+	public void setChatBox(ChatBox chatBox) {
+		this.chatBox = chatBox;
+	}
 
-    public Thread getChatThread() {
-        return chatThread;
-    }
+	public Thread getChatThread() {
+		return chatThread;
+	}
 
-    public void setChatThread(Thread chatThread) {
-        this.chatThread = chatThread;
-    }
+	public void setChatThread(Thread chatThread) {
+		this.chatThread = chatThread;
+	}
 
 }
