@@ -8,7 +8,6 @@ import src.main.Type;
 import src.main.User;
 
 import src.main.view.ChatBox;
-import src.main.view.LobbyController;
 import src.main.view.LoginController;
 import src.main.view.SignupController;
 import src.util.MessageQueue;
@@ -23,9 +22,7 @@ import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Connect {
     /*
@@ -89,7 +86,7 @@ public class Connect {
                             msg = chatMessage;
                         System.out.println(msg);
                         if (chatBox != null)
-                            chatBox.sentSentence(msg);
+                            chatBox.sendMessage(msg);
                     }
                 }
             });
