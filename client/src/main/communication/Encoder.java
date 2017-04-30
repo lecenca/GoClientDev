@@ -67,15 +67,14 @@ public class Encoder {
 
     public static String actionRequest(int action, int color, int x, int y) {
         Map map = new HashMap();
+        map.put("action",action);
         if (action == Type.Action.PLACE) {
-            map.put("action", "place");
             Map placeMap = new HashMap();
             placeMap.put("x", x);
             placeMap.put("y", y);
             placeMap.put("color", color);
             map.put("place", placeMap);
         } else if (action == Type.Action.KILL) {
-            map.put("action", "kill");
             Map placeMap = new HashMap();
             placeMap.put("x", x);
             placeMap.put("y", y);

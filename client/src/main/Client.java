@@ -1,8 +1,10 @@
 package src.main;
 
+import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
 import src.main.communication.Connect;
 import src.main.view.CreateRoomController;
 import src.main.view.GameController;
@@ -35,6 +37,7 @@ public class Client extends Application {
 	private Connect connect;
 	private ArrayList playerList = new ArrayList();
 	private LobbyController lobbyController;
+	private GameController gameController;
 	private ObservableList<Room> roomData = FXCollections.observableArrayList();
 	private ObservableList<User> playerData = FXCollections.observableArrayList();
 	private ObservableList<String> messageData = FXCollections.observableArrayList();
@@ -94,9 +97,9 @@ public class Client extends Application {
 			while (true) {
 				
 				 * if(!chatMessage.isEmpty()) {
-				 * chatBoxController.sentSentence(chatMessage.remove()); }
+				 * chatBoxController.sendMessage(chatMessage.remove()); }
 				 
-				// chatBoxController.sentSentence("hello");
+				// chatBoxController.sendMessage("hello");
 				if (!chatMessages.isEmpty())
 					messageData.add(chatMessages.remove());
 				try {
@@ -129,15 +132,29 @@ public class Client extends Application {
 		/*****************************/
 		signupStage = new Stage();
 		lobbyStage = new Stage();
+		gameStage = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("view/Lobby.fxml"));
-		Pane pane = loader.load();
-		Scene scene = new Scene(pane);
-		lobbyStage.setScene(scene);
+		Pane lobbyPane = loader.load();
+		Scene lobbyScene = new Scene(lobbyPane);
+		lobbyStage.setScene(lobbyScene);
 		lobbyController = loader.getController();//(LobbyController) changeStage("view/Lobby.fxml", lobbyStage);
 		lobbyController.setClient(this);
 		lobbyController.setAll();
-		//lobbyStage.close();
+        FXMLLoader loader2 = new FXMLLoader();
+        loader2.setLocation(getClass().getResource("view/Game.fxml"));
+        Pane gamePane = loader2.load();
+        Scene gameScene = new Scene(gamePane);
+        gameStage.setScene(gameScene);
+        gameController = loader2.getController();
+        gameController.setClient(this);
+        gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                gameController.clear();
+                System.out.println("关闭游戏界面 clear()");
+            }
+        });
 	}
 
 	@Override
@@ -205,7 +222,7 @@ public class Client extends Application {
 	}
 
 	public void gotoGame(Room room) throws Exception {
-		gameStage = new Stage();
+		/*gameStage = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setBuilderFactory(new JavaFXBuilderFactory());
 		loader.setLocation(getClass().getResource("view/Game.fxml"));
@@ -213,7 +230,8 @@ public class Client extends Application {
 		gameStage.setScene(new Scene(loader.load(in)));
 		gameStage.show();
 		GameController gameController = (GameController) loader.getController();
-		gameController.setClient(this);
+		gameController.setClient(this);*/
+		gameStage.show();
 		gameController.setRoom(room);
 	}
 

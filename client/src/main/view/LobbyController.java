@@ -8,9 +8,7 @@ import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.Room;
-import src.main.Type;
 import src.main.User;
-import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
@@ -124,11 +122,11 @@ public class LobbyController implements Initializable {
             // TODO Auto-generated method stub
             while (true) {
 				/*if(!chatMessage.isEmpty()) {
-					 chatBoxController.sentSentence(chatMessage.remove());
+					 chatBoxController.sendMessage(chatMessage.remove());
 				}*/
 
                 try {
-                    chatBoxController.sentSentence("hello");
+                    chatBoxController.sendMessage("hello");
                     Thread.currentThread().sleep(2000);
                 } catch (IllegalStateException e) {
                     System.out.println("异常了");
@@ -161,7 +159,7 @@ public class LobbyController implements Initializable {
     @FXML
     private void send() {
         /************* test ********************/
-        chatBoxController.sentSentence(inputField.getText());
+        chatBoxController.sendMessage(inputField.getText());
         client.getConnect().send(inputField.getText());
         /************* test ********************/
     }

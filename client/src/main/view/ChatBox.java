@@ -27,10 +27,15 @@ public class ChatBox implements Initializable {
         });
     }
 
-    public void sentSentence(String sentence) {
-        chatBox.getItems().add(sentence);
+    public void sendMessage(String message) {
+        chatBox.getItems().add(message);
     }
+
     public void setItems(ObservableList<String> chatMessage) {
-    	chatBox.setItems(chatMessage);
+        chatBox.setItems(chatMessage);
+    }
+
+    public void clear() {
+        chatBox.refresh();
     }
 }
