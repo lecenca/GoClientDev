@@ -18,8 +18,7 @@ public class Type {
                 ACTION = 11,
                 GAMERESULT = 12,
                 SEND_MSG = 13,
-                GROUP_CHAT = 14,
-                NICKNAME_CHECK = 15;
+                GROUP_CHAT = 14;
     }
 
     public static class Response {
@@ -73,6 +72,14 @@ public class Type {
                 IDLE = 2,       // 已经登陆但还没有进入游戏房间，此时玩家列表状态显示"闲逛中"
                 READY = 3,      // 已经进入游戏房间但是游戏还没有开始，此时玩家列表状态显示"准备中"
                 GAMING = 4;     // 已经开始游戏，此时玩家列表状态显示"游戏中"
+    }
+
+    public static class UpdateRoom {
+        public static final int
+                PLAYER1IN = 0,
+                PLAYER2IN = 1,
+                PLAYER1OUT = 2,
+                PLAYER2OUT = 3;
     }
 
     public static class KOMI {
