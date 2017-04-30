@@ -181,6 +181,7 @@ public class ChessBoard implements Initializable {
             for (int j = 0; j < 19; ++j) {
                 if (Board.stones[i][j].color != Stone.None) {
                     chessPane.getChildren().remove(stonesCircle[i][j]);
+                    chessPane.getChildren().remove(steps[i][j]);
                 }
             }
         }
