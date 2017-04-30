@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -103,5 +104,6 @@
             </Label>
          </children>
       </VBox>
+      <ToggleButton fx:id="step" layoutX="693.0" layoutY="363.0" mnemonicParsing="false" onAction="#showStep" text="步数" />
    </children>
 </AnchorPane>
