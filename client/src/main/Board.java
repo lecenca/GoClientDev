@@ -14,8 +14,8 @@ public class Board {
     public static Map<Integer, HashSet<Point>> libertyMap = new HashMap<>();
     public static HashSet<Integer> dead = new HashSet<>();
     public static Stone[] maybeKo = new Stone[2];
+    public static int step = 1;
 
-    private static int step;
     private static boolean[] used = new boolean[361];
 
     public Board() {
@@ -38,6 +38,7 @@ public class Board {
         stonesMap.clear();
         libertyMap.clear();
         dead.clear();
+        step = 1;
     }
 
     // Checks if the stones in color can be placed in the Point p.
@@ -56,7 +57,8 @@ public class Board {
     public void add(int x, int y, int color) {
         stones[x][y].color = color;
         stones[x][y].step = step;
-        step += 2;
+        System.out.println("stone step: " + step);
+        ++step;
         initStone(stones[x][y]);
         update(stones[x][y]);
         System.out.println("Board add stone(" + x + "," + y + ") in chain " + chainMap.get(stones[x][y])
@@ -92,20 +94,22 @@ public class Board {
     }
 
     // Adds the stones that were dead in the dead.
-    public void addKilled(ArrayList<HashMap> list) {
-        for (HashMap stone : list) {
-            dead.add(chainMap.get(stones[(int) stone.get("x")][(int) stone.get("y")]));
+    public static void addDead(ArrayList<Stone> list) {
+        for (Stone stone : list) {
+            dead.add(chainMap.get(stones[stone.x][stone.y]));
         }
     }
 
     // Sets some point that look like ko.
-    public void setKoPoint(int x1, int y1, int color, int x2, int y2) {
-        maybeKo[0].x = x1;
-        maybeKo[0].y = y1;
-        maybeKo[0].color = color;
-        maybeKo[1].x = x2;
-        maybeKo[1].y = y2;
-        maybeKo[1].color = -color;
+    public static void setKoPoint(int x, int y, ArrayList<Stone> list) {
+        if (stonesMap.get(chainMap.get(list.get(0))).size() == 1) {
+            maybeKo[0].x = x;
+            maybeKo[0].y = y;
+            maybeKo[1].x = list.get(0).x;
+            maybeKo[1].y = list.get(0).y;
+            maybeKo[1].color = list.get(0).color;
+            maybeKo[0].color = -maybeKo[1].color;
+        }
     }
 
     // Initializes a new stone for chainMap, stonesMap and libertyMap.
