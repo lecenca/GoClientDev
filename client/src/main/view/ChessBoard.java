@@ -20,8 +20,8 @@ import java.util.ResourceBundle;
 
 public class ChessBoard implements Initializable {
 
-    private Timer player1timer;
-    private Timer player2timer;
+    private Timer player1TimerController;
+    private Timer player2TimerController;
     private Board board = new Board();
     private Circle[][] stonesCircle = new Circle[19][19];
     private int color = -1;
@@ -40,14 +40,14 @@ public class ChessBoard implements Initializable {
 
     @FXML
     private void onClick(MouseEvent event) {
-        if (GameController.isBegin()) {
+        if (GameController.isBegin()/* && GameController.getTurn() == color*/) {
             /*********** test ***********/
             if (color == -1) {
-                player1timer.pause();
-                player2timer.start();
+                player1TimerController.pause();
+                player2TimerController.start();
             } else {
-                player2timer.pause();
-                player1timer.start();
+                player2TimerController.pause();
+                player1TimerController.start();
             }
             /*********** test ***********/
             getPixelPos(event);
@@ -67,7 +67,6 @@ public class ChessBoard implements Initializable {
                 color = -color;
             }
         }
-
     }
 
     private void getPixelPos(MouseEvent event) {
@@ -118,7 +117,7 @@ public class ChessBoard implements Initializable {
         stone.setLayoutY(pixel.y);
         stone.setRadius(stoneRadius);
         chessPane.getChildren().add(stone);
-        board.add(x, y, this.color);
+        board.add(x, y, color);
     }
 
     private void remove(int chain) {
@@ -132,12 +131,23 @@ public class ChessBoard implements Initializable {
     }
 
     public void setTimer(Timer timer01, Timer timer02) {
-        this.player1timer = timer01;
-        this.player2timer = timer02;
+        this.player1TimerController = timer01;
+        this.player2TimerController = timer02;
     }
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public void clear(){
+        for(int i = 0; i < 19; ++i){
+            for (int j = 0; j < 19;++j){
+                if(Board.stones[i][j].color != Stone.None){
+                    chessPane.getChildren().remove(stonesCircle[i][j]);
+                }
+            }
+        }
+        board.clear();
     }
 
     @Override
