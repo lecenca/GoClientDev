@@ -39,8 +39,8 @@ public class Connect {
      * private ChatBox chatBox;
      */
     private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP;
-    private static int PORT;
+    private static String IP = "192.168.56.1";
+    private static int PORT = 10005;
     private static Socket socket;
     private static OutputStream os;
     private static InputStream is;
@@ -60,8 +60,9 @@ public class Connect {
             InputStream inputStream = this.getClass().getResourceAsStream("Connect.properties");
             Properties pro = new Properties();
             pro.load(inputStream);
-            IP = pro.getProperty("IP");
-            PORT = Integer.parseInt(pro.getProperty("PORT"));
+            /*IP = pro.getProperty("IP");
+            PORT = Integer.parseInt(pro.getProperty("PORT"));*/
+
 
             socket = new Socket(IP, PORT);
             os = socket.getOutputStream();
@@ -231,35 +232,36 @@ public class Connect {
         b[1] = (byte) (n >> 8 & 0xff);
         b[2] = (byte) (n >> 16 & 0xff);
         b[3] = (byte) (n >> 24 & 0xff);
-        return b;
+        return new byte[]{
+                (byte) (n & 0xff),
+                (byte) ((n >> 8) & 0xff),
+                (byte) ((n >> 16) & 0xff),
+                (byte) ((n >> 24) & 0xff)
+        };
     }
 
     // For C/C++ on Linux/Unix.
     public static byte[] intToByteHH(int n) {
-        byte[] b = new byte[4];
-        b[3] = (byte) (n & 0xff);
-        b[2] = (byte) (n >> 8 & 0xff);
-        b[1] = (byte) (n >> 16 & 0xff);
-        b[0] = (byte) (n >> 24 & 0xff);
-        return b;
+        return new byte[]{
+                (byte) ((n >> 24) & 0xff),
+                (byte) ((n >> 16) & 0xff),
+                (byte) ((n >> 8) & 0xff),
+                (byte) (n & 0xff)
+        };
     }
 
     public static int byteToIntLH(byte[] bytes) {
-        int result = 0;
-        result += bytes[3] << 24;
-        result += bytes[2] << 16;
-        result += bytes[1] << 8;
-        result += bytes[0];
-        return result;
+        return ((bytes[3] & 0xFF) << 24) |
+                ((bytes[2] & 0xFF) << 16) |
+                ((bytes[1] & 0xFF) << 8) |
+                (bytes[0] & 0xFF);
     }
 
     public static int byteToIntHH(byte[] bytes) {
-        int result = 0;
-        result += bytes[0] << 24;
-        result += bytes[1] << 16;
-        result += bytes[2] << 8;
-        result += bytes[3];
-        return result;
+        return ((bytes[0] & 0xFF) << 24) |
+                ((bytes[1] & 0xFF) << 16) |
+                ((bytes[2] & 0xFF) << 8) |
+                (bytes[3] & 0xFF);
     }
 
     public void closeInputstream() {

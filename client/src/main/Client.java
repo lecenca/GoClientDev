@@ -9,7 +9,6 @@ import src.main.view.GameController;
 import src.main.view.LobbyController;
 import src.main.view.LoginController;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -19,14 +18,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import src.main.view.SignupController;
 import src.util.MessageQueue;
-import src.util.MyComparator;
+import src.util.UserComparator;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Client extends Application {
-	private MyComparator comparator = new MyComparator();
+	private UserComparator comparator = new UserComparator();
 	private Stage primaryStage;
 	private Stage createRoomStage;
 	private Stage gameStage;
