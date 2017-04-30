@@ -8,6 +8,7 @@ import src.main.Client;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import src.main.User;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
