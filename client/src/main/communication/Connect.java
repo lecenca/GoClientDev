@@ -2,10 +2,7 @@ package src.main.communication;
 
 import com.alibaba.fastjson.JSONObject;
 
-import src.main.Client;
-import src.main.Room;
-import src.main.Type;
-import src.main.User;
+import src.main.*;
 
 import src.main.view.ChatBox;
 import src.main.view.LobbyController;
@@ -172,6 +169,9 @@ public class Connect {
 			case Type.Response.FETCH_PLAYERS_INFO_SUCCESS:
 				handleFetchPlayer(jsonObject);
 				break;
+			 case Type.Response.PLACECHESS_SUCCESS:
+                handleGameAction(jsonObject);
+                break;
 			default:
 				break;
 			}
@@ -222,7 +222,20 @@ public class Connect {
 			System.out.println("handle list:" + playerList);
 		}
 	}
-
+	private void handleGameAction(JSONObject jsonObject) {
+        Client.getGameController().place(
+                jsonObject.getIntValue("x"),
+                jsonObject.getIntValue("y"),
+                jsonObject.getIntValue("color"));
+        if (jsonObject.getIntValue("action") == Type.Action.KILL) {
+            ArrayList<Stone> deadList = Decoder.parseKillList(jsonObject);
+            Client.getGameController().kill(deadList);
+            Client.getGameController().checkKo(
+                    jsonObject.getIntValue("x"),
+                    jsonObject.getIntValue("y"),
+                    deadList);
+        }
+    }
 	// For C/C++ on Windows.
 	private static byte[] toLH(int n) {
 		byte[] b = new byte[4];

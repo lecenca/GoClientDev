@@ -27,6 +27,10 @@ public class ChatBox implements Initializable {
         });
     }
 
+    public void clearMessage(){
+        chatBox.getItems().clear();
+    }
+
     public void sendMessage(String message) {
         chatBox.getItems().add(message);
     }

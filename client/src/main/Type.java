@@ -18,7 +18,8 @@ public class Type {
                 ACTION = 11,
                 GAMERESULT = 12,
                 SEND_MSG = 13,
-                GROUP_CHAT = 14;
+                GROUP_CHAT = 14,
+                JUDGE = 15;
     }
 
     public static class Response {
