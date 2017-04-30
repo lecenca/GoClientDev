@@ -31,7 +31,7 @@ public class Client extends Application {
 	private Stage gameStage;
 	private Stage lobbyStage = null;
 	private Stage signupStage = null;
-	private User account;
+	private User user;
 	private Connect connect;
 	private ArrayList playerList = new ArrayList();
 	private LobbyController lobbyController;
@@ -124,7 +124,7 @@ public class Client extends Application {
 		roomData.add(new Room(5, "room5", "player1", "player2", 1));
 		roomData.add(new Room(6, "room6", "player1", "player2", 1));
 		/********* 这是要的 ***********/
-		// connect = new Connect();
+        connect = new Connect();
 		/*****************************/
 		signupStage = new Stage();
 		lobbyStage = new Stage();
@@ -203,7 +203,7 @@ public class Client extends Application {
 		createRoomController.setRoomList(roomList);
 	}
 
-	public void gotoGame() throws Exception {
+	public void gotoGame(Room room) throws Exception {
 		gameStage = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setBuilderFactory(new JavaFXBuilderFactory());
@@ -213,6 +213,7 @@ public class Client extends Application {
 		gameStage.show();
 		GameController gameController = (GameController) loader.getController();
 		gameController.setClient(this);
+		gameController.setRoom(room);
 	}
 
 	private Initializable replaceSceneContent(String fxml) throws Exception {
@@ -262,12 +263,12 @@ public class Client extends Application {
 		connect = new Connect();
 	}
 
-	public void setAccount(User account) {
-		this.account = account;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public User getAccount() {
-		return account;
+	public User getUser() {
+		return user;
 	}
 
 	public Stage getPrimaryStage() {

@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
 
 public class ChessBoard implements Initializable {
 
-    private static boolean ready;
     private Timer player1timer;
     private Timer player2timer;
     private Board board = new Board();
@@ -41,31 +40,34 @@ public class ChessBoard implements Initializable {
 
     @FXML
     private void onClick(MouseEvent event) {
-        /*********** test ***********/
-        if(color==-1){
-            player1timer.pause();
-            player2timer.start();
-        }else{
-            player2timer.pause();
-            player1timer.start();
-        }
-        /*********** test ***********/
-        getPixelPos(event);
-        int action = action();
-        if (action != Type.Action.INVALID) {
-            String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
-            System.out.println(jsonmsg);
-            if (action == Type.Action.KILL) {
-                place(index.x, index.y, color);
-                for (int chain : Board.dead) {
-                    remove(chain);
-                }
-                board.remove();
+        if (GameController.isBegin()) {
+            /*********** test ***********/
+            if (color == -1) {
+                player1timer.pause();
+                player2timer.start();
             } else {
-                place(index.x, index.y, color);
+                player2timer.pause();
+                player1timer.start();
             }
-            color = -color;
+            /*********** test ***********/
+            getPixelPos(event);
+            int action = action();
+            if (action != Type.Action.INVALID) {
+                String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
+                System.out.println(jsonmsg);
+                if (action == Type.Action.KILL) {
+                    place(index.x, index.y, color);
+                    for (int chain : Board.dead) {
+                        remove(chain);
+                    }
+                    board.remove();
+                } else {
+                    place(index.x, index.y, color);
+                }
+                color = -color;
+            }
         }
+
     }
 
     private void getPixelPos(MouseEvent event) {
@@ -129,11 +131,6 @@ public class ChessBoard implements Initializable {
         System.out.println();
     }
 
-
-    public void setReady(boolean ready) {
-        this.ready = ready;
-    }
-
     public void setTimer(Timer timer01, Timer timer02) {
         this.player1timer = timer01;
         this.player2timer = timer02;
@@ -149,7 +146,6 @@ public class ChessBoard implements Initializable {
         drawLine();
         drawStar();
         initStonesCircle();
-        ready = false;
     }
 
     private void drawBoard() {

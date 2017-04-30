@@ -8,7 +8,9 @@ import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.Room;
+import src.main.Type;
 import src.main.User;
+import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
@@ -62,7 +64,8 @@ public class LobbyController implements Initializable {
     private ObservableList<Room> roomData = FXCollections.observableArrayList();
     private ObservableList<User> playerData = FXCollections.observableArrayList();
 
-    @FXML private ProgressBar progress = new ProgressBar();
+    @FXML
+    private ProgressBar progress = new ProgressBar();
 
     /*
      * private static ArrayList<Room> rooms; private static ArrayList<User>
@@ -77,7 +80,7 @@ public class LobbyController implements Initializable {
         public void run() {
             System.out.println("监听玩家列表线程启动！");
             while (true) {
-				/*if(!players.isEmpty()) {
+                /*if(!players.isEmpty()) {
 					playerData.add(players.remove());
 				}*/
                 try {
@@ -112,30 +115,31 @@ public class LobbyController implements Initializable {
 
         }
     });
-    
+
     private Thread chatThread = new Thread(new Runnable() {
-		
-		@Override
-		public void run() {
-			System.out.println("聊天线程启动");
-			// TODO Auto-generated method stub
-			while(true) {
+
+        @Override
+        public void run() {
+            System.out.println("聊天线程启动");
+            // TODO Auto-generated method stub
+            while (true) {
 				/*if(!chatMessage.isEmpty()) {
 					 chatBoxController.sentSentence(chatMessage.remove());
 				}*/
-				
-				 try {	
-					 	chatBoxController.sentSentence("hello");
-	                    Thread.currentThread().sleep(2000);
-	                } catch(IllegalStateException e) {
-	                	System.out.println("异常了");
-	                }catch (InterruptedException e) {
-	                    // TODO Auto-generated catch block
-	                    e.printStackTrace();
-	                }
-			}
-		}
-	});
+
+                try {
+                    chatBoxController.sentSentence("hello");
+                    Thread.currentThread().sleep(2000);
+                } catch (IllegalStateException e) {
+                    System.out.println("异常了");
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
+
     public LobbyController() {
         // TODO Auto-generated constructor stub
         //test data as bellow
@@ -173,7 +177,8 @@ public class LobbyController implements Initializable {
 
     @FXML
     private void fastMatch() throws Exception {
-        client.gotoGame();
+        // TODO: find a room that is most match
+        //client.gotoGame();
     }
 
     @FXML
@@ -185,20 +190,21 @@ public class LobbyController implements Initializable {
     private void clickRoom(MouseEvent mouseEvent) throws Exception {
         if (mouseEvent.getClickCount() == 2) {
             Room room = roomList.getSelectionModel().getSelectedItem();
-            /*
-            User player02 = new User();
-            player02.setNickname("玩家二");
-            // room.setPlayer2(player02);
-            */
-            room.setPlayer2("玩家二");
-            room.setState(1);
-            /*
-            room.setState(1);
-            room.setPlayer2("玩家二");
-            room.setState(1);
-            */
-            System.out.println("you click");
-            client.gotoGame();
+            /*if (room.getPlayer1() == null || room.getPlayer2() == null ) {
+                if (room.getPlayer1() == null) {
+                    room.setPlayer1(client.getUser().getAccount());
+                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
+                    System.out.println("update room msg: " + msg);
+                    Connect.send(msg);
+                } else {
+                    room.setPlayer2(client.getUser().getAccount());
+                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER2IN);
+                    System.out.println("update room msg: " + msg);
+                    Connect.send(msg);
+                }
+                client.gotoGame(room);
+            }*/
+            client.gotoGame(room);
         }
     }
 
@@ -242,8 +248,9 @@ public class LobbyController implements Initializable {
         loseCol.setCellValueFactory(cellData -> cellData.getValue().getLoseProperty());
         playerStateCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());*/
     }
+
     public void setAll() {
-    	chatBoxController.setItems(client.getMessageData());
+        chatBoxController.setItems(client.getMessageData());
         roomList.setItems(client.getRoomData());
         roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
@@ -257,6 +264,7 @@ public class LobbyController implements Initializable {
         loseCol.setCellValueFactory(cellData -> cellData.getValue().getLoseProperty());
         playerStateCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
     }
+
     public ObservableList<Room> getRoomData() {
         return roomData;
     }
@@ -272,12 +280,12 @@ public class LobbyController implements Initializable {
     public static MessageQueue<User> getPlayers() {
         return players;
     }
-    
-    public static MessageQueue<String> getChatMessage() {
-		return chatMessage;
-	}
 
-	public Thread getListenPlayerList() {
+    public static MessageQueue<String> getChatMessage() {
+        return chatMessage;
+    }
+
+    public Thread getListenPlayerList() {
         return listenPlayerList;
     }
 
@@ -285,8 +293,8 @@ public class LobbyController implements Initializable {
         return listenRoomList;
     }
 
-	public Thread getChatThread() {
-		return chatThread;
-	}
-    
+    public Thread getChatThread() {
+        return chatThread;
+    }
+
 }
