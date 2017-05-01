@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -190,9 +192,22 @@ public class ChessBoard implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        /****** 要的 ******/
+        /*
         drawBoard();
         drawLine();
         drawStar();
+        */
+        /******* 要的 ******/
+        /*******************/
+        Image boardPicture = new Image("qipan003.png");
+        ImageView boardView = new ImageView(boardPicture);
+        boardView.setFitWidth(580);
+        boardView.setFitHeight(580);
+        chessPane.getChildren().add(boardView);
+        drawLine();
+        drawStar();
+        /*******************/
         initStonesCircle();
         initStepsLable();
     }
