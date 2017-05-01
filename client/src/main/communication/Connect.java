@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import src.main.*;
 
 import src.main.view.ChatBox;
-import src.main.view.LobbyController;
 import src.main.view.LoginController;
 import src.main.view.SignupController;
 import src.util.MessageQueue;

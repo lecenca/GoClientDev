@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -35,7 +37,7 @@ public class ChessBoard implements Initializable {
     private Pane chessPane;
 
     private static final int borderGap = 20;
-    private static final int stoneGap = 32;
+    private static final int stoneGap = 30;
     private static final int xLen = 18 * stoneGap + 2 * borderGap;
     private static final int yLen = 18 * stoneGap + 2 * borderGap;
     private static final int stoneRadius = (stoneGap - 2) / 2;
@@ -111,10 +113,10 @@ public class ChessBoard implements Initializable {
         Label step = steps[x][y];
         System.out.println("ChessBoard Place: (" + x + "," + y + ")");
         if (color == Stone.Black) {
-            stone.setFill(Color.BLACK);
+            stone.setFill(Color.color(0.1, 0.1, 0.1));
             step.setTextFill(Color.WHITE);
         } else {
-            stone.setFill(Color.color(0.97, 0.97, 0.97));
+            stone.setFill(Color.color(0.97, 0.98, 0.98));
             step.setTextFill(Color.BLACK);
         }
         stone.setLayoutX(pixel.x);
@@ -123,9 +125,9 @@ public class ChessBoard implements Initializable {
         chessPane.getChildren().add(stone);
         board.add(x, y, color);
         step.setText(Integer.toString(Board.stones[x][y].step));
-        step.setPrefSize(20, 10);
-        step.setLayoutX(pixel.x - 10);
-        step.setLayoutY(pixel.y - 7);
+        step.setPrefSize(24, 12);
+        step.setLayoutX(pixel.x - 12);
+        step.setLayoutY(pixel.y - 8);
         step.setAlignment(Pos.BASELINE_CENTER);
         if (Client.getGameController().isShowStep()) {
             chessPane.getChildren().add(step);
@@ -190,9 +192,22 @@ public class ChessBoard implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        /****** 要的 ******/
+        /*
         drawBoard();
         drawLine();
         drawStar();
+        */
+        /******* 要的 ******/
+        /*******************/
+        Image boardPicture = new Image("qipan003.png");
+        ImageView boardView = new ImageView(boardPicture);
+        boardView.setFitWidth(580);
+        boardView.setFitHeight(580);
+        chessPane.getChildren().add(boardView);
+        drawLine();
+        drawStar();
+        /*******************/
         initStonesCircle();
         initStepsLable();
     }
