@@ -37,7 +37,7 @@ public class Client extends Application {
 	private Connect connect;
 	private ArrayList playerList = new ArrayList();
 	private LobbyController lobbyController;
-	private GameController gameController;
+	private static GameController gameController;
 	private ObservableList<Room> roomData = FXCollections.observableArrayList();
 	private ObservableList<User> playerData = FXCollections.observableArrayList();
 	private ObservableList<String> messageData = FXCollections.observableArrayList();
@@ -342,4 +342,8 @@ public class Client extends Application {
 		launch(args);
 	}
 
+	public static GameController getGameController() {
+		return gameController;
+	}
+	
 }
