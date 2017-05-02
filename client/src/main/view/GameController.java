@@ -124,7 +124,10 @@ public class GameController implements Initializable {
 
     @FXML
     private void chat() {
-        chatBoxController.sendMessage(inputField.getText());
+        chatBoxController.sendMessage("无名:" + inputField.getText());
+        client.getConnect().send("无名:" + inputField.getText());
+        inputField.clear();
+        send.setDisable(true);
     }
 
     @FXML
@@ -153,7 +156,14 @@ public class GameController implements Initializable {
         client.getConnect().send(msg);
         Connect.waitForRec();
     }
-
+    @FXML
+    private void hasText() {
+    	String text = inputField.getText();
+    	if(text == null || "".equals(text) || text.length() == 0)
+    		send.setDisable(true);
+    	else
+    		send.setDisable(false);
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         player1TimerController.init(1, 10, 3);

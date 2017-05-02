@@ -5,7 +5,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import src.main.Client;
-
+import src.main.Type;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.User;
@@ -33,7 +33,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void login() throws Exception {
-        if (/*checkValid()*/true) {
+        if (checkValid()) {
             client.getPrimaryStage().close();
             client.gotoLobby();
         }
@@ -64,9 +64,11 @@ public class LoginController implements Initializable {
         }
         if (!account.isEmpty() && !password.isEmpty()) {
             String json = Encoder.loginRequest(this.account.getText(), this.password.getText());
-            System.out.println(json);
+            //System.out.println(json);
             client.getConnect().send(json);
-            Connect.waitForRec();
+            //Connect.waitForRec();
+            client.getConnect().waitForRec(Type.Response.LOGIN_SUCCESS,Type.Response.LOGIN_FAILED);
+            
             /*json = Encoder.fetchRoomsRequest();
             client.getConnect().send(json);
             Connect.waitForRec();

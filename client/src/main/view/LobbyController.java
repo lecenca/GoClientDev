@@ -159,8 +159,10 @@ public class LobbyController implements Initializable {
     @FXML
     private void send() {
         /************* test ********************/
-        chatBoxController.sendMessage(inputField.getText());
-        client.getConnect().send(inputField.getText());
+        chatBoxController.sendMessage("无名:" + inputField.getText());
+        client.getConnect().send("无名:" + inputField.getText());
+        inputField.clear();
+        sentBtn.setDisable(true);
         /************* test ********************/
     }
 
@@ -205,7 +207,14 @@ public class LobbyController implements Initializable {
             client.gotoGame(room);
         }
     }
-
+    @FXML
+    private void hasText() {
+    	String text = inputField.getText();
+    	if(text == null || "".equals(text) || text.length() == 0)
+    		sentBtn.setDisable(true);
+    	else
+    		sentBtn.setDisable(false);
+    }
     public void setClient(Client client) {
         this.client = client;
     }
@@ -248,7 +257,7 @@ public class LobbyController implements Initializable {
     }
 
     public void setAll() {
-        chatBoxController.setItems(client.getMessageData());
+    	chatBoxController.setItems(client.getMessageData());
         roomList.setItems(client.getRoomData());
         roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());

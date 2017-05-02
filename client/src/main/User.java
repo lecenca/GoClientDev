@@ -24,6 +24,37 @@ public class User {
             level = 0;
             rank = 1000;
         }
+		public int getWin() {
+			return win;
+		}
+		public void setWin(int win) {
+			this.win = win;
+		}
+		public int getLose() {
+			return lose;
+		}
+		public void setLose(int lose) {
+			this.lose = lose;
+		}
+		public int getDraw() {
+			return draw;
+		}
+		public void setDraw(int draw) {
+			this.draw = draw;
+		}
+		public int getLevel() {
+			return level;
+		}
+		public void setLevel(int level) {
+			this.level = level;
+		}
+		public int getRank() {
+			return rank;
+		}
+		public void setRank(int rank) {
+			this.rank = rank;
+		}
+        
     }
 
     private String account;
@@ -112,8 +143,16 @@ public class User {
     public StringProperty getLevelProperty() {
         return new SimpleStringProperty(level[this.data.level]);
     }
+    
+    public GameData getData() {
+		return data;
+	}
 
-    public StringProperty getStateProperty() {
+	public void setData(GameData data) {
+		this.data = data;
+	}
+
+	public StringProperty getStateProperty() {
         if (this.state == Type.State.IDLE) {
             return new SimpleStringProperty("闲逛中");
         }

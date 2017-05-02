@@ -78,7 +78,7 @@ public class Room {
     public void setState(int state) {
         this.state = state;
     }
-
+    
     public String getPassword()
     {
         return password;
@@ -88,7 +88,7 @@ public class Room {
     {
         this.password = password;
     }
-
+    
     /************* test ********************/
    public StringProperty getIdProperty() {
 	   return new SimpleStringProperty(Integer.toString(this.id));
