@@ -19,12 +19,12 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.GameController">
    <children>
       <fx:include fx:id="board" layoutX="40" layoutY="40" source="ChessBoard.fxml" />
-      <Button fx:id="send" layoutX="991.0" layoutY="651.0" mnemonicParsing="false" onAction="#chat" prefHeight="30.0" prefWidth="65.0" text="发送">
+      <Button fx:id="send" disable="true" layoutX="991.0" layoutY="651.0" mnemonicParsing="false" onAction="#chat" prefHeight="30.0" prefWidth="65.0" text="发送">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <TextField fx:id="inputField" layoutX="684.0" layoutY="651.0" prefHeight="30.0" prefWidth="307.0">
+      <TextField fx:id="inputField" layoutX="684.0" layoutY="651.0" onKeyPressed="#hasText" prefHeight="30.0" prefWidth="307.0">
          <font>
             <Font size="15.0" />
          </font>

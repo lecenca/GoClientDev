@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 
 import src.main.*;
 
-import src.main.view.ChatBox;
 import src.main.view.LoginController;
 import src.main.view.SignupController;
 import src.util.MessageQueue;
@@ -19,9 +18,7 @@ import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Connect {
 	/*
@@ -34,8 +31,8 @@ public class Connect {
 	 * private String registerMessage; private String chatMessage = "hello";
 	 * private ChatBox chatBox;
 	 */
-	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-	private static String IP = "192.168.56.1";
+	//private final static String LINE_SEPARATOR = System.getProperty("line.separator");
+	private static String IP = "172.16.90.242";
 	private static int PORT = 10005;
 	private static Socket socket;
 	private static OutputStream os;
@@ -43,11 +40,10 @@ public class Connect {
 	private static PrintWriter pw;
 	private static BufferedReader br;
 	private Thread receiveThread;
-	private Thread chatThread;
-	private String loginMessage;
-	private String registerMessage;
+	//private Thread chatThread;
+	//private String loginMessage;
+	//private String registerMessage;
 	private String chatMessage = "hello";
-	private ChatBox chatBox;
 	private static ArrayList<Integer> responseValues = new ArrayList<>();
 	public static boolean recv = false;
 
@@ -75,7 +71,7 @@ public class Connect {
 					}
 				}
 			});
-			chatThread = new Thread(new Runnable() {
+			/*chatThread = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					System.out.println("聊天线程启动");
@@ -85,11 +81,11 @@ public class Connect {
 						while (msg == null)
 							msg = chatMessage;
 						System.out.println(msg);
-						/*if (chatBox != null)
-							chatBox.setItems(msg);*/
+						if (chatBox != null)
+							chatBox.setItems(msg);
 					}
 				}
-			});
+			});*/
 		} catch (ConnectException e) {
 			e.printStackTrace();
 			System.out.println("服务器连接失败");
@@ -99,12 +95,17 @@ public class Connect {
 	}
 
 	public static void send(String msg) {
-		String sendMsg = new String(intToByteHH(msg.length()), 0, 4);
-		System.out.println("len: " + sendMsg.length() + msg.length() + ", msg: " + sendMsg + msg);
-		pw.write(sendMsg + msg);
-		pw.flush();
-		recv = false;
-		System.out.println("发送成功！");
+		
+		try {
+			String sendMsg = new String(intToByteHH(msg.getBytes().length), 0, 4);
+			System.out.println("客户端发送信息:" + "len: " + sendMsg.getBytes().length + msg.getBytes().length + ", msg: " + sendMsg + msg);
+			pw.write(sendMsg + msg);
+			pw.flush();
+			recv = false;
+			System.out.println("发送成功！");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void waitForRec(Integer... requestValues) {
@@ -129,16 +130,38 @@ public class Connect {
 			}
 		}
 	}
-
+	public static void waitForRec2() {
+		int i = 0;
+		while (!Connect.recv) {
+			try {
+				Thread.currentThread().sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			/*if (recv)
+				for (Integer requestValue : requestValues) {
+					for (Integer resonseValue : responseValues) {
+						if (resonseValue == requestValue)
+							break outer;
+					}
+				}*/
+			i++;
+			if (i == 100) {
+				JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+				break;
+			}
+		}
+	}
 	public void receive() {
 		String msg = null;
 		byte[] first = new byte[4];
 		try {
 			is.read(first);
 			int len = byteToIntHH(first);
+			System.out.println("服务器响应信息长度:" + len);
 			byte[] buff = new byte[len];
 			is.read(buff);
-			msg = new String(buff, 0, len);
+			msg = new String(buff,0,len);
 			System.out.println("receive from server: " + msg);
 			JSONObject jsonObject = Decoder.parseObject(msg);
 			int response_type = jsonObject.getIntValue("response_type");
@@ -171,13 +194,16 @@ public class Connect {
 			 case Type.Response.PLACECHESS_SUCCESS:
                 handleGameAction(jsonObject);
                 break;
+			 case Type.Response.GROUP_CHAT_MSG:
+				 handleChatMessage(jsonObject);
+				 break;
 			default:
 				break;
 			}
 			responseValues.add(response_type);
 			recv = true;
-			registerMessage = msg;
-			chatMessage = msg;
+			//registerMessage = msg;
+			//chatMessage = msg;
 		} catch (ConnectException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -187,17 +213,25 @@ public class Connect {
 		}
 	}
 
+	private void handleChatMessage(JSONObject jsonObject) {
+		String string = jsonObject.getString("chatMessage");
+		MessageQueue<String> messages = Client.getChatMessages();
+		messages.add(string);
+	}
+
 	private void handleAccountCheck(boolean state) {
 		SignupController.accountCheckSuccess = state;
+		System.out.println("SingupController accountCheckSuccess:" + SignupController.accountCheckSuccess);
 	}
 
 	private void handleRegist(boolean state) {
 		SignupController.registSuccess = state;
+		System.out.println("SinupController registSuccess:" + SignupController.registSuccess);
 	}
 
 	private void handleLogin(boolean state) {
 		LoginController.correct = state;
-		System.out.println("corect:" + LoginController.correct);
+		System.out.println("LoginController correct:" + LoginController.correct);
 	}
 
 	private void handleFetchRoom(JSONObject jsonObject) {
@@ -280,25 +314,25 @@ public class Connect {
 		}
 	}
 
-	public String getLoginMessage() {
+	/*public String getLoginMessage() {
 		return loginMessage;
 	}
 
 	public void setLoginMessage(String loginMessage) {
 		this.loginMessage = loginMessage;
-	}
+	}*/
 
 	public Thread getReceiveThread() {
 		return receiveThread;
 	}
-
+	/*
 	public String getRegisterMessage() {
 		return registerMessage;
 	}
 
 	public void setRegisterMessage(String registerMessage) {
 		this.registerMessage = registerMessage;
-	}
+	}*/
 
 	public String getChatMessage() {
 		return chatMessage;
@@ -308,16 +342,15 @@ public class Connect {
 		this.chatMessage = chatMessage;
 	}
 
-	public void setChatBox(ChatBox chatBox) {
-		this.chatBox = chatBox;
-	}
+	/*public void setChatBox(ChatBox chatBox) {
+	}*/
 
-	public Thread getChatThread() {
+	/*public Thread getChatThread() {
 		return chatThread;
 	}
 
 	public void setChatThread(Thread chatThread) {
 		this.chatThread = chatThread;
-	}
+	}*/
 
 }

@@ -11,6 +11,7 @@ import src.main.view.GameController;
 import src.main.view.LobbyController;
 import src.main.view.LoginController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -48,20 +49,20 @@ public class Client extends Application {
 
 		@Override
 		public void run() {
-			
+
 			System.out.println("监听玩家列表线程启动！");
 			while (true) {
-				/*
-				 * if(!players.isEmpty()) { playerData.add(players.remove()); }
-				 */
-				try {
-					Thread.currentThread().sleep(1000);
-					playerData.add(new User("tom", 10, 100, 60, 1));
-					playerData.sorted(comparator);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+				if (!players.isEmpty()) {
+					playerData.add(players.remove());
 				}
+
+				/*
+				 * try { Thread.currentThread().sleep(1000); playerData.add(new
+				 * User("tom", 10, 100, 60, 1)); playerData.sorted(comparator);
+				 * } catch (InterruptedException e) { // TODO Auto-generated
+				 * catch block e.printStackTrace(); }
+				 */
 			}
 
 		}
@@ -73,62 +74,86 @@ public class Client extends Application {
 			System.out.println("监听房间列表线程启动！");
 			// TODO Auto-generated method stub
 			while (true) {
-				/*
-				 * if(!rooms.isEmpty()) { roomData.add(rooms.remove()); }
-				 */
-				roomData.add(new Room(2, "room..", "player1", "player2", 1));
-				try {
-					Thread.currentThread().sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+				if (!rooms.isEmpty()) {
+					roomData.add(rooms.remove());
 				}
+
+				/*
+				 * roomData.add(new Room(2, "room..", "player1", "player2", 1));
+				 * try { Thread.currentThread().sleep(2000); } catch
+				 * (InterruptedException e) { // TODO Auto-generated catch block
+				 * e.printStackTrace(); }
+				 */
 			}
 
 		}
 	});
-	
-	/*private Thread chatThread = new Thread(new Runnable() {
+
+	private Thread chatThread = new Thread(new Runnable() {
 
 		@Override
 		public void run() {
-			System.out.println("聊天线程启动");
-			// TODO Auto-generated method stub
+			System.out.println("聊天线程启动！");
 			while (true) {
-				
-				 * if(!chatMessage.isEmpty()) {
-				 * chatBoxController.sendMessage(chatMessage.remove()); }
-				 
-				// chatBoxController.sendMessage("hello");
 				if (!chatMessages.isEmpty())
-					messageData.add(chatMessages.remove());
-				try {
-					messageData.add("hello");
-					Thread.currentThread().sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					try {
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								if (!chatMessages.isEmpty())
+									messageData.add(chatMessages.remove());
+							}
+						});
+						
+					} catch (Exception e) {
+
+					}
+				/*
+				 * messageData.add("hello"); try {
+				 * Thread.currentThread().sleep(2000); } catch
+				 * (InterruptedException e) { // TODO Auto-generated catch block
+				 * e.printStackTrace(); }
+				 */
 			}
+
 		}
-	});*/
+
+		/*
+		 * @Override public void run() { System.out.println("聊天线程启动"); // TODO
+		 * Auto-generated method stub while (true) {
+		 * 
+		 * if(!chatMessage.isEmpty()) {
+		 * chatBoxController.sendMessage(chatMessage.remove()); }
+		 * 
+		 * // chatBoxController.sendMessage("hello"); if
+		 * (!chatMessages.isEmpty()) messageData.add(chatMessages.remove()); try
+		 * { messageData.add("hello"); Thread.currentThread().sleep(2000); }
+		 * catch (InterruptedException e) { catch block e.printStackTrace(); } }
+		 * }
+		 */ });
 
 	public Client() throws IOException {
-		playerData.add(new User("zhangsan", 8, 30, 10, 1));
+
+		/*playerData.add(new User("zhangsan", 8, 30, 10, 1));
 		playerData.add(new User("wangwu", 18, 20, 20, 1));
 		playerData.add(new User("lisi", 19, 60, 10, 1));
 		playerData.add(new User("zhangsan", 8, 40, 40, 1));
 		playerData.add(new User("wangwu", 18, 30, 30, 1));
-		playerData.add(new User("lisi", 19, 60, 60, 1));
+		playerData.add(new User("lisi", 19, 60, 60, 1));*/
+
 		playerData.sort(comparator);
-		roomData.add(new Room(1, "room1", "player1", "player2", 1));
+
+		/*roomData.add(new Room(1, "room1", "player1", "player2", 1));
 		roomData.add(new Room(2, "room2", "player1", "player2", 1));
 		roomData.add(new Room(3, "room3", "player1", "player2", 1));
 		roomData.add(new Room(4, "room4", "player1", "player2", 1));
 		roomData.add(new Room(5, "room5", "player1", "player2", 1));
-		roomData.add(new Room(6, "room6", "player1", "player2", 1));
+		roomData.add(new Room(6, "room6", "player1", "player2", 1));*/
+
 		/********* 这是要的 ***********/
-       // connect = new Connect();
+		connect = new Connect();
 		/*****************************/
 		signupStage = new Stage();
 		lobbyStage = new Stage();
@@ -138,23 +163,25 @@ public class Client extends Application {
 		Pane lobbyPane = loader.load();
 		Scene lobbyScene = new Scene(lobbyPane);
 		lobbyStage.setScene(lobbyScene);
-		lobbyController = loader.getController();//(LobbyController) changeStage("view/Lobby.fxml", lobbyStage);
+		lobbyController = loader.getController();// (LobbyController)
+													// changeStage("view/Lobby.fxml",
+													// lobbyStage);
 		lobbyController.setClient(this);
 		lobbyController.setAll();
-        FXMLLoader loader2 = new FXMLLoader();
-        loader2.setLocation(getClass().getResource("view/Game.fxml"));
-        Pane gamePane = loader2.load();
-        Scene gameScene = new Scene(gamePane);
-        gameStage.setScene(gameScene);
-        gameController = loader2.getController();
-        gameController.setClient(this);
-        gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                gameController.clear();
-                System.out.println("关闭游戏界面 clear()");
-            }
-        });
+		FXMLLoader loader2 = new FXMLLoader();
+		loader2.setLocation(getClass().getResource("view/Game.fxml"));
+		Pane gamePane = loader2.load();
+		Scene gameScene = new Scene(gamePane);
+		gameStage.setScene(gameScene);
+		gameController = loader2.getController();
+		gameController.setClient(this);
+		gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent event) {
+				gameController.clear();
+				System.out.println("关闭游戏界面 clear()");
+			}
+		});
 	}
 
 	@Override
@@ -171,8 +198,8 @@ public class Client extends Application {
 		listenPlayerList.start();
 		listenRoomList.setDaemon(true);
 		listenRoomList.start();
-		/*chatThread.setDaemon(true);
-		chatThread.start();*/
+		chatThread.setDaemon(true);
+		chatThread.start();
 	}
 
 	public void gotoLogin() throws Exception {
@@ -184,15 +211,16 @@ public class Client extends Application {
 
 	public void gotoLobby() throws Exception {
 		lobbyStage.show();
-		/*Thread listenPlayerList = lobbyController.getListenPlayerList();
-		listenPlayerList.setDaemon(true);
-		listenPlayerList.start();
-		Thread listenRoomList = lobbyController.getListenRoomList();
-		listenRoomList.setDaemon(true);
-		listenRoomList.start();*/
+		/*
+		 * Thread listenPlayerList = lobbyController.getListenPlayerList();
+		 * listenPlayerList.setDaemon(true); listenPlayerList.start(); Thread
+		 * listenRoomList = lobbyController.getListenRoomList();
+		 * listenRoomList.setDaemon(true); listenRoomList.start();
+		 */
 		Thread chatThread = lobbyController.getChatThread();
-		chatThread.setDaemon(true);
-		chatThread.start();
+		/*
+		 * chatThread.setDaemon(true); chatThread.start();
+		 */
 		lobbyController.fetchLobbyInfo();
 	}
 
@@ -222,15 +250,15 @@ public class Client extends Application {
 	}
 
 	public void gotoGame(Room room) throws Exception {
-		/*gameStage = new Stage();
-		FXMLLoader loader = new FXMLLoader();
-		loader.setBuilderFactory(new JavaFXBuilderFactory());
-		loader.setLocation(getClass().getResource("view/Game.fxml"));
-		InputStream in = getClass().getResourceAsStream("view/Game.fxml");
-		gameStage.setScene(new Scene(loader.load(in)));
-		gameStage.show();
-		GameController gameController = (GameController) loader.getController();
-		gameController.setClient(this);*/
+		/*
+		 * gameStage = new Stage(); FXMLLoader loader = new FXMLLoader();
+		 * loader.setBuilderFactory(new JavaFXBuilderFactory());
+		 * loader.setLocation(getClass().getResource("view/Game.fxml"));
+		 * InputStream in = getClass().getResourceAsStream("view/Game.fxml");
+		 * gameStage.setScene(new Scene(loader.load(in))); gameStage.show();
+		 * GameController gameController = (GameController)
+		 * loader.getController(); gameController.setClient(this);
+		 */
 		gameStage.show();
 		gameController.setRoom(room);
 	}
@@ -345,5 +373,5 @@ public class Client extends Application {
 	public static GameController getGameController() {
 		return gameController;
 	}
-	
+
 }

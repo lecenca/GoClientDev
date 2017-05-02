@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import src.main.User;
 import src.main.Client;
+import src.main.Type;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
@@ -89,9 +90,9 @@ public class SignupController implements Initializable {
             user.setBirthday(year, month, day);
             client.setUser(user);
             String json = Encoder.signupRequest(user);
-            System.out.println("user signup info: " + json);
+            //System.out.println("user signup info: " + json);
             client.getConnect().send(json);
-            Connect.waitForRec();
+            Connect.waitForRec(Type.Response.REGIST_SUCCESS,Type.Response.REGIST_FAILED);
             if (registSuccess) {
                 client.getsignupStage().close();
                 client.getPrimaryStage().show();
@@ -115,7 +116,7 @@ public class SignupController implements Initializable {
                 accountFormatTips.setVisible(false);
                 return false;
             }
-            if (!accountCheckOK()) {
+            if (/*!accountCheckOK()*/false) {
                 setTipsError(accountFormatTips, "账号已被注册");
                 validAccount = false;
                 return false;
@@ -246,8 +247,8 @@ public class SignupController implements Initializable {
         String account = this.account.getText();
         String json = Encoder.chechAccountRequest(account);
         client.getConnect().send(json);
-        System.out.println("account check: " + json);
-        Connect.waitForRec();
+        Connect.waitForRec(Type.Response.ACCOUNT_CHECK_SUCCESS,Type.Response.ACCOUNT_CHECK_FAILED);
+        //System.out.println("At SingupController account check: " + json);
         return accountCheckSuccess;
     }
 

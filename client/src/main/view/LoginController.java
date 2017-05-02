@@ -33,7 +33,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void login() throws Exception {
-        if (/*checkValid()*/true) {
+        if (checkValid()) {
             client.getPrimaryStage().close();
             client.gotoLobby();
         }
@@ -64,7 +64,7 @@ public class LoginController implements Initializable {
         }
         if (!account.isEmpty() && !password.isEmpty()) {
             String json = Encoder.loginRequest(this.account.getText(), this.password.getText());
-            System.out.println(json);
+            //System.out.println(json);
             client.getConnect().send(json);
             //Connect.waitForRec();
             client.getConnect().waitForRec(Type.Response.LOGIN_SUCCESS,Type.Response.LOGIN_FAILED);
