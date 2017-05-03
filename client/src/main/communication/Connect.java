@@ -94,41 +94,20 @@ public class Connect {
 		}
 	}
 
-	public static void send(String msg) {
-		
-		try {
-			/*System.out.println("信息长度：" + msg.getBytes("utf-8").length);
-			String sendMsg = new String(intToByteHH(msg.getBytes("utf-8").length), 0, 4);
-			System.out.println("客户端发送信息:" + "len: " + sendMsg.getBytes().length + msg.getBytes().length + ", msg: " + sendMsg + msg);
-			System.out.println((sendMsg + msg).getBytes().length);
-			pw.write(sendMsg + msg);
-			pw.flush();
-			recv = false;
-			System.out.println("发送成功！");*/
-			System.out.println("信息长度int:" + msg.getBytes("utf-8").length);
-			System.out.println("信息长度字节数" + intToByteHH(msg.getBytes("utf-8").length).length);
-			System.out.println("客户端发送信息：" + msg);
-			byte[] len =  intToByteHH(msg.getBytes().length);
-			byte[] msgbytes = msg.getBytes();
-			/*byte[] total = new byte[len.length + msgbytes.length];
-			int count = 0;
-			for(int i = 0; i < len.length; i++) {
-				total[count] = len[i];
-				count++;
-			}
-			for(int i= 0; i < msgbytes.length; i++) {
-				total[count] = msgbytes[i];
-				count++;
-			}
-			System.out.println("发送字节数" + total.length);
-			os.write(total);*/
-			os.write(len);
-			os.write(msgbytes);
-			System.out.println("发送成功");
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
+	public static void send(String message) {
+        try {
+            /***** test *****/
+            System.out.println("message len(utf-8 bytes): " + message.getBytes("utf-8").length);
+            System.out.println("message: "+message);
+            /***** test *****/
+            os.write(intToByteHH(message.getBytes("utf-8").length));
+            os.write(message.getBytes("utf-8"));
+            os.flush();
+            recv = false;
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
 	
 	public static void waitForRec(Integer... requestValues) {
 		int i = 0;

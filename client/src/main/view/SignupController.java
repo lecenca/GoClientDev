@@ -116,7 +116,7 @@ public class SignupController implements Initializable {
                 accountFormatTips.setVisible(false);
                 return false;
             }
-            if (/*!accountCheckOK()*/false) {
+            if (!accountCheckOK()) {
                 setTipsError(accountFormatTips, "账号已被注册");
                 validAccount = false;
                 return false;

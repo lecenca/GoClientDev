@@ -145,25 +145,27 @@ public class GameController implements Initializable {
 
     @FXML
     private void surrender() {
-        String msg = Encoder.surrenderRequest(room, client.getUser().getAccount());
+        String msg = Encoder.surrenderRequest(room);
         client.getConnect().send(msg);
         Connect.waitForRec();
     }
 
     @FXML
     private void judge() {
-        String msg = Encoder.judgeRequest(room, client.getUser().getAccount());
+        String msg = Encoder.judgeRequest(room);
         client.getConnect().send(msg);
         Connect.waitForRec();
     }
+
     @FXML
     private void hasText() {
-    	String text = inputField.getText();
-    	if(text == null || "".equals(text) || text.length() == 0)
-    		send.setDisable(true);
-    	else
-    		send.setDisable(false);
+        String text = inputField.getText();
+        if (text == null || "".equals(text) || text.length() == 0)
+            send.setDisable(true);
+        else
+            send.setDisable(false);
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         player1TimerController.init(1, 10, 3);
