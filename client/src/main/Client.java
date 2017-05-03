@@ -35,7 +35,7 @@ public class Client extends Application {
 	private Stage lobbyStage = null;
 	private Stage signupStage = null;
 	private User user;
-	private Connect connect;
+	public static  Connect connect;
 	private ArrayList playerList = new ArrayList();
 	private LobbyController lobbyController;
 	private static GameController gameController;
