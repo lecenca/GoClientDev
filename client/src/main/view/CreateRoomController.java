@@ -9,10 +9,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import src.main.Client;
 import src.main.Room;
-import src.main.User;
+import src.main.Type;
 
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * Created by touhoudoge on 2017/4/9.
@@ -33,11 +36,22 @@ public class CreateRoomController implements Initializable {
     @FXML
     private ComboBox mainTime;
     @FXML
-    private ComboBox poriod;
+    private ComboBox period;
     @FXML
     private ComboBox periodTimes;
     @FXML
     private ComboBox komi;
+
+    private Set roomId = new HashSet<>();
+    private Random random = new Random();
+
+    private static String[] defaultName = {
+            "我爱MicroOnlineGo",
+            "大家一起来下棋",
+            "最怕棋不逢对手",
+            "快来挑战我",
+            "输一盘500"
+    };
 
     public void setClient(Client client) {
         this.client = client;
@@ -47,32 +61,48 @@ public class CreateRoomController implements Initializable {
     private void createRoom() {
         /************* test ********************/
         Room room = new Room();
-        room.setId(1111);
+        room.setId(getRoomId());
         String name = roomNameField.getText();
         if (name != null)
             room.setName(name);
         String password = passwordField.getText();
         if (password != null)
             room.setPassword(password);
-        User player1 = new User();
-        player1.setNickname("玩家一");
-        room.setPlayer1(player1.getAccount());
-        room.setState(0);
-        Room cell = new Room();
-        cell.setPlayer1("玩家一");
-        cell.setState(0);
-        cell.setId(1111);
-        cell.setName(room.getName());
-        roomList.getItems().add(cell);
+        room.setPlayer1(Client.getUser().getNickname());
+        room.setState(Type.RoomState.WATING);
+        room.setConfig(
+                this.komi.getSelectionModel().getSelectedIndex(),
+                this.mainTime.getSelectionModel().getSelectedIndex(),
+                this.period.getSelectionModel().getSelectedIndex(),
+                this.period.getSelectionModel().getSelectedIndex()
+                );
+        Client.getLobbyController().addRoom(room);
+        //roomList.getItems().add(room);
         client.backToLobby();
         /************* test ********************/
     }
 
+    private int getRoomId(){
+        int res = random.nextInt(65535) % 65536;
+        while(roomId.contains(res)){
+            res = random.nextInt(65535) % 65536;
+        }
+        roomId.add(res);
+        return res;
+    }
+
     private void initComboBox() {
-        mainTime.setItems(FXCollections.observableArrayList());
-        poriod.setItems(FXCollections.observableArrayList());
-        periodTimes.setItems(FXCollections.observableArrayList());
         komi.setItems(FXCollections.observableArrayList());
+        mainTime.setItems(FXCollections.observableArrayList());
+        period.setItems(FXCollections.observableArrayList());
+        periodTimes.setItems(FXCollections.observableArrayList());
+
+        komi.getItems().add("让先");
+        komi.getItems().add("黑贴3.5目");
+        komi.getItems().add("黑贴6.5目");
+        komi.setVisibleRowCount(6);
+        komi.getSelectionModel().select(2);
+
         mainTime.getItems().add("1分");
         for (int i = 5; i <= 20; i = i + 5) {
             mainTime.getItems().add(String.valueOf(i) + "分");
@@ -81,24 +111,22 @@ public class CreateRoomController implements Initializable {
         mainTime.getItems().add("40分");
         mainTime.getItems().add("60分");
         mainTime.getItems().add("90分");
-        poriod.getItems().add("15秒");
+        mainTime.setVisibleRowCount(6);
+        mainTime.getSelectionModel().select(5);
+
+        period.getItems().add("15秒");
         for (int i = 20; i <= 60; i = i + 10) {
-            poriod.getItems().add(String.valueOf(i) + "秒");
+            period.getItems().add(String.valueOf(i) + "秒");
         }
+        period.setVisibleRowCount(6);
+        period.getSelectionModel().select(2);
+
         for (int i = 1; i <= 7; i = i + 2) {
             periodTimes.getItems().add(String.valueOf(i) + "次");
         }
-        komi.getItems().add("让先");
-        komi.getItems().add("黑贴3.5目");
-        komi.getItems().add("黑贴6.5目");
         periodTimes.getItems().add("10次");
-        mainTime.setVisibleRowCount(6);
-        mainTime.getSelectionModel().select(5);
-        poriod.setVisibleRowCount(6);
-        poriod.getSelectionModel().select(2);
         periodTimes.setVisibleRowCount(6);
         periodTimes.getSelectionModel().select(1);
-        komi.getSelectionModel().select(1);
     }
 
     @FXML
@@ -112,6 +140,7 @@ public class CreateRoomController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        roomNameField.setText(defaultName[random.nextInt(5)%5]);
         initComboBox();
     }
 }
