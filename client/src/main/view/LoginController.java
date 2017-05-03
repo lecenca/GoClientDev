@@ -33,7 +33,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void login() throws Exception {
-        if (checkValid()) {
+        if (/*checkValid()*/true) {
             client.getPrimaryStage().close();
             client.gotoLobby();
             Client.getUser().setState(Type.UserState.IDLE);

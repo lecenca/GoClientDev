@@ -10,6 +10,7 @@ import src.util.MessageQueue;
 
 import javax.swing.JOptionPane;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,7 +35,7 @@ public class Connect {
 	//private final static String LINE_SEPARATOR = System.getProperty("line.separator");
 	private static String IP = "172.16.90.242";
 	private static int PORT = 10005;
-	private static Socket socket;
+	public static Socket socket;
 	private static OutputStream os;
 	private static InputStream is;
 	private static PrintWriter pw;
@@ -122,7 +123,14 @@ public class Connect {
 			System.out.println("服务器连接失败");
 		}
 	}
+	
+	public static void sendMsgToserver(String str) throws IOException {
+	    DataOutputStream dos = new DataOutputStream(os);
+            dos.write(str.getBytes());
+            dos.flush();
+            System.out.println();
 
+	}
 	public static void send(String message) {
         try {
             /***** test *****/
@@ -239,7 +247,7 @@ public class Connect {
 			e.printStackTrace();
 			System.out.println("与服务器断开连接！");
 		} catch (IOException e) {
-			System.out.println("与服务器连接异常！");
+			//System.out.println("与服务器连接异常！");
 		}
 	}
 
@@ -372,6 +380,22 @@ public class Connect {
 		this.chatMessage = chatMessage;
 	}
 
+    public static Socket getSocket() {
+        return socket;
+    }
+
+    public static void setSocket(Socket socket) {
+        Connect.socket = socket;
+    }
+
+    public static String getIP() {
+        return IP;
+    }
+
+    public static int getPORT() {
+        return PORT;
+    }
+    
 	/*public void setChatBox(ChatBox chatBox) {
 	}*/
 
@@ -382,5 +406,5 @@ public class Connect {
 	public void setChatThread(Thread chatThread) {
 		this.chatThread = chatThread;
 	}*/
-
+	
 }

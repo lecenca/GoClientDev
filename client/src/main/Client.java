@@ -25,6 +25,8 @@ import src.util.UserComparator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Client extends Application {
@@ -45,6 +47,64 @@ public class Client extends Application {
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessages = new MessageQueue<>();
+    private long checkDalay=10;
+    private long keepAliveDalay=60000;
+    private long lastTimeCheck;
+    private Thread keepAliveThread = new Thread(new Runnable() {
+        
+        @Override
+        public void run() {
+            lastTimeCheck = System.currentTimeMillis();
+            System.out.println("监听服务器连接线程启动！");
+            while(true) {
+                if(System.currentTimeMillis() - lastTimeCheck > keepAliveDalay) {
+                    try {
+                        connect.sendMsgToserver("Normal Connection");//一分钟心跳
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("与服务器断开连接");
+                        reConnect();
+                    }
+                    lastTimeCheck = System.currentTimeMillis();
+                }
+                else {
+                    try {
+                        Thread.currentThread().sleep(checkDalay);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+        }
+
+        private void reConnect() {
+            while(!isServerStart()) {
+                try {
+                    connect.setSocket(new Socket(connect.getIP(),connect.getPORT()));
+                    System.out.println("重新连接服务器成功！");
+                } catch (UnknownHostException e) {
+                    System.out.println("客户端异常！");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    System.out.println("正在重新连接服务器。。。。");
+                }
+            }
+            
+        }
+
+        private boolean isServerStart() {
+            Socket socket = connect.getSocket();
+            try {
+                socket.sendUrgentData(0);
+                return true;
+            } catch (IOException e) {
+                
+            }
+            return false;
+        }
+    });
     private Thread listenPlayerList = new Thread(new Runnable() {
 
         @Override
@@ -194,6 +254,7 @@ public class Client extends Application {
             Thread receiveThread = getConnect().getReceiveThread();
             receiveThread.setDaemon(true);
             receiveThread.start();
+            keepAliveThread.start();
         }
         listenPlayerList.setDaemon(true);
         listenPlayerList.start();
