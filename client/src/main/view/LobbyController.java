@@ -140,20 +140,6 @@ public class LobbyController implements Initializable {
     });
 
     public LobbyController() {
-        // TODO Auto-generated constructor stub
-        //test data as bellow
-        /*playerData.add(new User("zhangsan", 8, 30, 10, 1));
-        playerData.add(new User("wangwu", 18, 30, 20, 1));
-        playerData.add(new User("lisi", 19, 60, 30, 1));
-        playerData.add(new User("zhangsan", 8, 30, 40, 1));
-        playerData.add(new User("wangwu", 18, 30, 50, 1));
-        playerData.add(new User("lisi", 19, 60, 60, 1));
-        roomData.add(new Room(1, "room1", "player1", "player2", 1));
-        roomData.add(new Room(2, "room2", "player1", "player2", 1));
-        roomData.add(new Room(3, "room3", "player1", "player2", 1));
-        roomData.add(new Room(4, "room4", "player1", "player2", 1));
-        roomData.add(new Room(5, "room5", "player1", "player2", 1));
-        roomData.add(new Room(6, "room6", "player1", "player2", 1));*/
 
     }
 
@@ -217,16 +203,17 @@ public class LobbyController implements Initializable {
     	else
     		sendbtn.setDisable(false);
     }
+
     public void setClient(Client client) {
         this.client = client;
     }
 
     public void fetchLobbyInfo() {
-        String json = Encoder.fetchRoomsRequest();
-        //client.getConnect().send(json);
+        String msg1 = Encoder.fetchRoomsRequest();
+        client.getConnect().send(msg1);
         //Connect.waitForRec();
-        String json2 = Encoder.fetchPlayersRequest();
-        //client.getConnect().send(json2);
+        String msg2 = Encoder.fetchPlayersRequest();
+        client.getConnect().send(msg2);
         //Connect.waitForRec();
     }
 
