@@ -68,7 +68,6 @@ public class LoginController implements Initializable {
             client.getConnect().send(json);
             //Connect.waitForRec();
             client.getConnect().waitForRec(Type.Response.LOGIN_SUCCESS,Type.Response.LOGIN_FAILED);
-            
             /*json = Encoder.fetchRoomsRequest();
             client.getConnect().send(json);
             Connect.waitForRec();

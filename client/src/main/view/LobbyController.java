@@ -8,7 +8,9 @@ import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import src.main.Room;
+import src.main.Type;
 import src.main.User;
+import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
@@ -26,7 +28,7 @@ public class LobbyController implements Initializable {
     @FXML
     private TextField inputField;
     @FXML
-    private Button sentBtn;
+    private Button sendbtn;
     @FXML
     private Button createRoomBtn;
     @FXML
@@ -162,15 +164,15 @@ public class LobbyController implements Initializable {
         chatBoxController.sendMessage("无名:" + inputField.getText());
         client.getConnect().send("无名:" + inputField.getText());
         inputField.clear();
-        sentBtn.setDisable(true);
+        sendbtn.setDisable(true);
         /************* test ********************/
     }
 
     @FXML
     private void logout() throws Exception {
         /************* release *****************/
+        client.getConnect().send(Encoder.logoutRequest());
         client.getLobbyStage().close();
-        // client.getPrimaryStage().show();
         client.gotoLogin();
         /************* release *****************/
     }
@@ -192,18 +194,19 @@ public class LobbyController implements Initializable {
             Room room = roomList.getSelectionModel().getSelectedItem();
             /*if (room.getPlayer1() == null || room.getPlayer2() == null ) {
                 if (room.getPlayer1() == null) {
-                    room.setPlayer1(client.getUser().getAccount());
+                    room.setPlayer1(Client.getUser().getAccount());
                     String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
                     System.out.println("update room msg: " + msg);
                     Connect.send(msg);
                 } else {
-                    room.setPlayer2(client.getUser().getAccount());
+                    room.setPlayer2(Client.getUser().getAccount());
                     String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER2IN);
                     System.out.println("update room msg: " + msg);
                     Connect.send(msg);
                 }
                 client.gotoGame(room);
             }*/
+            //test
             client.gotoGame(room);
         }
     }
@@ -211,9 +214,9 @@ public class LobbyController implements Initializable {
     private void hasText() {
     	String text = inputField.getText();
     	if(text == null || "".equals(text) || text.length() == 0)
-    		sentBtn.setDisable(true);
+    		sendbtn.setDisable(true);
     	else
-    		sentBtn.setDisable(false);
+    		sendbtn.setDisable(false);
     }
     public void setClient(Client client) {
         this.client = client;

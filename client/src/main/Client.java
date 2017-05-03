@@ -34,7 +34,7 @@ public class Client extends Application {
 	private Stage gameStage;
 	private Stage lobbyStage = null;
 	private Stage signupStage = null;
-	private User user;
+	private static User user;
 	private Connect connect;
 	private ArrayList playerList = new ArrayList();
 	private LobbyController lobbyController;
@@ -310,11 +310,11 @@ public class Client extends Application {
 		connect = new Connect();
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public static void setUser(User self) {
+		user = self;
 	}
 
-	public User getUser() {
+	public static User getUser() {
 		return user;
 	}
 
