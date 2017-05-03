@@ -66,13 +66,20 @@ public class Type {
                 ACCOUNT_CHECK_FAILED = 39;
     }
 
-    public static class State {
+    public static class UserState {
         public static final int
                 OUTLINE = 0,    // 离线
                 OTHER = 1,      // 除其它情况以外的状态，如在注册，登陆界面等
                 IDLE = 2,       // 已经登陆但还没有进入游戏房间，此时玩家列表状态显示"闲逛中"
                 READY = 3,      // 已经进入游戏房间但是游戏还没有开始，此时玩家列表状态显示"准备中"
                 GAMING = 4;     // 已经开始游戏，此时玩家列表状态显示"游戏中"
+    }
+
+    public static class RoomState {
+        public static final int
+                WATING = 0,
+                READY = 1,
+                GAMING = 2;
     }
 
     public static class UpdateRoom {
