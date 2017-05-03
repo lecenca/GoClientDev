@@ -92,7 +92,10 @@ public class SignupController implements Initializable {
             String json = Encoder.signupRequest(user);
             //System.out.println("user signup info: " + json);
             client.getConnect().send(json);
-            Connect.waitForRec(Type.Response.REGIST_SUCCESS,Type.Response.REGIST_FAILED);
+           // Connect.waitForRec(Type.Response.REGIST_SUCCESS,Type.Response.REGIST_FAILED);
+            Connect.requestValues.add(Type.Response.REGIST_SUCCESS);
+            Connect.requestValues.add(Type.Response.REGIST_FAILED);
+            Connect.waitThrea.join();
             if (registSuccess) {
                 client.getsignupStage().close();
                 client.getPrimaryStage().show();
