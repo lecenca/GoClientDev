@@ -45,8 +45,37 @@ public class Connect {
 	//private String registerMessage;
 	private String chatMessage = "hello";
 	private static ArrayList<Integer> responseValues = new ArrayList<>();
+	public static ArrayList<Integer> requestValues = new ArrayList<>();
 	public static boolean recv = false;
-
+	public static Thread waitThrea = new Thread(new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			int i = 0;
+			outer: while (/* !Connect.recv */true) {
+				try {
+					Thread.currentThread().sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if (recv)
+					for (Integer requestValue : requestValues) {
+						for (Integer resonseValue : responseValues) {
+							if (resonseValue == requestValue) {
+								requestValues.clear();
+								break outer;
+							}
+						}
+					}
+				i++;
+				if (i == 100) {
+					JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+					break;
+				}
+			}
+		}
+	});
 	public Connect() {
 		try {
 			InputStream inputStream = this.getClass().getResourceAsStream("Connect.properties");
