@@ -48,6 +48,8 @@ public class LobbyController implements Initializable {
     @FXML
     private TableColumn<Room, String> roomStateCol;
     @FXML
+    private TableColumn<Room, String> configCol;
+    @FXML
     private TableView<User> playerList;
     @FXML
     private TableColumn<User, String> nicknameCol;
@@ -63,9 +65,6 @@ public class LobbyController implements Initializable {
     private ChatBox chatBoxController;
     private ObservableList<Room> roomData = FXCollections.observableArrayList();
     private ObservableList<User> playerData = FXCollections.observableArrayList();
-
-    @FXML
-    private ProgressBar progress = new ProgressBar();
 
     /*
      * private static ArrayList<Room> rooms; private static ArrayList<User>
@@ -161,8 +160,8 @@ public class LobbyController implements Initializable {
     @FXML
     private void send() {
         /************* test ********************/
-        chatBoxController.sendMessage("无名:" + inputField.getText());
-        client.getConnect().send("无名:" + inputField.getText());
+        chatBoxController.sendMessage(Client.getUser().getNickname()+":"+ inputField.getText());
+        //client.getConnect().send("无名:" + inputField.getText());
         inputField.clear();
         sendbtn.setDisable(true);
         /************* test ********************/
@@ -171,7 +170,7 @@ public class LobbyController implements Initializable {
     @FXML
     private void logout() throws Exception {
         /************* release *****************/
-        client.getConnect().send(Encoder.logoutRequest());
+        Connect.send(Encoder.logoutRequest());
         client.getLobbyStage().close();
         client.gotoLogin();
         /************* release *****************/
@@ -223,40 +222,17 @@ public class LobbyController implements Initializable {
     }
 
     public void fetchLobbyInfo() {
-        progress.setVisible(true);
-        progress.setProgress(0.1);
         String json = Encoder.fetchRoomsRequest();
-        progress.setProgress(0.2);
         //client.getConnect().send(json);
-        progress.setProgress(0.3);
         //Connect.waitForRec();
-        progress.setProgress(0.5);
         String json2 = Encoder.fetchPlayersRequest();
-        progress.setProgress(0.6);
         //client.getConnect().send(json2);
-        progress.setProgress(0.8);
         //Connect.waitForRec();
-        progress.setProgress(1.0);
-        progress.setVisible(false);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // fetchLobbyInfo();
-        // progress.setProgress(1.0);
-    	/*chatBoxController.setItems(client.getMessageData());
-        roomList.setItems(client.getRoomData());
-        roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
-        roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
-        player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
-        player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
-        roomStateCol.setCellValueFactory(cellData -> cellData.getValue().getStatesProperty());
-        playerList.setItems(client.getPlayerData());
-        nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
-        levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
-        winCol.setCellValueFactory(cellData -> cellData.getValue().getWinProperty());
-        loseCol.setCellValueFactory(cellData -> cellData.getValue().getLoseProperty());
-        playerStateCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());*/
+
     }
 
     public void setAll() {
@@ -267,12 +243,21 @@ public class LobbyController implements Initializable {
         player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
         player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
         roomStateCol.setCellValueFactory(cellData -> cellData.getValue().getStatesProperty());
+        configCol.setCellValueFactory(cellDate->cellDate.getValue().getConfigProperty());
         playerList.setItems(client.getPlayerData());
         nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
         levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
         winCol.setCellValueFactory(cellData -> cellData.getValue().getWinProperty());
         loseCol.setCellValueFactory(cellData -> cellData.getValue().getLoseProperty());
         playerStateCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
+    }
+
+    public void addPlayer(User user){
+        this.playerList.getItems().add(user);
+    }
+
+    public void addRoom(Room room){
+        this.roomList.getItems().add(room);
     }
 
     public ObservableList<Room> getRoomData() {

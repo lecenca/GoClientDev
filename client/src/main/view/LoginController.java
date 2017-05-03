@@ -36,6 +36,8 @@ public class LoginController implements Initializable {
         if (checkValid()) {
             client.getPrimaryStage().close();
             client.gotoLobby();
+            Client.getUser().setState(Type.UserState.IDLE);
+            Client.getLobbyController().addPlayer(Client.getUser());
         }
     }
 
