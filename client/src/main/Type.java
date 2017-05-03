@@ -12,7 +12,7 @@ public class Type {
                 LOGOUT = 5,
                 FETCH_LOBBY_INFO = 6,
                 FETCH_ROOMS_INFO = 7,
-                SITDOWN = 8,
+                UPDATE_ROOM = 8,  // SITDOWN
                 LEAVE = 9,
                 READY = 10,
                 ACTION = 11,

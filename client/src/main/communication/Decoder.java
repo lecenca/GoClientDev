@@ -18,6 +18,11 @@ public class Decoder {
         return jsonObject;
     }
 
+    public static User parseUser(JSONObject jsonObject){
+        User user = JSON.parseObject(jsonObject.toJSONString(), User.class);
+        return user;
+    }
+
     public static ArrayList<Room> parseRoomList(JSONObject object) {
         JSONArray rooms = object.getJSONArray("rooms_list");
         return new ArrayList<>(JSON.parseArray(rooms.toJSONString(), Room.class));

@@ -17,6 +17,7 @@ public class User {
         public int draw;
         public int level;
         public int rank;
+
         public GameData() {
             win = 0;
             lose = 0;
@@ -24,37 +25,47 @@ public class User {
             level = 0;
             rank = 1000;
         }
-		public int getWin() {
-			return win;
-		}
-		public void setWin(int win) {
-			this.win = win;
-		}
-		public int getLose() {
-			return lose;
-		}
-		public void setLose(int lose) {
-			this.lose = lose;
-		}
-		public int getDraw() {
-			return draw;
-		}
-		public void setDraw(int draw) {
-			this.draw = draw;
-		}
-		public int getLevel() {
-			return level;
-		}
-		public void setLevel(int level) {
-			this.level = level;
-		}
-		public int getRank() {
-			return rank;
-		}
-		public void setRank(int rank) {
-			this.rank = rank;
-		}
-        
+
+        public int getWin() {
+            return win;
+        }
+
+        public void setWin(int win) {
+            this.win = win;
+        }
+
+        public int getLose() {
+            return lose;
+        }
+
+        public void setLose(int lose) {
+            this.lose = lose;
+        }
+
+        public int getDraw() {
+            return draw;
+        }
+
+        public void setDraw(int draw) {
+            this.draw = draw;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public void setLevel(int level) {
+            this.level = level;
+        }
+
+        public int getRank() {
+            return rank;
+        }
+
+        public void setRank(int rank) {
+            this.rank = rank;
+        }
+
     }
 
     private String account;
@@ -79,7 +90,7 @@ public class User {
     public User(String nickname, int level, int win, int lose, int state) {
         this.nickname = nickname;
         this.data.level = level;
-        this.data.win  =win;
+        this.data.win = win;
         this.data.lose = lose;
         this.state = state;
     }
@@ -110,6 +121,10 @@ public class User {
         return this.account;
     }
 
+    public String getPassword() {
+        return this.password;
+    }
+
     public String getNickname() {
         return this.nickname;
     }
@@ -134,25 +149,31 @@ public class User {
         return this.data.level;
     }
 
-    public int getRank() {return this.data.rank;}
+    public int getRank() {
+        return this.data.rank;
+    }
 
-    public int getWins() {return this.data.win;}
+    public int getWins() {
+        return this.data.win;
+    }
 
-    public int getLoses() {return this.data.lose;}
+    public int getLoses() {
+        return this.data.lose;
+    }
 
     public StringProperty getLevelProperty() {
         return new SimpleStringProperty(level[this.data.level]);
     }
-    
+
     public GameData getData() {
-		return data;
-	}
+        return data;
+    }
 
-	public void setData(GameData data) {
-		this.data = data;
-	}
+    public void setData(GameData data) {
+        this.data = data;
+    }
 
-	public StringProperty getStateProperty() {
+    public StringProperty getStateProperty() {
         if (this.state == Type.State.IDLE) {
             return new SimpleStringProperty("闲逛中");
         }

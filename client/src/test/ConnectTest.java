@@ -34,14 +34,5 @@ public class ConnectTest {
         byte[] bytes3 = new byte[]{(byte) 0x7F, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
         Assert.assertEquals(2147483647, Connect.byteToIntHH(bytes3));
     }
-    @Test
-    public void getLength() {
-    	int len = "{\"response_type\":6}".length();
-    	System.out.println(len);
-    	byte[] bytes = Connect.intToByteHH(len);
-    	System.out.println(new String(bytes));
-    	int len2 = Connect.byteToIntHH(bytes);
-    	System.out.println(len2);
-    }
 
 }

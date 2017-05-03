@@ -2,7 +2,6 @@ package src.main.communication;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import src.main.*;
 
 import java.util.ArrayList;
@@ -30,9 +29,9 @@ public class Encoder {
         return requestJson(gson.toJson(map), Type.Request.LOGIN);
     }
 
-    public static String logoutRequest(User user) {
+    public static String logoutRequest() {
         Map map = new HashMap();
-        map.put("account", user.getAccount());
+        map.put("account", Client.getUser().getAccount());
         return requestJson(gson.toJson(map), Type.Request.LOGOUT);
     }
 
@@ -47,7 +46,7 @@ public class Encoder {
     public static String updateRoomRequest(Room room, int type) {
         JSONObject jsonObject = JSONObject.parseObject(gson.toJson(room).toString());
         jsonObject.put("action", type);
-        return requestJson(gson.toJson(jsonObject), Type.Request.SITDOWN);
+        return requestJson(gson.toJson(jsonObject), Type.Request.UPDATE_ROOM);
     }
 
     public static String readyRequest(Room room, Boolean player1IsReady, Boolean player2IsReady) {
@@ -58,17 +57,17 @@ public class Encoder {
         return requestJson(gson.toJson(map), Type.Request.READY);
     }
 
-    public static String surrenderRequest(Room room, String player) {
+    public static String surrenderRequest(Room room) {
         Map map = new HashMap();
         map.put("room_id", room.getId());
-        map.put("player", player);
+        map.put("player", Client.getUser().getAccount());
         return requestJson(gson.toJson(map), Type.Request.GAMERESULT);
     }
 
-    public static String judgeRequest(Room room, String player) {
+    public static String judgeRequest(Room room) {
         Map map = new HashMap();
         map.put("room_id", room.getId());
-        map.put("player", player);
+        map.put("player", Client.getUser().getAccount());
         return requestJson(gson.toJson(map), Type.Request.JUDGE);
     }
 
