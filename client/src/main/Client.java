@@ -154,7 +154,7 @@ public class Client extends Application {
 		roomData.add(new Room(6, "room6", "player1", "player2", 1));*/
 
         /********* 这是要的 ***********/
-        connect = new Connect();
+        //connect = new Connect();
         /*****************************/
         signupStage = new Stage();
         lobbyStage = new Stage();
