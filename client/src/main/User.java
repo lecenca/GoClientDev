@@ -83,7 +83,7 @@ public class User {
             "一段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段"};
 
     public User() {
-        state = Type.State.OTHER;
+        state = Type.UserState.OTHER;
         room = 0;
     }
 
@@ -141,6 +141,10 @@ public class User {
         return this.state;
     }
 
+    public void setState(int state) {
+        this.state = state;
+    }
+
     public int getRoom() {
         return this.room;
     }
@@ -174,10 +178,10 @@ public class User {
     }
 
     public StringProperty getStateProperty() {
-        if (this.state == Type.State.IDLE) {
+        if (this.state == Type.UserState.IDLE) {
             return new SimpleStringProperty("闲逛中");
         }
-        if (this.state == Type.State.READY) {
+        if (this.state == Type.UserState.READY) {
             return new SimpleStringProperty("在房间" + Integer.toString(this.room) + "准备中");
         }
         return new SimpleStringProperty("在房间" + Integer.toString(this.room) + "游戏中");

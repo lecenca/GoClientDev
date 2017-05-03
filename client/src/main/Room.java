@@ -9,13 +9,13 @@ public class Room {
         public int komi;         // 贴目规则
         public int mainTime;    // 主时间 [1,5,10,15,20,30,40,60,90](单位：分)
         public int period;      // 读秒时间 [15,20,30,40,50,60]（单位：秒）
-        public int periodTime; // 读秒次数 [1,3,5,7,10]
+        public int periodTimes; // 读秒次数 [1,3,5,7,10]
 
         public Config() {
             this.komi = Type.KOMI.SIX_FIVE;
             this.mainTime = 20;
             this.period = 30;
-            this.periodTime = 3;
+            this.periodTimes = 3;
         }
     }
 
@@ -26,6 +26,12 @@ public class Room {
     private String player2 = null;
     private int state;
     private Config config = new Config();
+
+    private static String[] komi = {"让先", "黑贴3.5目", "黑贴6.5目"};
+    private static String[] mainTime = {"1分", "5分", "10分", "15分", "20分", "30分", "40分", "60分", "90分"};
+    private static String[] period = {"15秒", "20秒", "30秒", "40秒", "50秒", "60秒"};
+    private static String[] periodTimes = {"1次", "3次", "5次", "7次", "10次"};
+    private static String[] roomState = {"等人中", "准备中", "游戏中"};
 
     public Room() {
 
@@ -84,6 +90,13 @@ public class Room {
         this.state = state;
     }
 
+    public void setConfig(int komi, int mainTime, int period, int periodTimes) {
+        this.config.komi = komi;
+        this.config.mainTime = mainTime;
+        this.config.period = period;
+        this.config.periodTimes = periodTimes;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -110,6 +123,14 @@ public class Room {
     }
 
     public StringProperty getStatesProperty() {
-        return new SimpleStringProperty(Integer.toString(this.state));
+        return new SimpleStringProperty(roomState[this.state]);
+    }
+
+    public StringProperty getConfigProperty() {
+        return new SimpleStringProperty(
+                komi[this.config.komi] + " / " +
+                        mainTime[this.config.mainTime] + " / " +
+                        period[this.config.period] +
+                        periodTimes[this.config.periodTimes]);
     }
 }

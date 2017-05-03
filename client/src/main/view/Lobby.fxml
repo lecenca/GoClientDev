@@ -1,57 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.LobbyController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.LobbyController">
    <children>
-      <Button layoutX="811.0" layoutY="14.0" mnemonicParsing="false" onAction="#logout" prefHeight="37.0" prefWidth="88.0" text="注销" />
-      <TextField fx:id="inputField" layoutX="23.0" layoutY="591.0" onKeyReleased="#hasText" prefHeight="37.0" prefWidth="562.0">
+      <Button layoutX="1010.0" layoutY="20.0" mnemonicParsing="false" onAction="#logout" prefHeight="37.0" prefWidth="88.0" text="注销" />
+      <TextField fx:id="inputField" layoutX="25.0" layoutY="590.0" onKeyReleased="#hasText" prefHeight="37.0" prefWidth="600.0">
          <font>
             <Font size="15.0" />
          </font></TextField>
-      <Button fx:id="sendbtn" disable="true" layoutX="584.0" layoutY="591.0" mnemonicParsing="false" onAction="#send" prefHeight="37.0" prefWidth="64.0" text="发送">
+      <Button fx:id="sendbtn" disable="true" layoutX="625.0" layoutY="590.0" mnemonicParsing="false" onAction="#send" prefHeight="37.0" prefWidth="80.0" text="发送">
          <font>
             <Font size="15.0" />
          </font></Button>
-      <Button fx:id="createRoomBtn" layoutX="801.0" layoutY="584.0" mnemonicParsing="false" onAction="#gotoCreateRoom" prefHeight="44.0" prefWidth="88.0" text="创建房间">
+      <Button fx:id="createRoomBtn" layoutX="1001.0" layoutY="579.0" mnemonicParsing="false" onAction="#gotoCreateRoom" prefHeight="44.0" prefWidth="88.0" text="创建房间">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <fx:include fx:id="chatBox" layoutX="23" layoutY="370" prefHeight="210" prefWidth="624" source="ChatBox.fxml" />
-      <Button fx:id="autoMatch" layoutX="682.0" layoutY="583.0" mnemonicParsing="false" onMouseClicked="#fastMatch" prefHeight="44.0" prefWidth="88.0" text="快速匹配">
+      <fx:include fx:id="chatBox" layoutX="25.0" layoutY="380" prefHeight="210" prefWidth="680.0" source="ChatBox.fxml" />
+      <Button fx:id="autoMatch" layoutX="776.0" layoutY="576.0" mnemonicParsing="false" onMouseClicked="#fastMatch" prefHeight="51.0" prefWidth="105.0" text="快速匹配">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <TableView fx:id="roomList" layoutX="23.0" layoutY="16.0" onMouseClicked="#clickRoom" prefHeight="330.0" prefWidth="625.0">
+      <TableView fx:id="roomList" layoutX="25.0" layoutY="20.0" onMouseClicked="#clickRoom" prefHeight="340.0" prefWidth="680.0">
         <columns>
-          <TableColumn fx:id="roomIdCol" prefWidth="66.0" text="房间ID" />
-          <TableColumn fx:id="roomNameCol" prefWidth="158.99998474121094" text="房间名称" />
-            <TableColumn fx:id="player1Col" prefWidth="124.0" text="玩家1/白" />
-            <TableColumn fx:id="player2Col" prefWidth="129.0" text="玩家2/黑" />
-            <TableColumn fx:id="roomStateCol" prefWidth="145.0" text="状态" />
+          <TableColumn fx:id="roomIdCol" prefWidth="60.0" text="房间ID" />
+          <TableColumn fx:id="roomNameCol" prefWidth="130.0" text="房间名称" />
+            <TableColumn fx:id="player1Col" prefWidth="105.0" text="玩家1/白" />
+            <TableColumn fx:id="player2Col" prefWidth="105.0" text="玩家2/黑" />
+            <TableColumn fx:id="roomStateCol" prefWidth="80.0" text="状态" />
+            <TableColumn fx:id="configCol" prefWidth="199.0" text="备注" />
         </columns>
       </TableView>
-      <TableView fx:id="playerList" layoutX="669.0" layoutY="73.0" prefHeight="495.0" prefWidth="368.0">
+      <TableView fx:id="playerList" layoutX="743.0" layoutY="66.0" prefHeight="495.0" prefWidth="368.0">
         <columns>
-          <TableColumn fx:id="nicknameCol" prefWidth="95.0" text="昵称" />
-          <TableColumn fx:id="levelCol" prefWidth="57.0" text="段位" />
-            <TableColumn fx:id="winCol" prefWidth="49.0" text="胜场" />
-            <TableColumn fx:id="loseCol" prefWidth="50.0" text="负场" />
-            <TableColumn fx:id="playerStateCol" prefWidth="119.0" text="状态" />
+          <TableColumn fx:id="nicknameCol" prefWidth="118.0" text="昵称" />
+          <TableColumn fx:id="levelCol" prefWidth="49.0" text="段位" />
+            <TableColumn fx:id="winCol" prefWidth="47.0" text="胜场" />
+            <TableColumn fx:id="loseCol" prefWidth="44.0" text="负场" />
+            <TableColumn fx:id="playerStateCol" prefWidth="112.0" text="状态" />
         </columns>
       </TableView>
-      <ProgressBar fx:id="progress" layoutX="345.0" layoutY="348.0" prefHeight="21.0" prefWidth="281.0" progress="0.0" />
    </children>
 </AnchorPane>
