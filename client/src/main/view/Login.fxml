@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -8,35 +12,26 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="285.0" prefWidth="500.0" GridPane.columnIndex="1" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.LoginController">
+<AnchorPane fx:id="loginPane" prefHeight="307.0" prefWidth="500.0" GridPane.columnIndex="1" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.LoginController">
     <children>
-        <Label layoutX="34.0" layoutY="56.0" prefHeight="40.0" prefWidth="82.0" text="账 号">
-            <font>
-                <Font size="25.0" />
-            </font></Label>
-        <TextField fx:id="account" layoutX="130.0" layoutY="56.0" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的帐号">
+        <TextField fx:id="account" layoutX="118.0" layoutY="94.0" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的帐号">
          <font>
             <Font size="20.0" />
          </font></TextField>
-        <Label layoutX="34.0" layoutY="129.0" prefHeight="40.0" prefWidth="82.0" text="密 码">
-            <font>
-                <Font size="25.0" />
-            </font>
-      </Label>
-      <PasswordField fx:id="password" layoutX="130.0" layoutY="130.0" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的密码">
+      <PasswordField fx:id="password" layoutX="118.0" layoutY="155.0" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的密码">
          <font>
             <Font size="20.0" />
          </font></PasswordField>
-      <Label fx:id="invaildMessageTips" layoutX="233.0" layoutY="175.0" text="无效信息提示" textFill="RED" />
-        <Button fx:id="loginBtn" layoutX="100.0" layoutY="200.0" mnemonicParsing="false" onAction="#login" prefHeight="40.0" prefWidth="95.0" text="登陆">
+      <Label fx:id="invaildMessageTips" layoutX="229.0" layoutY="209.0" text="无效信息提示" textFill="RED" />
+        <Button fx:id="loginBtn" layoutX="99.0" layoutY="234.0" mnemonicParsing="false" onAction="#login" prefHeight="40.0" prefWidth="95.0" text="登陆">
             <font>
                 <Font size="20.0" />
             </font></Button>
-        <Button fx:id="registerBtn" layoutX="305.0" layoutY="200.0" mnemonicParsing="false" onAction="#signup" prefHeight="40.0" prefWidth="95.0" text="注册">
+        <Button fx:id="registerBtn" layoutX="311.0" layoutY="234.0" mnemonicParsing="false" onAction="#signup" prefHeight="40.0" prefWidth="95.0" text="注册">
             <font>
                 <Font size="20.0" />
             </font></Button>
-      <Label fx:id="emptyAccountTips" layoutX="385.0" layoutY="69.0" text="请输入账号" textFill="RED" />
-      <Label fx:id="emptyPasswordTips" layoutX="385.0" layoutY="143.0" text="请输入密码" textFill="RED" />
+      <Label fx:id="emptyAccountTips" layoutX="383.0" layoutY="114.0" text="请输入账号" textFill="RED" />
+      <Label fx:id="emptyPasswordTips" layoutX="383.0" layoutY="175.0" text="请输入密码" textFill="RED" />
     </children>
 </AnchorPane>
