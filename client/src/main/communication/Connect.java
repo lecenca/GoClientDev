@@ -117,10 +117,10 @@ public class Connect {
 				}
 			});*/
 		} catch (ConnectException e) {
-			e.printStackTrace();
-			System.out.println("服务器连接失败");
+			/*e.printStackTrace();
+			System.out.println("服务器连接失败");*/
 		} catch (IOException e) {
-			System.out.println("服务器连接失败");
+			/*System.out.println("服务器连接失败");*/
 		}
 	}
 	
