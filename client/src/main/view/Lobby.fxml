@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -7,9 +11,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.LobbyController">
+<AnchorPane fx:id="lobbyPane" maxHeight="660.0" maxWidth="1149.0" minHeight="660.0" minWidth="1149.0" prefHeight="660.0" prefWidth="1149.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.LobbyController">
    <children>
-      <Button layoutX="1010.0" layoutY="20.0" mnemonicParsing="false" onAction="#logout" prefHeight="37.0" prefWidth="88.0" text="注销" />
+      <Button layoutX="1006.0" layoutY="577.0" mnemonicParsing="false" onAction="#logout" prefHeight="51.0" prefWidth="128.0" text="注销">
+         <font>
+            <Font size="15.0" />
+         </font></Button>
       <TextField fx:id="inputField" layoutX="25.0" layoutY="590.0" onKeyReleased="#hasText" prefHeight="37.0" prefWidth="600.0">
          <font>
             <Font size="15.0" />
@@ -18,13 +25,13 @@
          <font>
             <Font size="15.0" />
          </font></Button>
-      <Button fx:id="createRoomBtn" layoutX="1001.0" layoutY="579.0" mnemonicParsing="false" onAction="#gotoCreateRoom" prefHeight="44.0" prefWidth="88.0" text="创建房间">
+      <Button fx:id="createRoomBtn" layoutX="866.0" layoutY="577.0" mnemonicParsing="false" onAction="#gotoCreateRoom" prefHeight="51.0" prefWidth="128.0" text="创建房间">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
       <fx:include fx:id="chatBox" layoutX="25.0" layoutY="380" prefHeight="210" prefWidth="680.0" source="ChatBox.fxml" />
-      <Button fx:id="autoMatch" layoutX="776.0" layoutY="576.0" mnemonicParsing="false" onMouseClicked="#fastMatch" prefHeight="51.0" prefWidth="105.0" text="快速匹配">
+      <Button fx:id="autoMatch" layoutX="726.0" layoutY="577.0" mnemonicParsing="false" onMouseClicked="#fastMatch" prefHeight="51.0" prefWidth="128.0" text="快速匹配">
          <font>
             <Font size="15.0" />
          </font>
@@ -39,7 +46,7 @@
             <TableColumn fx:id="configCol" prefWidth="199.0" text="备注" />
         </columns>
       </TableView>
-      <TableView fx:id="playerList" layoutX="743.0" layoutY="66.0" prefHeight="495.0" prefWidth="368.0">
+      <TableView fx:id="playerList" layoutX="728.0" layoutY="21.0" prefHeight="540.0" prefWidth="405.0">
         <columns>
           <TableColumn fx:id="nicknameCol" prefWidth="118.0" text="昵称" />
           <TableColumn fx:id="levelCol" prefWidth="49.0" text="段位" />
