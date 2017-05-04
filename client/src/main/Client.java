@@ -232,7 +232,7 @@ public class Client extends Application {
          */
 
         /********* 这是要的 ***********/
-        connect = new Connect();
+        //connect = new Connect();
         /*****************************/
         signupStage = new Stage();
         lobbyStage = new Stage();

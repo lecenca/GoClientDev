@@ -3,6 +3,8 @@ package src.main.view;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import src.main.Client;
 import src.main.Type;
@@ -28,6 +30,8 @@ public class LoginController implements Initializable {
     private Label emptyPasswordTips;
     @FXML
     private Label invaildMessageTips;
+    @FXML
+    private AnchorPane loginPane;
 
     public static boolean correct;
 
@@ -109,6 +113,12 @@ public class LoginController implements Initializable {
         emptyAccountTips.setVisible(false);
         emptyPasswordTips.setVisible(false);
         invaildMessageTips.setVisible(false);
+
+        Image image = new Image("resources/image/bg001.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(500, 285, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        loginPane.setBackground(background);
     }
 
 }

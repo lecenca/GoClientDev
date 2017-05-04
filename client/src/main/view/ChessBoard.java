@@ -200,7 +200,7 @@ public class ChessBoard implements Initializable {
         */
         /******* 要的 ******/
         /*******************/
-        Image boardPicture = new Image("qipan003.png");
+        Image boardPicture = new Image("resources/image/chessBoard.png");
         ImageView boardView = new ImageView(boardPicture);
         boardView.setFitWidth(580);
         boardView.setFitHeight(580);
