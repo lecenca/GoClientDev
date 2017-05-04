@@ -5,6 +5,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 import src.main.communication.Connect;
+import src.main.communication.Encoder;
 import src.main.view.CreateRoomController;
 import src.main.view.GameController;
 import src.main.view.LobbyController;
@@ -28,6 +29,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -49,6 +52,9 @@ public class Client extends Application {
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessages = new MessageQueue<>();
+
+    public static Map<String, User> playersMap = new HashMap<>();
+    public static Map<Integer, Room> roomsMap = new HashMap<>();
 
     private long checkDalay = 10;
     private long keepAliveDalay = 3000;
@@ -124,17 +130,15 @@ public class Client extends Application {
         }
     });
     private Thread listenPlayerList = new Thread(new Runnable() {
-
         @Override
         public void run() {
-
             System.out.println("监听玩家列表线程启动！");
             while (true) {
-
                 if (!players.isEmpty()) {
-                    playerData.add(players.remove());
+                    User player = players.remove();
+                    playerData.add(player);
+                    playersMap.put(player.getAccount(),player);
                 }
-
                 /*
                  * try { Thread.currentThread().sleep(1000); playerData.add(new
                  * User("tom", 10, 100, 60, 1)); playerData.sorted(comparator);
@@ -142,21 +146,18 @@ public class Client extends Application {
                  * catch block e.printStackTrace(); }
                  */
             }
-
         }
     });
     private Thread listenRoomList = new Thread(new Runnable() {
-
         @Override
         public void run() {
             System.out.println("监听房间列表线程启动！");
-            // TODO Auto-generated method stub
             while (true) {
-
                 if (!rooms.isEmpty()) {
-                    roomData.add(rooms.remove());
+                    Room room = rooms.remove();
+                    roomData.add(room);
+                    roomsMap.put(room.getId(),room);
                 }
-
                 /*
                  * roomData.add(new Room(2, "room..", "player1", "player2", 1));
                  * try { Thread.currentThread().sleep(2000); } catch
@@ -164,7 +165,6 @@ public class Client extends Application {
                  * e.printStackTrace(); }
                  */
             }
-
         }
     });
 
@@ -249,8 +249,32 @@ public class Client extends Application {
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                gameController.clear();
+                // need connect
+                /*Room room = roomsMap.get(getUser().getRoom());
+                if(room.playerNum() == 1){
+                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.DESTROY);
+                    System.out.println("update player msg: " + msg);
+                    Connect.send(msg);
+                }
+                room.setState(Type.RoomState.WATING);
+                if(room.getPlayer1() == getUser().getAccount()){
+                    room.setPlayer1(null);
+                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1OUT);
+                    System.out.println("update player msg: " + msg);
+                    Connect.send(msg);
+                }else {
+                    room.setPlayer2(null);
+                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER2OUT);
+                    System.out.println("update player msg: " + msg);
+                    Connect.send(msg);
+                }*/
+                getUser().setRoom(0);
+                getUser().setState(Type.UserState.IDLE);
+                String msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.CHANGE);
+                System.out.println("update player msg: " + msg);
+                Connect.send(msg);
                 System.out.println("关闭游戏界面 clear()");
+                gameController.clear();
             }
         });
     }

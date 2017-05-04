@@ -14,6 +14,8 @@ import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
+import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.net.URL;
 import java.util.*;
 
@@ -72,8 +74,8 @@ public class LobbyController implements Initializable {
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessage = new MessageQueue<>();
-    private Thread listenPlayerList = new Thread(new Runnable() {
 
+    private Thread listenPlayerList = new Thread(new Runnable() {
         @Override
         public void run() {
             System.out.println("监听玩家列表线程启动！");
@@ -93,7 +95,6 @@ public class LobbyController implements Initializable {
         }
     });
     private Thread listenRoomList = new Thread(new Runnable() {
-
         @Override
         public void run() {
             System.out.println("监听房间列表线程启动！");
@@ -115,7 +116,6 @@ public class LobbyController implements Initializable {
     });
 
     private Thread chatThread = new Thread(new Runnable() {
-
         @Override
         public void run() {
             System.out.println("聊天线程启动");
@@ -162,13 +162,55 @@ public class LobbyController implements Initializable {
     }
 
     @FXML
-    private void fastMatch() throws Exception {
+    private void fastMatch() {
         // TODO: find a room that is most match
-        //client.gotoGame();
+        if (Client.getUser().getState() != Type.UserState.IDLE){
+            JOptionPane.showMessageDialog(null,"您已经在房间中");
+            return;
+        }
+        Room match = null;
+        for(Room room : Client.roomsMap.values()){
+            if(room.hasSeat()){
+                match = room;
+                if(match.getPlayer1() == null || match.getPlayer1().isEmpty()){
+                    match.setPlayer1(Client.getUser().getAccount());
+                    match.setState(Type.RoomState.READY);
+                    String msg = Encoder.updateRoomRequest(match, Type.UpdateRoom.PLAYER1IN);
+                    System.out.println("update room msg: " + msg);
+                    Connect.send(msg);
+                }
+                else{
+                    match.setPlayer2(Client.getUser().getAccount());
+                    match.setState(Type.RoomState.READY);
+                    String msg = Encoder.updateRoomRequest(match, Type.UpdateRoom.PLAYER2IN);
+                    System.out.println("update room msg: " + msg);
+                    Connect.send(msg);
+                }
+                Client.getUser().setRoom(room.getId());
+                Client.getUser().setState(Type.UserState.READY);
+                String msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.IN);
+                System.out.println("update player msg: " + msg);
+                Connect.send(msg);
+                break;
+            }
+        }
+        if(match != null){
+            client.gotoGame(match);
+        }
+        else{
+            int res = JOptionPane.showConfirmDialog(null , "暂时找不到匹配的房间哦，是否要自己创建一个呢？","未找到匹配的房间",JOptionPane.YES_NO_OPTION) ;
+            if(res == JOptionPane.YES_OPTION){
+                client.gotoCreateRoom();
+            }
+        }
     }
 
     @FXML
     private void gotoCreateRoom() {
+        if (Client.getUser().getState() != Type.UserState.IDLE){
+            JOptionPane.showMessageDialog(null,"您已经在房间中");
+            return;
+        }
         client.gotoCreateRoom();
     }
 
@@ -176,20 +218,32 @@ public class LobbyController implements Initializable {
     private void clickRoom(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
             Room room = roomList.getSelectionModel().getSelectedItem();
-            if (room.getPlayer1() == null || room.getPlayer2() == null ) {
-                if (room.getPlayer1() == null) {
-                    room.setPlayer1(Client.getUser().getAccount());
-                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
-                    System.out.println("update room msg: " + msg);
-                    Connect.send(msg);
-                } else {
-                    room.setPlayer2(Client.getUser().getAccount());
-                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER2IN);
-                    System.out.println("update room msg: " + msg);
-                    Connect.send(msg);
-                }
-                client.gotoGame(room);
+            if(!room.hasSeat()){
+                JOptionPane.showMessageDialog(null,"房间已经满人");
+                return;
             }
+            if (Client.getUser().getState() != Type.UserState.IDLE){
+                JOptionPane.showMessageDialog(null,"您已经在房间中");
+                return;
+            }
+            room.setState(Type.RoomState.READY);
+            if (room.getPlayer1() == null || room.getPlayer1().isEmpty()) {
+                room.setPlayer1(Client.getUser().getAccount());
+                String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
+                System.out.println("update room msg: " + msg);
+                Connect.send(msg);
+            } else {
+                room.setPlayer2(Client.getUser().getAccount());
+                String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER2IN);
+                System.out.println("update room msg: " + msg);
+                Connect.send(msg);
+            }
+            client.gotoGame(room);
+            Client.getUser().setRoom(room.getId());
+            Client.getUser().setState(Type.UserState.READY);
+            String msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.IN);
+            System.out.println("update player msg: " + msg);
+            Connect.send(msg);
             //test
             //client.gotoGame(room);
         }

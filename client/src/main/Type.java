@@ -13,6 +13,7 @@ public class Type {
                 FETCH_LOBBY_INFO = 6,
                 FETCH_ROOMS_INFO = 7,
                 UPDATE_ROOM = 8,  // SITDOWN
+                UPDATE_PLAYER = 9,
                 LEAVE = 9,
                 READY = 10,
                 ACTION = 11,
@@ -82,12 +83,20 @@ public class Type {
                 GAMING = 2;
     }
 
+    public static class UpdatePlayer {
+        public static final int
+                IN = 0,
+                CHANGE = 1,
+                OUT = 2;
+    }
+
     public static class UpdateRoom {
         public static final int
                 PLAYER1IN = 0,
                 PLAYER2IN = 1,
                 PLAYER1OUT = 2,
-                PLAYER2OUT = 3;
+                PLAYER2OUT = 3,
+                DESTROY = 4;
     }
 
     public static class KOMI {

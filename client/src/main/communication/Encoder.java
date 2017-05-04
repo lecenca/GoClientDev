@@ -43,6 +43,12 @@ public class Encoder {
         return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_PLAYERS_INFO) + "}";
     }
 
+    public static String updatePlayerRequest(User user, int type) {
+        JSONObject jsonObject = JSONObject.parseObject(gson.toJson(user).toString());
+        jsonObject.put("action", type);
+        return requestJson(gson.toJson(jsonObject), Type.Request.UPDATE_PLAYER);
+    }
+
     public static String updateRoomRequest(Room room, int type) {
         JSONObject jsonObject = JSONObject.parseObject(gson.toJson(room).toString());
         jsonObject.put("action", type);
