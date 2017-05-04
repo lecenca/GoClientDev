@@ -15,6 +15,7 @@ import src.main.Client;
 import src.main.Type;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import src.main.User;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
@@ -42,9 +43,12 @@ public class LoginController implements Initializable {
 
     @FXML
     private void login() {
-        if (checkValid()) {
+        if (/*checkValid()*/true) {
             client.getPrimaryStage().close();
             client.gotoLobby();
+            /***** test *****/
+            Client.setUser(new User());
+            /***** test *****/
             Client.getUser().setState(Type.UserState.IDLE);
             Client.getLobbyController().addPlayer(Client.getUser());
         }

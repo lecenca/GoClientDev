@@ -83,6 +83,8 @@ public class User {
             "一段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段"};
 
     public User() {
+        account = "1";
+        nickname = "小明";
         state = Type.UserState.OTHER;
         room = 0;
     }
@@ -147,6 +149,10 @@ public class User {
 
     public int getRoom() {
         return this.room;
+    }
+
+    public void setRoom(int room) {
+        this.room = room;
     }
 
     public int getLevel() {
