@@ -268,6 +268,7 @@ public class Client extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
+        keepAliveThread.setDaemon(true);
         keepAliveThread.start();
         if (Connect.hasConnect()) {
             Thread receiveThread = getConnect().getReceiveThread();
