@@ -77,8 +77,8 @@ public class CreateRoomController implements Initializable {
                 this.period.getSelectionModel().getSelectedIndex()
                 );
         Client.getLobbyController().addRoom(room);
-        //roomList.getItems().add(room);
-        client.backToLobby();
+        client.gotoGame(room);
+        //client.backToLobby();
         /************* test ********************/
     }
 
