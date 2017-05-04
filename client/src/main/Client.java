@@ -34,6 +34,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 public class Client extends Application {
     private UserComparator comparator = new UserComparator();
     private Stage primaryStage;
@@ -67,7 +69,12 @@ public class Client extends Application {
                         Connect.sendMsgToserver("Normal Connection");// 一分钟心跳
                     } catch (IOException e) {
                         //e.printStackTrace();
-                        System.out.println("与服务器断开连接!");
+                        System.out.println("与服务器连接失败!");
+                        JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                        reConnect();
+                    }catch(NullPointerException e) {
+                        System.out.println("与服务器连接失败！");
+                        JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
                         reConnect();
                     }
                     lastTimeCheck = System.currentTimeMillis();
@@ -93,6 +100,7 @@ public class Client extends Application {
                     connect.setIs(is);
                     connect.setOs(os);
                     System.out.println("重新连接服务器成功！");
+                    JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnknownHostException e) {
                     if (print2)
                         System.out.println("客户端异常！");
@@ -100,7 +108,7 @@ public class Client extends Application {
                     //e.printStackTrace();
                 } catch (IOException e) {
                     if (print)
-                        System.out.println("正在重新连接服务器。。。。");
+                        System.out.println("正在尝试重新连接服务器。。。。");
                     print = false;
                 }
             }
@@ -113,7 +121,9 @@ public class Client extends Application {
                 socket.sendUrgentData(0);
                 return true;
             } catch (IOException e) {
-
+                
+            }catch(NullPointerException e) {
+                
             }
             return false;
         }
@@ -213,6 +223,9 @@ public class Client extends Application {
         /********* 这是要的 ***********/
         connect = new Connect();
         /*****************************/
+        user = new User();
+        user.setAccount("1000101001");
+        user.setNickname("nickname");
         signupStage = new Stage();
         lobbyStage = new Stage();
         gameStage = new Stage();
