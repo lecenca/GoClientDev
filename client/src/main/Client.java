@@ -44,7 +44,7 @@ public class Client extends Application {
     private Stage lobbyStage = null;
     private Stage signupStage = null;
     private static User user;
-    private Connect connect;
+    private Connect connect = null;
     private ArrayList playerList = new ArrayList();
     private static LobbyController lobbyController;
     private static GameController gameController;
@@ -66,8 +66,8 @@ public class Client extends Application {
             while (true) {
                 if (System.currentTimeMillis() - lastTimeCheck > keepAliveDalay) {
                     try {
-                        connect.sendMsgToserver("Normal Connection");// 一分钟心跳
-                    }catch (IOException e) {
+                        Connect.sendMsgToserver("Normal Connection");// 一分钟心跳
+                    } catch (IOException e) {
                         //e.printStackTrace();
                         System.out.println("与服务器连接失败!");
                         JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
@@ -99,15 +99,13 @@ public class Client extends Application {
                     OutputStream os = connect.socket.getOutputStream();
                     connect.setIs(is);
                     connect.setOs(os);
-                    connect.setPw(new PrintWriter(os));
-                    connect.setBr(new BufferedReader(new InputStreamReader(is)));
                     System.out.println("重新连接服务器成功！");
                     JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnknownHostException e) {
                     if (print2)
                         System.out.println("客户端异常！");
                     print2 = false;
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 } catch (IOException e) {
                     if (print)
                         System.out.println("正在尝试重新连接服务器。。。。");
@@ -220,29 +218,10 @@ public class Client extends Application {
          */
     });
 
-    public Client() throws IOException {
-
-        /*
-         * playerData.add(new User("zhangsan", 8, 30, 10, 1));
-         * playerData.add(new User("wangwu", 18, 20, 20, 1)); playerData.add(new
-         * User("lisi", 19, 60, 10, 1)); playerData.add(new User("zhangsan", 8,
-         * 40, 40, 1)); playerData.add(new User("wangwu", 18, 30, 30, 1));
-         * playerData.add(new User("lisi", 19, 60, 60, 1));
-         */
-
+    public Client() {
         playerData.sort(comparator);
-
-        /*
-         * roomData.add(new Room(1, "room1", "player1", "player2", 1));
-         * roomData.add(new Room(2, "room2", "player1", "player2", 1));
-         * roomData.add(new Room(3, "room3", "player1", "player2", 1));
-         * roomData.add(new Room(4, "room4", "player1", "player2", 1));
-         * roomData.add(new Room(5, "room5", "player1", "player2", 1));
-         * roomData.add(new Room(6, "room6", "player1", "player2", 1));
-         */
-
         /********* 这是要的 ***********/
-        //connect = new Connect();
+        connect = new Connect();
         /*****************************/
         user = new User();
         user.setAccount("1000101001");
@@ -252,17 +231,25 @@ public class Client extends Application {
         gameStage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/Lobby.fxml"));
-        Pane lobbyPane = loader.load();
+        Pane lobbyPane = null;
+        try {
+            lobbyPane = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Scene lobbyScene = new Scene(lobbyPane);
         lobbyStage.setScene(lobbyScene);
-        lobbyController = loader.getController();// (LobbyController)
-        // changeStage("view/Lobby.fxml",
-        // lobbyStage);
+        lobbyController = loader.getController();
         lobbyController.setClient(this);
         lobbyController.setAll();
         FXMLLoader loader2 = new FXMLLoader();
         loader2.setLocation(getClass().getResource("view/Game.fxml"));
-        Pane gamePane = loader2.load();
+        Pane gamePane = null;
+        try {
+            gamePane = loader2.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Scene gameScene = new Scene(gamePane);
         gameStage.setScene(gameScene);
         gameController = loader2.getController();
@@ -277,13 +264,12 @@ public class Client extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
-        connect = new Connect();
         keepAliveThread.start();
-        if (connect.getSocket() != null) {
+        if (Connect.hasConnect()) {
             Thread receiveThread = getConnect().getReceiveThread();
             receiveThread.setDaemon(true);
             receiveThread.start();
@@ -296,7 +282,7 @@ public class Client extends Application {
         }
     }
 
-    public void gotoLogin() throws Exception {
+    public void gotoLogin() {
         LoginController loginController = (LoginController) changeStage("view/Login.fxml", primaryStage);
         loginController.setClient(this);
         loginController.resetAccount();
@@ -328,7 +314,7 @@ public class Client extends Application {
         createRoomStage.close();
     }
 
-    public void gotoCreateRoom(TableView<Room> roomList) throws IOException {
+    public void gotoCreateRoom() throws IOException {
         createRoomStage = new Stage();
         createRoomStage.initModality(Modality.APPLICATION_MODAL);
         createRoomStage.initOwner(primaryStage);
@@ -340,19 +326,9 @@ public class Client extends Application {
         createRoomStage.show();
         CreateRoomController createRoomController = (CreateRoomController) loader.getController();
         createRoomController.setClient(this);
-        createRoomController.setRoomList(roomList);
     }
 
-    public void gotoGame(Room room) throws Exception {
-        /*
-         * gameStage = new Stage(); FXMLLoader loader = new FXMLLoader();
-         * loader.setBuilderFactory(new JavaFXBuilderFactory());
-         * loader.setLocation(getClass().getResource("view/Game.fxml"));
-         * InputStream in = getClass().getResourceAsStream("view/Game.fxml");
-         * gameStage.setScene(new Scene(loader.load(in))); gameStage.show();
-         * GameController gameController = (GameController)
-         * loader.getController(); gameController.setClient(this);
-         */
+    public void gotoGame(Room room) {
         gameStage.show();
         gameController.setRoom(room);
     }

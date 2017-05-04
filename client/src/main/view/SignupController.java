@@ -74,6 +74,9 @@ public class SignupController implements Initializable {
 
     @FXML
     private void signup() throws Exception {
+        if(Connect.interrupted()){
+            return;
+        }
         signUpCall = true;
         synchronousCheck();
         signUpCall = false;
@@ -246,12 +249,14 @@ public class SignupController implements Initializable {
     }
 
     private boolean accountCheckOK() throws Exception {
+        if(!Connect.hasConnect()){
+            return true;
+        }
         accountCheckSuccess = false;
         String account = this.account.getText();
         String json = Encoder.chechAccountRequest(account);
-        client.getConnect().send(json);
+        Connect.send(json);
         Connect.waitForRec(Type.Response.ACCOUNT_CHECK_SUCCESS,Type.Response.ACCOUNT_CHECK_FAILED);
-        //System.out.println("At SingupController account check: " + json);
         return accountCheckSuccess;
     }
 
