@@ -6,6 +6,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import src.main.User;
 import src.main.Client;
@@ -61,6 +63,10 @@ public class SignupController implements Initializable {
     private Label repeatPasswordFormatTips;
     @FXML
     private Label dateFormatTips;
+
+    @FXML
+    private AnchorPane signupPane;
+
     private boolean validAccount = false;
     private boolean validName = false;
     private boolean validPassword = false;
@@ -415,5 +421,12 @@ public class SignupController implements Initializable {
         passwordFormatTips.setVisible(false);
         repeatPasswordFormatTips.setVisible(false);
         dateFormatTips.setVisible(false);
+
+        Image image = new Image("resources/image/bg002.jpg",524,420,false,true);
+        BackgroundSize backgroundSize = new BackgroundSize(524, 420, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        signupPane.setBackground(background);
+
     }
 }

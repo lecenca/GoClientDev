@@ -3,7 +3,9 @@ package src.main.view;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -62,6 +64,8 @@ public class LobbyController implements Initializable {
     private TableColumn<User, String> loseCol;
     @FXML
     private TableColumn<User, String> playerStateCol;
+    @FXML
+    private AnchorPane lobbyPane;
     @FXML
     private ChatBox chatBoxController;
     private ObservableList<Room> roomData = FXCollections.observableArrayList();
@@ -268,7 +272,11 @@ public class LobbyController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        Image image = new Image("resources/image/bg004.jpg",1149,660,false,true);
+        BackgroundSize backgroundSize = new BackgroundSize(1149, 660, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        lobbyPane.setBackground(background);
     }
 
     public void setAssociation() {
