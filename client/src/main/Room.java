@@ -46,6 +46,24 @@ public class Room {
         this.state = state;
     }
 
+    public boolean hasSeat(){
+        return player1 == null || player2 == null || player1.isEmpty() || player2.isEmpty();
+    }
+
+    public boolean nobody(){
+        return player1 == null && player2 == null;
+    }
+
+    public int playerNum(){
+        int num = 0;
+        if(player1 != null){
+            num++;
+        }
+        if(player2 != null){
+            num++;
+        }
+        return num;
+    }
     public String getPlayer1Form(Room room) {
         return room.player1;
     }
