@@ -10,6 +10,8 @@ import javafx.scene.control.TextField;
 import src.main.Client;
 import src.main.Room;
 import src.main.Type;
+import src.main.communication.Connect;
+import src.main.communication.Encoder;
 
 import java.net.URL;
 import java.util.HashSet;
@@ -59,11 +61,11 @@ public class CreateRoomController implements Initializable {
 
     @FXML
     private void createRoom() {
-        /************* test ********************/
+        /************* release ********************/
         Room room = new Room();
         room.setId(getRoomId());
         String name = roomNameField.getText();
-        if (name != null)
+        if (name != null && !name.isEmpty())
             room.setName(name);
         String password = passwordField.getText();
         if (password != null)
@@ -77,9 +79,17 @@ public class CreateRoomController implements Initializable {
                 this.period.getSelectionModel().getSelectedIndex()
                 );
         Client.getLobbyController().addRoom(room);
+        client.backToLobby();
         client.gotoGame(room);
-        //client.backToLobby();
-        /************* test ********************/
+        String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
+        System.out.println("update room msg: " + msg);
+        Connect.send(msg);
+        Client.getUser().setRoom(room.getId());
+        Client.getUser().setState(Type.UserState.READY);
+        msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.IN);
+        System.out.println("update player msg: " + msg);
+        Connect.send(msg);
+        /************* release ********************/
     }
 
     private int getRoomId(){
