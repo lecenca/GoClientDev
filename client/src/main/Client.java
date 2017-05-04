@@ -23,9 +23,14 @@ import src.main.view.SignupController;
 import src.util.MessageQueue;
 import src.util.UserComparator;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
@@ -47,51 +52,61 @@ public class Client extends Application {
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessages = new MessageQueue<>();
-    private long checkDalay=10;
-    private long keepAliveDalay=60000;
+    private long checkDalay = 10;
+    private long keepAliveDalay = 3000;
     private long lastTimeCheck;
     private Thread keepAliveThread = new Thread(new Runnable() {
-        
+
         @Override
         public void run() {
             lastTimeCheck = System.currentTimeMillis();
             System.out.println("监听服务器连接线程启动！");
-            while(true) {
-                if(System.currentTimeMillis() - lastTimeCheck > keepAliveDalay) {
+            while (true) {
+                if (System.currentTimeMillis() - lastTimeCheck > keepAliveDalay) {
                     try {
-                        connect.sendMsgToserver("Normal Connection");//一分钟心跳
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("与服务器断开连接");
+                        connect.sendMsgToserver("Normal Connection");// 一分钟心跳
+                    }catch (IOException e) {
+                        //e.printStackTrace();
+                        System.out.println("与服务器断开连接!");
                         reConnect();
                     }
                     lastTimeCheck = System.currentTimeMillis();
-                }
-                else {
+                } else {
                     try {
                         Thread.currentThread().sleep(checkDalay);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
             }
-            
+
         }
 
         private void reConnect() {
-            while(!isServerStart()) {
+            boolean print = true;
+            boolean print2 = true;
+            while (!isServerStart()) {
                 try {
-                    connect.setSocket(new Socket(connect.getIP(),connect.getPORT()));
+                    connect.setSocket(new Socket(connect.getIP(), connect.getPORT()));
+                    InputStream is = connect.socket.getInputStream();
+                    OutputStream os = connect.socket.getOutputStream();
+                    connect.setIs(is);
+                    connect.setOs(os);
+                    connect.setPw(new PrintWriter(os));
+                    connect.setBr(new BufferedReader(new InputStreamReader(is)));
                     System.out.println("重新连接服务器成功！");
                 } catch (UnknownHostException e) {
-                    System.out.println("客户端异常！");
+                    if (print2)
+                        System.out.println("客户端异常！");
+                    print2 = false;
                     e.printStackTrace();
                 } catch (IOException e) {
-                    System.out.println("正在重新连接服务器。。。。");
+                    if (print)
+                        System.out.println("正在重新连接服务器。。。。");
+                    print = false;
                 }
             }
-            
+
         }
 
         private boolean isServerStart() {
@@ -100,7 +115,7 @@ public class Client extends Application {
                 socket.sendUrgentData(0);
                 return true;
             } catch (IOException e) {
-                
+
             }
             return false;
         }
@@ -117,12 +132,12 @@ public class Client extends Application {
                     playerData.add(players.remove());
                 }
 
-				/*
+                /*
                  * try { Thread.currentThread().sleep(1000); playerData.add(new
-				 * User("tom", 10, 100, 60, 1)); playerData.sorted(comparator);
-				 * } catch (InterruptedException e) { // TODO Auto-generated
-				 * catch block e.printStackTrace(); }
-				 */
+                 * User("tom", 10, 100, 60, 1)); playerData.sorted(comparator);
+                 * } catch (InterruptedException e) { // TODO Auto-generated
+                 * catch block e.printStackTrace(); }
+                 */
             }
 
         }
@@ -139,12 +154,12 @@ public class Client extends Application {
                     roomData.add(rooms.remove());
                 }
 
-				/*
+                /*
                  * roomData.add(new Room(2, "room..", "player1", "player2", 1));
-				 * try { Thread.currentThread().sleep(2000); } catch
-				 * (InterruptedException e) { // TODO Auto-generated catch block
-				 * e.printStackTrace(); }
-				 */
+                 * try { Thread.currentThread().sleep(2000); } catch
+                 * (InterruptedException e) { // TODO Auto-generated catch block
+                 * e.printStackTrace(); }
+                 */
             }
 
         }
@@ -170,48 +185,51 @@ public class Client extends Application {
                     } catch (Exception e) {
 
                     }
-				/*
-				 * messageData.add("hello"); try {
-				 * Thread.currentThread().sleep(2000); } catch
-				 * (InterruptedException e) { // TODO Auto-generated catch block
-				 * e.printStackTrace(); }
-				 */
+                /*
+                 * messageData.add("hello"); try {
+                 * Thread.currentThread().sleep(2000); } catch
+                 * (InterruptedException e) { // TODO Auto-generated catch block
+                 * e.printStackTrace(); }
+                 */
             }
 
         }
 
-		/*
-		 * @Override public void run() { System.out.println("聊天线程启动"); // TODO
-		 * Auto-generated method stub while (true) {
-		 * 
-		 * if(!chatMessage.isEmpty()) {
-		 * chatBoxController.sendMessage(chatMessage.remove()); }
-		 * 
-		 * // chatBoxController.sendMessage("hello"); if
-		 * (!chatMessages.isEmpty()) messageData.add(chatMessages.remove()); try
-		 * { messageData.add("hello"); Thread.currentThread().sleep(2000); }
-		 * catch (InterruptedException e) { catch block e.printStackTrace(); } }
-		 * }
-		 */
+        /*
+         * @Override public void run() { System.out.println("聊天线程启动"); // TODO
+         * Auto-generated method stub while (true) {
+         * 
+         * if(!chatMessage.isEmpty()) {
+         * chatBoxController.sendMessage(chatMessage.remove()); }
+         * 
+         * // chatBoxController.sendMessage("hello"); if
+         * (!chatMessages.isEmpty()) messageData.add(chatMessages.remove()); try
+         * { messageData.add("hello"); Thread.currentThread().sleep(2000); }
+         * catch (InterruptedException e) { catch block e.printStackTrace(); } }
+         * }
+         */
     });
 
     public Client() throws IOException {
 
-		/*playerData.add(new User("zhangsan", 8, 30, 10, 1));
-		playerData.add(new User("wangwu", 18, 20, 20, 1));
-		playerData.add(new User("lisi", 19, 60, 10, 1));
-		playerData.add(new User("zhangsan", 8, 40, 40, 1));
-		playerData.add(new User("wangwu", 18, 30, 30, 1));
-		playerData.add(new User("lisi", 19, 60, 60, 1));*/
+        /*
+         * playerData.add(new User("zhangsan", 8, 30, 10, 1));
+         * playerData.add(new User("wangwu", 18, 20, 20, 1)); playerData.add(new
+         * User("lisi", 19, 60, 10, 1)); playerData.add(new User("zhangsan", 8,
+         * 40, 40, 1)); playerData.add(new User("wangwu", 18, 30, 30, 1));
+         * playerData.add(new User("lisi", 19, 60, 60, 1));
+         */
 
         playerData.sort(comparator);
 
-		/*roomData.add(new Room(1, "room1", "player1", "player2", 1));
-		roomData.add(new Room(2, "room2", "player1", "player2", 1));
-		roomData.add(new Room(3, "room3", "player1", "player2", 1));
-		roomData.add(new Room(4, "room4", "player1", "player2", 1));
-		roomData.add(new Room(5, "room5", "player1", "player2", 1));
-		roomData.add(new Room(6, "room6", "player1", "player2", 1));*/
+        /*
+         * roomData.add(new Room(1, "room1", "player1", "player2", 1));
+         * roomData.add(new Room(2, "room2", "player1", "player2", 1));
+         * roomData.add(new Room(3, "room3", "player1", "player2", 1));
+         * roomData.add(new Room(4, "room4", "player1", "player2", 1));
+         * roomData.add(new Room(5, "room5", "player1", "player2", 1));
+         * roomData.add(new Room(6, "room6", "player1", "player2", 1));
+         */
 
         /********* 这是要的 ***********/
         connect = new Connect();
@@ -273,16 +291,16 @@ public class Client extends Application {
 
     public void gotoLobby() throws Exception {
         lobbyStage.show();
-		/*
-		 * Thread listenPlayerList = lobbyController.getListenPlayerList();
-		 * listenPlayerList.setDaemon(true); listenPlayerList.start(); Thread
-		 * listenRoomList = lobbyController.getListenRoomList();
-		 * listenRoomList.setDaemon(true); listenRoomList.start();
-		 */
+        /*
+         * Thread listenPlayerList = lobbyController.getListenPlayerList();
+         * listenPlayerList.setDaemon(true); listenPlayerList.start(); Thread
+         * listenRoomList = lobbyController.getListenRoomList();
+         * listenRoomList.setDaemon(true); listenRoomList.start();
+         */
         Thread chatThread = lobbyController.getChatThread();
-		/*
-		 * chatThread.setDaemon(true); chatThread.start();
-		 */
+        /*
+         * chatThread.setDaemon(true); chatThread.start();
+         */
         lobbyController.fetchLobbyInfo();
     }
 
@@ -312,15 +330,15 @@ public class Client extends Application {
     }
 
     public void gotoGame(Room room) throws Exception {
-		/*
-		 * gameStage = new Stage(); FXMLLoader loader = new FXMLLoader();
-		 * loader.setBuilderFactory(new JavaFXBuilderFactory());
-		 * loader.setLocation(getClass().getResource("view/Game.fxml"));
-		 * InputStream in = getClass().getResourceAsStream("view/Game.fxml");
-		 * gameStage.setScene(new Scene(loader.load(in))); gameStage.show();
-		 * GameController gameController = (GameController)
-		 * loader.getController(); gameController.setClient(this);
-		 */
+        /*
+         * gameStage = new Stage(); FXMLLoader loader = new FXMLLoader();
+         * loader.setBuilderFactory(new JavaFXBuilderFactory());
+         * loader.setLocation(getClass().getResource("view/Game.fxml"));
+         * InputStream in = getClass().getResourceAsStream("view/Game.fxml");
+         * gameStage.setScene(new Scene(loader.load(in))); gameStage.show();
+         * GameController gameController = (GameController)
+         * loader.getController(); gameController.setClient(this);
+         */
         gameStage.show();
         gameController.setRoom(room);
     }
@@ -339,9 +357,9 @@ public class Client extends Application {
 
     private Initializable changeStage(String fxml, Stage stage) {
         // create a new stage
-		/*
-		 * if(stage == null) stage = new Stage();
-		 */
+        /*
+         * if(stage == null) stage = new Stage();
+         */
         // create the fxml loader
         FXMLLoader loader = new FXMLLoader();
         // set the location of the fxml

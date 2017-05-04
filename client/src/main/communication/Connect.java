@@ -395,6 +395,38 @@ public class Connect {
     public static int getPORT() {
         return PORT;
     }
+
+    public static OutputStream getOs() {
+        return os;
+    }
+
+    public static void setOs(OutputStream os) {
+        Connect.os = os;
+    }
+
+    public static InputStream getIs() {
+        return is;
+    }
+
+    public static void setIs(InputStream is) {
+        Connect.is = is;
+    }
+
+    public static PrintWriter getPw() {
+        return pw;
+    }
+
+    public static void setPw(PrintWriter pw) {
+        Connect.pw = pw;
+    }
+
+    public static BufferedReader getBr() {
+        return br;
+    }
+
+    public static void setBr(BufferedReader br) {
+        Connect.br = br;
+    }
     
 	/*public void setChatBox(ChatBox chatBox) {
 	}*/
