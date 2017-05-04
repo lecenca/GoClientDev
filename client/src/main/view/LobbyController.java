@@ -14,7 +14,6 @@ import src.main.communication.Connect;
 import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -154,7 +153,7 @@ public class LobbyController implements Initializable {
     }
 
     @FXML
-    private void logout() throws Exception {
+    private void logout() {
         /************* release *****************/
         Connect.send(Encoder.logoutRequest());
         client.getLobbyStage().close();
@@ -169,15 +168,15 @@ public class LobbyController implements Initializable {
     }
 
     @FXML
-    private void gotoCreateRoom() throws IOException {
+    private void gotoCreateRoom() {
         client.gotoCreateRoom();
     }
 
     @FXML
-    private void clickRoom(MouseEvent mouseEvent) throws Exception {
+    private void clickRoom(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
             Room room = roomList.getSelectionModel().getSelectedItem();
-            /*if (room.getPlayer1() == null || room.getPlayer2() == null ) {
+            if (room.getPlayer1() == null || room.getPlayer2() == null ) {
                 if (room.getPlayer1() == null) {
                     room.setPlayer1(Client.getUser().getAccount());
                     String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
@@ -190,9 +189,9 @@ public class LobbyController implements Initializable {
                     Connect.send(msg);
                 }
                 client.gotoGame(room);
-            }*/
+            }
             //test
-            client.gotoGame(room);
+            //client.gotoGame(room);
         }
     }
     @FXML
@@ -209,12 +208,8 @@ public class LobbyController implements Initializable {
     }
 
     public void fetchLobbyInfo() {
-        String msg1 = Encoder.fetchRoomsRequest();
-        client.getConnect().send(msg1);
-        //Connect.waitForRec();
-        String msg2 = Encoder.fetchPlayersRequest();
-        client.getConnect().send(msg2);
-        //Connect.waitForRec();
+        Connect.send(Encoder.fetchRoomsRequest());
+        Connect.send(Encoder.fetchPlayersRequest());
     }
 
     @Override
@@ -222,7 +217,7 @@ public class LobbyController implements Initializable {
 
     }
 
-    public void setAll() {
+    public void setAssociation() {
     	chatBoxController.setItems(client.getMessageData());
         roomList.setItems(client.getRoomData());
         roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
