@@ -170,7 +170,7 @@ public class LobbyController implements Initializable {
 
     @FXML
     private void gotoCreateRoom() throws IOException {
-        client.gotoCreateRoom(roomList);
+        client.gotoCreateRoom();
     }
 
     @FXML

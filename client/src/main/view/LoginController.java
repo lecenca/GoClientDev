@@ -4,13 +4,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.paint.Color;
 import src.main.Client;
 import src.main.Type;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import src.main.User;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
@@ -18,6 +22,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
+
     private Client client;
 
     @FXML
@@ -37,7 +42,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void login() throws Exception {
-        if (/*checkValid()*/true) {
+        if (checkValid()) {
             client.getPrimaryStage().close();
             client.gotoLobby();
             Client.getUser().setState(Type.UserState.IDLE);
@@ -69,17 +74,12 @@ public class LoginController implements Initializable {
             emptyPasswordTips.setVisible(false);
         }
         if (!account.isEmpty() && !password.isEmpty()) {
+            if (Connect.interrupted()) {
+                return false;
+            }
             String json = Encoder.loginRequest(this.account.getText(), this.password.getText());
-            //System.out.println(json);
-            client.getConnect().send(json);
-            //Connect.waitForRec();
-            client.getConnect().waitForRec(Type.Response.LOGIN_SUCCESS,Type.Response.LOGIN_FAILED);
-            /*json = Encoder.fetchRoomsRequest();
-            client.getConnect().send(json);
-            Connect.waitForRec();
-            json = Encoder.fetchPlayersRequest();
-            client.getConnect().send(json);
-            Connect.waitForRec();*/
+            Connect.send(json);
+            Connect.waitForRec(Type.Response.LOGIN_SUCCESS, Type.Response.LOGIN_FAILED);
             if (!correct) {
                 setTipsError(invaildMessageTips, "账号或密码错误");
             }
@@ -113,7 +113,6 @@ public class LoginController implements Initializable {
         emptyAccountTips.setVisible(false);
         emptyPasswordTips.setVisible(false);
         invaildMessageTips.setVisible(false);
-
         Image image = new Image("resources/image/bg001.jpg");
         BackgroundSize backgroundSize = new BackgroundSize(500, 285, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
