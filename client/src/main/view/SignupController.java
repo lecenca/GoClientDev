@@ -98,7 +98,7 @@ public class SignupController implements Initializable {
             Connect.waitThrea.join();
             if (registSuccess) {
                 client.getsignupStage().close();
-                client.getPrimaryStage().show();
+                client.gotoLogin();
             } else {
                 JOptionPane.showMessageDialog(null, "服务器发生未知错误，请重试");
             }
