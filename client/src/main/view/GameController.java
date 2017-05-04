@@ -124,8 +124,8 @@ public class GameController implements Initializable {
 
     @FXML
     private void chat() {
-        chatBoxController.sendMessage("无名:" + inputField.getText());
-        client.getConnect().send("无名:" + inputField.getText());
+        chatBoxController.sendMessage(client.getUser().getNickname() + ":" + inputField.getText());
+        client.getConnect().send(inputField.getText());
         inputField.clear();
         send.setDisable(true);
     }
