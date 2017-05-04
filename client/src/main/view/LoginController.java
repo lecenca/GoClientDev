@@ -41,7 +41,7 @@ public class LoginController implements Initializable {
     public static boolean correct;
 
     @FXML
-    private void login() throws Exception {
+    private void login() {
         if (checkValid()) {
             client.getPrimaryStage().close();
             client.gotoLobby();
@@ -51,13 +51,13 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    private void signup() throws Exception {
+    private void signup() {
         client.getPrimaryStage().close();
         client.gotoSignup();
     }
 
     @FXML
-    private boolean checkValid() throws Exception {
+    private boolean checkValid() {
         correct = false;
         String account = this.account.getText();
         String password = this.password.getText();

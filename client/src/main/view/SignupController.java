@@ -31,13 +31,10 @@ public class SignupController implements Initializable {
     // User input information
     @FXML
     private TextField account;
-
     @FXML
     private TextField nickname;
-
     @FXML
     private PasswordField password;
-
     @FXML
     private PasswordField repeatPassword;
 
@@ -67,20 +64,21 @@ public class SignupController implements Initializable {
     private boolean validAccount = false;
     private boolean validName = false;
     private boolean validPassword = false;
-    private boolean validRepeatPassowrd = false;
 
     public static boolean accountCheckSuccess;
     public static boolean registSuccess;
 
+    private static int[] map = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
     @FXML
-    private void signup() throws Exception {
-        if(Connect.interrupted()){
-            return;
-        }
+    private void signup() {
         signUpCall = true;
         synchronousCheck();
         signUpCall = false;
         if (validInfo) {
+            if (Connect.interrupted()) {
+                return;
+            }
             String ac = this.account.getText();
             String nn = this.nickname.getText();
             String pw = this.password.getText();
@@ -93,12 +91,8 @@ public class SignupController implements Initializable {
             user.setBirthday(year, month, day);
             client.setUser(user);
             String json = Encoder.signupRequest(user);
-            //System.out.println("user signup info: " + json);
             client.getConnect().send(json);
-           // Connect.waitForRec(Type.Response.REGIST_SUCCESS,Type.Response.REGIST_FAILED);
-            Connect.requestValues.add(Type.Response.REGIST_SUCCESS);
-            Connect.requestValues.add(Type.Response.REGIST_FAILED);
-            Connect.waitThrea.join();
+            Connect.waitForRec(Type.Response.REGIST_SUCCESS, Type.Response.REGIST_FAILED);
             if (registSuccess) {
                 client.getsignupStage().close();
                 client.gotoLogin();
@@ -108,9 +102,29 @@ public class SignupController implements Initializable {
         }
     }
 
-    // TODO: 检查账号格式：16个字符。若无效，设置 Lable 的文本并返回 false
     @FXML
-    private boolean checkAccountOK() throws Exception {
+    private void synchronousCheck() {
+        validInfo = true;
+        if (!checkAccountValid()) {
+            validInfo = false;
+        }
+        if (!checkNameValid()) {
+            validInfo = false;
+        }
+        if (!checkPasswordValid()) {
+            validInfo = false;
+        }
+        if (!checkRepeatPasswordValid()) {
+            validInfo = false;
+        }
+        if (!checkDateValid()) {
+            validInfo = false;
+        }
+    }
+
+    // TODO: 限制账号长度
+    @FXML
+    private boolean checkAccountValid() {
         if (signUpCall) {
             if (this.account.getText().isEmpty() || this.account.getText() == null || "".equals(this.account.getText())) {
                 setTipsError(accountFormatTips, "账号不能为空");
@@ -122,7 +136,7 @@ public class SignupController implements Initializable {
                 accountFormatTips.setVisible(false);
                 return false;
             }
-            if (!accountCheckOK()) {
+            if (!accountNotExist()) {
                 setTipsError(accountFormatTips, "账号已被注册");
                 validAccount = false;
                 return false;
@@ -133,9 +147,21 @@ public class SignupController implements Initializable {
         return true;
     }
 
-    // TODO: 检查昵称：不超过12个显示字符（一个汉字占2个字符，非汉字占1个字符）只支持汉字 字母 数字和下划线'_'
+    private boolean accountNotExist() {
+        if (!Connect.hasConnect()) {
+            return true;
+        }
+        accountCheckSuccess = false;
+        String account = this.account.getText();
+        String json = Encoder.chechAccountRequest(account);
+        Connect.send(json);
+        Connect.waitForRec(Type.Response.ACCOUNT_CHECK_SUCCESS, Type.Response.ACCOUNT_CHECK_FAILED);
+        return accountCheckSuccess;
+    }
+
+    // TODO: 限制昵称长度和字符
     @FXML
-    private boolean checkNameOK() throws Exception {
+    private boolean checkNameValid() {
         if (signUpCall) {
             if (this.nickname.getText().isEmpty() || this.nickname.getText() == null || "".equals(this.nickname.getText())) {
                 setTipsError(nameFormatTips, "昵称不能为空");
@@ -153,9 +179,8 @@ public class SignupController implements Initializable {
         return true;
     }
 
-    // TODO: 检查密码格式：长度 8-16 位，若无效，设置相关 Lable 的文本并返回 false
     @FXML
-    private boolean checkPasswordOK() {
+    private boolean checkPasswordValid() {
         if (signUpCall) {
             if (password.getText().isEmpty()) {
                 setTipsError(passwordFormatTips, "密码不能为空");
@@ -183,8 +208,16 @@ public class SignupController implements Initializable {
                 repeatPasswordFormatTips.setVisible(false);
                 validPassword = false;
                 return false;
-            } else if (!password.getText().matches("[a-zA-Z0-9]+")) {
-                setTipsError(passwordFormatTips, "密码由数字或者字母组成");
+            } else if (password.getText().length() > 16) {
+                setTipsError(passwordFormatTips, "密码不超过16位");
+                validPassword = false;
+                repeatPassword.setText("");
+                repeatPassword.setDisable(true);
+                repeatPasswordFormatTips.setVisible(false);
+                validPassword = false;
+                return false;
+            } else if (!password.getText().matches("\\w+")) {
+                setTipsError(passwordFormatTips, "只能由数字，字母或'_'组成");
                 validPassword = false;
                 repeatPassword.setText("");
                 repeatPassword.setDisable(true);
@@ -198,9 +231,8 @@ public class SignupController implements Initializable {
         return true;
     }
 
-    // TODO: 检查重复密码是否一致，若无效，设置相关 Lable 的文本并返回 false
     @FXML
-    private boolean checkRepeatPasswordOK() {
+    private boolean checkRepeatPasswordValid() {
         if (signUpCall) {
             if (validPassword && (repeatPassword.getText().isEmpty() || repeatPassword.getText() == null || "".equals(repeatPassword.getText()))) {
                 setTipsError(repeatPasswordFormatTips, "请确认密码");
@@ -227,9 +259,8 @@ public class SignupController implements Initializable {
         return true;
     }
 
-    // TODO: 检查生日格式：月份天数是否正常。若无效，设置 Lable 的文本并返回 false
     @FXML
-    private boolean checkDateOK() {
+    private boolean checkDateValid() {
         if (signUpCall) {
             if (this.year.getValue() == null || this.month.getValue() == null || this.day.getValue() == null) {
                 setTipsError(dateFormatTips, "请选择择生日");
@@ -237,8 +268,14 @@ public class SignupController implements Initializable {
             }
         }
         if (this.year.getValue() != null && this.month.getValue() != null && this.day.getValue() != null) {
-            // TODO：日期合法判断
-            if (false) {
+            int y = Integer.parseInt(this.year.getValue().toString());
+            int m = Integer.parseInt(this.month.getValue().toString());
+            int d = Integer.parseInt(this.day.getValue().toString());
+            int limit = map[m];
+            if (y % 4 == 0 && y % 100 != 0 || y % 400 == 0) {
+                limit++;
+            }
+            if (d > limit) {
                 setTipsError(dateFormatTips, "日期无效");
                 return false;
             }
@@ -248,37 +285,6 @@ public class SignupController implements Initializable {
         return true;
     }
 
-    private boolean accountCheckOK() throws Exception {
-        if(!Connect.hasConnect()){
-            return true;
-        }
-        accountCheckSuccess = false;
-        String account = this.account.getText();
-        String json = Encoder.chechAccountRequest(account);
-        Connect.send(json);
-        Connect.waitForRec(Type.Response.ACCOUNT_CHECK_SUCCESS,Type.Response.ACCOUNT_CHECK_FAILED);
-        return accountCheckSuccess;
-    }
-
-    @FXML
-    private void synchronousCheck() throws Exception {
-        validInfo = true;
-        if (!checkAccountOK()) {
-            validInfo = false;
-        }
-        if (!checkNameOK()) {
-            validInfo = false;
-        }
-        if (!checkPasswordOK()) {
-            validInfo = false;
-        }
-        if (!checkRepeatPasswordOK()) {
-            validInfo = false;
-        }
-        if (!checkDateOK()) {
-            validInfo = false;
-        }
-    }
 
     @FXML
     private void setTipsOk(Label tip) {
@@ -295,7 +301,7 @@ public class SignupController implements Initializable {
     }
 
     @FXML
-    private void backToLogin() throws Exception {
+    private void backToLogin() {
         client.getsignupStage().close();
         client.gotoLogin();
     }
@@ -352,7 +358,7 @@ public class SignupController implements Initializable {
                /*account.setText("12");
                System.out.println("Textfield 1 out focus");*/
                 try {
-                    checkAccountOK();
+                    checkAccountValid();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -367,7 +373,7 @@ public class SignupController implements Initializable {
             } else {
 
                 try {
-                    checkNameOK();
+                    checkNameValid();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -381,7 +387,7 @@ public class SignupController implements Initializable {
             } else {
 
                 try {
-                    checkPasswordOK();
+                    checkPasswordValid();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -395,7 +401,7 @@ public class SignupController implements Initializable {
             } else {
 
                 try {
-                    checkRepeatPasswordOK();
+                    checkRepeatPasswordValid();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

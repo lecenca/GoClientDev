@@ -1,7 +1,6 @@
 package src.main;
 
 import javafx.event.EventHandler;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -23,14 +22,10 @@ import src.main.view.SignupController;
 import src.util.MessageQueue;
 import src.util.UserComparator;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
@@ -54,11 +49,12 @@ public class Client extends Application {
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessages = new MessageQueue<>();
+
     private long checkDalay = 10;
     private long keepAliveDalay = 3000;
     private long lastTimeCheck;
-    private Thread keepAliveThread = new Thread(new Runnable() {
 
+    private Thread keepAliveThread = new Thread(new Runnable() {
         @Override
         public void run() {
             lastTimeCheck = System.currentTimeMillis();
@@ -86,7 +82,6 @@ public class Client extends Application {
                     }
                 }
             }
-
         }
 
         private void reConnect() {
@@ -223,9 +218,6 @@ public class Client extends Application {
         /********* 这是要的 ***********/
         connect = new Connect();
         /*****************************/
-        user = new User();
-        user.setAccount("1000101001");
-        user.setNickname("nickname");
         signupStage = new Stage();
         lobbyStage = new Stage();
         gameStage = new Stage();
@@ -241,7 +233,7 @@ public class Client extends Application {
         lobbyStage.setScene(lobbyScene);
         lobbyController = loader.getController();
         lobbyController.setClient(this);
-        lobbyController.setAll();
+        lobbyController.setAssociation();
         FXMLLoader loader2 = new FXMLLoader();
         loader2.setLocation(getClass().getResource("view/Game.fxml"));
         Pane gamePane = null;
@@ -290,7 +282,7 @@ public class Client extends Application {
         loginController.resetPassword();
     }
 
-    public void gotoLobby() throws Exception {
+    public void gotoLobby() {
         lobbyStage.show();
         /*
          * Thread listenPlayerList = lobbyController.getListenPlayerList();
@@ -305,17 +297,16 @@ public class Client extends Application {
         lobbyController.fetchLobbyInfo();
     }
 
-    public void gotoSignup() throws Exception {
+    public void gotoSignup() {
         SignupController signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
         signupController.setClient(this);
-        // getConnect().getReceiveThread().start();
     }
 
     public void backToLobby() {
         createRoomStage.close();
     }
 
-    public void gotoCreateRoom() throws IOException {
+    public void gotoCreateRoom() {
         createRoomStage = new Stage();
         createRoomStage.initModality(Modality.APPLICATION_MODAL);
         createRoomStage.initOwner(primaryStage);
@@ -323,7 +314,11 @@ public class Client extends Application {
         loader.setBuilderFactory(new JavaFXBuilderFactory());
         loader.setLocation(getClass().getResource("view/CreateRoom.fxml"));
         InputStream in = getClass().getResourceAsStream("view/CreateRoom.fxml");
-        createRoomStage.setScene(new Scene(loader.load(in)));
+        try {
+            createRoomStage.setScene(new Scene(loader.load(in)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         createRoomStage.show();
         CreateRoomController createRoomController = (CreateRoomController) loader.getController();
         createRoomController.setClient(this);
