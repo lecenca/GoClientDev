@@ -54,6 +54,9 @@
             <TableColumn fx:id="loseCol" prefWidth="44.0" text="负场" />
             <TableColumn fx:id="playerStateCol" prefWidth="112.0" text="状态" />
         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
    </children>
 </AnchorPane>
