@@ -34,6 +34,8 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Receiver;
+
 public class Client extends Application {
     private UserComparator comparator = new UserComparator();
     private Stage primaryStage;
@@ -59,7 +61,7 @@ public class Client extends Application {
     private long checkDalay = 10;
     private long keepAliveDalay = 3000;
     private long lastTimeCheck;
-
+    private Thread receiveThread;
     private Thread keepAliveThread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -70,13 +72,15 @@ public class Client extends Application {
                     try {
                         Connect.sendMsgToserver("Normal Connection");// 一分钟心跳
                     } catch (IOException e) {
-                        //e.printStackTrace();
+                        // e.printStackTrace();
                         System.out.println("与服务器连接失败!");
-                        JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误",
+                                JOptionPane.INFORMATION_MESSAGE);
                         reConnect();
-                    }catch(NullPointerException e) {
+                    } catch (NullPointerException e) {
                         System.out.println("与服务器连接失败！");
-                        JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误",
+                                JOptionPane.INFORMATION_MESSAGE);
                         reConnect();
                     }
                     lastTimeCheck = System.currentTimeMillis();
@@ -101,12 +105,16 @@ public class Client extends Application {
                     connect.setIs(is);
                     connect.setOs(os);
                     System.out.println("重新连接服务器成功！");
+                    if(!receiveThread.isAlive())
+                        receiveThread.start();
+                    if(!messageThread.isAlive())
+                        messageThread.start();
                     JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnknownHostException e) {
                     if (print2)
                         System.out.println("客户端异常！");
                     print2 = false;
-                    //e.printStackTrace();
+                    // e.printStackTrace();
                 } catch (IOException e) {
                     if (print)
                         System.out.println("正在尝试重新连接服务器。。。。");
@@ -122,14 +130,14 @@ public class Client extends Application {
                 socket.sendUrgentData(0);
                 return true;
             } catch (IOException e) {
-                
-            }catch(NullPointerException e) {
-                
+
+            } catch (NullPointerException e) {
+
             }
             return false;
         }
     });
-    private Thread listenPlayerList = new Thread(new Runnable() {
+    /*private Thread listenPlayerList = new Thread(new Runnable() {
         @Override
         public void run() {
             System.out.println("监听玩家列表线程启动！");
@@ -137,14 +145,14 @@ public class Client extends Application {
                 if (!players.isEmpty()) {
                     User player = players.remove();
                     playerData.add(player);
-                    playersMap.put(player.getAccount(),player);
+                    playersMap.put(player.getAccount(), player);
                 }
-                /*
+                
                  * try { Thread.currentThread().sleep(1000); playerData.add(new
                  * User("tom", 10, 100, 60, 1)); playerData.sorted(comparator);
                  * } catch (InterruptedException e) { // TODO Auto-generated
                  * catch block e.printStackTrace(); }
-                 */
+                 
             }
         }
     });
@@ -156,14 +164,14 @@ public class Client extends Application {
                 if (!rooms.isEmpty()) {
                     Room room = rooms.remove();
                     roomData.add(room);
-                    roomsMap.put(room.getId(),room);
+                    roomsMap.put(room.getId(), room);
                 }
-                /*
+                
                  * roomData.add(new Room(2, "room..", "player1", "player2", 1));
                  * try { Thread.currentThread().sleep(2000); } catch
                  * (InterruptedException e) { // TODO Auto-generated catch block
                  * e.printStackTrace(); }
-                 */
+                 
             }
         }
     });
@@ -188,17 +196,17 @@ public class Client extends Application {
                     } catch (Exception e) {
 
                     }
-                /*
+                
                  * messageData.add("hello"); try {
                  * Thread.currentThread().sleep(2000); } catch
                  * (InterruptedException e) { // TODO Auto-generated catch block
                  * e.printStackTrace(); }
-                 */
+                 
             }
 
         }
 
-        /*
+        
          * @Override public void run() { System.out.println("聊天线程启动"); // TODO
          * Auto-generated method stub while (true) {
          * 
@@ -210,13 +218,52 @@ public class Client extends Application {
          * { messageData.add("hello"); Thread.currentThread().sleep(2000); }
          * catch (InterruptedException e) { catch block e.printStackTrace(); } }
          * }
-         */
+         
+    });*/
+    private Thread messageThread = new Thread(new Runnable() {
+
+        @Override
+        public void run() {
+            System.out.println("监听信息线程启动！");
+            while (true) {
+                // players
+                if (!players.isEmpty()) {
+                    User player = players.remove();
+                    playerData.add(player);
+                    playersMap.put(player.getAccount(), player);
+                }
+                // rooms
+                if (!rooms.isEmpty()) {
+                    Room room = rooms.remove();
+                    roomData.add(room);
+                    roomsMap.put(room.getId(), room);
+                }
+                // chat
+                if (!chatMessages.isEmpty())
+                    try {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                if (!chatMessages.isEmpty())
+                                    messageData.add(chatMessages.remove());
+                            }
+                        });
+
+                    } catch (Exception e) {
+
+                    }
+
+            }
+
+        }
     });
 
     public Client() {
         playerData.sort(comparator);
         /********* 这是要的 ***********/
         connect = new Connect();
+        receiveThread = connect.getReceiveThread();
         /*****************************/
         signupStage = new Stage();
         lobbyStage = new Stage();
@@ -250,24 +297,22 @@ public class Client extends Application {
             @Override
             public void handle(WindowEvent event) {
                 // need connect
-                /*Room room = roomsMap.get(getUser().getRoom());
-                if(room.playerNum() == 1){
-                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.DESTROY);
-                    System.out.println("update player msg: " + msg);
-                    Connect.send(msg);
-                }
-                room.setState(Type.RoomState.WATING);
-                if(room.getPlayer1() == getUser().getAccount()){
-                    room.setPlayer1(null);
-                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1OUT);
-                    System.out.println("update player msg: " + msg);
-                    Connect.send(msg);
-                }else {
-                    room.setPlayer2(null);
-                    String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER2OUT);
-                    System.out.println("update player msg: " + msg);
-                    Connect.send(msg);
-                }*/
+                /*
+                 * Room room = roomsMap.get(getUser().getRoom());
+                 * if(room.playerNum() == 1){ String msg =
+                 * Encoder.updateRoomRequest(room, Type.UpdateRoom.DESTROY);
+                 * System.out.println("update player msg: " + msg);
+                 * Connect.send(msg); } room.setState(Type.RoomState.WATING);
+                 * if(room.getPlayer1() == getUser().getAccount()){
+                 * room.setPlayer1(null); String msg =
+                 * Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1OUT);
+                 * System.out.println("update player msg: " + msg);
+                 * Connect.send(msg); }else { room.setPlayer2(null); String msg
+                 * = Encoder.updateRoomRequest(room,
+                 * Type.UpdateRoom.PLAYER2OUT);
+                 * System.out.println("update player msg: " + msg);
+                 * Connect.send(msg); }
+                 */
                 getUser().setRoom(0);
                 getUser().setState(Type.UserState.IDLE);
                 String msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.CHANGE);
@@ -287,15 +332,16 @@ public class Client extends Application {
         keepAliveThread.setDaemon(true);
         keepAliveThread.start();
         if (Connect.hasConnect()) {
-            Thread receiveThread = getConnect().getReceiveThread();
             receiveThread.setDaemon(true);
             receiveThread.start();
-            listenPlayerList.setDaemon(true);
+            messageThread.setDaemon(true);
+            messageThread.start();
+            /*listenPlayerList.setDaemon(true);
             listenPlayerList.start();
             listenRoomList.setDaemon(true);
             listenRoomList.start();
             chatThread.setDaemon(true);
-            chatThread.start();
+            chatThread.start();*/
         }
     }
 
