@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import src.main.*;
 
+import src.main.view.GameController;
 import src.main.view.LoginController;
 import src.main.view.SignupController;
 import src.util.MessageQueue;
@@ -33,8 +34,8 @@ public class Connect {
      * private ChatBox chatBox;
      */
     //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "172.16.90.242";
-    private static int PORT = 10005;
+    private static String IP = "110.209.142.133";
+    private static int PORT = 60000;
     public static Socket socket;
     private static OutputStream os;
     private static InputStream is;
@@ -95,6 +96,7 @@ public class Connect {
             os = socket.getOutputStream();
             is = socket.getInputStream();
             connect = true;
+            System.out.println("服务器连接成功");
         } catch (IOException e) {
             connect = false;
             System.out.println("服务器连接失败");
@@ -120,8 +122,8 @@ public class Connect {
     public static void send(String message) {
         try {
             /***** test *****/
-            System.out.println("message len(utf-8 bytes): " + message.getBytes("utf-8").length);
-            System.out.println("message: " + message);
+            //System.out.println("message len(utf-8 bytes): " + message.getBytes("utf-8").length);
+            //System.out.println("message: " + message);
             /***** test *****/
             os.write(intToByteHH(message.getBytes("utf-8").length));
             os.write(message.getBytes("utf-8"));
@@ -202,6 +204,9 @@ public class Connect {
                     case Type.Response.GROUP_CHAT_MSG:
                         handleChatMessage(jsonObject);
                         break;
+                    case Type.Response.READYGO_SUCCESS:
+                        handleReady(jsonObject);
+                        break;
                     default:
                         break;
                 }
@@ -261,6 +266,11 @@ public class Connect {
             }
             System.out.println("handle list:" + playerList);
         }
+    }
+
+    private void handleReady(JSONObject jsonObject){
+        Client.getGameController().setReady(jsonObject.getBooleanValue("player1"),
+                jsonObject.getBooleanValue("player2"));
     }
 
     private void handleGameAction(JSONObject jsonObject) {
