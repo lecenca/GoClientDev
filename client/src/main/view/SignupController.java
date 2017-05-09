@@ -313,7 +313,7 @@ public class SignupController implements Initializable {
 
     @FXML
     private void backToLogin() {
-        hasCheckedAccount = true;
+        //hasCheckedAccount = true;
         client.getsignupStage().close();
         client.gotoLogin();
     }

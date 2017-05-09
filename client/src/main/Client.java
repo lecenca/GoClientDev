@@ -111,10 +111,10 @@ public class Client extends Application {
                         receiveThread.start();
                     if(!messageThread.isAlive())
                         messageThread.start();
-                    if(!SignupController.hasCheckedAccount) {
+                    /*if(!SignupController.hasCheckedAccount) {
                        signupController.checkAccountValid();
                        SignupController.hasCheckedAccount = true;
-                    }
+                    }*/
                     JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnknownHostException e) {
                     if (print2)
