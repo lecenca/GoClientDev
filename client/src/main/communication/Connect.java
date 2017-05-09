@@ -33,8 +33,8 @@ public class Connect {
      * private ChatBox chatBox;
      */
     //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "172.16.90.242";
-    private static int PORT = 10005;
+    private static String IP = "110.208.109.46";
+    private static int PORT = 60000;
     public static Socket socket;
     private static OutputStream os;
     private static InputStream is;
@@ -47,6 +47,7 @@ public class Connect {
     public static ArrayList<Integer> requestValues = new ArrayList<>();
     public static boolean recv = false;
     private static boolean connect = false;
+    public static boolean timeout = false;
     public static Thread waitThrea = new Thread(new Runnable() {
 
         @Override
@@ -72,6 +73,7 @@ public class Connect {
                 i++;
                 if (i == 100) {
                     JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                    
                     break;
                 }
             }
@@ -151,6 +153,7 @@ public class Connect {
             i++;
             if (i == 100) {
                 JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                timeout = true;
                 break;
             }
         }

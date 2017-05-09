@@ -66,14 +66,14 @@ public class SignupController implements Initializable {
 
     @FXML
     private AnchorPane signupPane;
-
+    
     private boolean validAccount = false;
     private boolean validName = false;
     private boolean validPassword = false;
 
     public static boolean accountCheckSuccess;
     public static boolean registSuccess;
-
+    public static boolean hasCheckedAccount = true;
     private static int[] map = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     @FXML
@@ -130,7 +130,7 @@ public class SignupController implements Initializable {
 
     // TODO: 限制账号长度
     @FXML
-    private boolean checkAccountValid() {
+    public boolean checkAccountValid() {
         if (signUpCall) {
             if (this.account.getText().isEmpty() || this.account.getText() == null || "".equals(this.account.getText())) {
                 setTipsError(accountFormatTips, "账号不能为空");
@@ -143,6 +143,11 @@ public class SignupController implements Initializable {
                 return false;
             }
             if (!accountNotExist()) {
+                if(Connect.timeout) {
+                    Connect.timeout = false;
+                    hasCheckedAccount = false;
+                    return false;
+                }
                 setTipsError(accountFormatTips, "账号已被注册");
                 validAccount = false;
                 return false;
@@ -308,6 +313,7 @@ public class SignupController implements Initializable {
 
     @FXML
     private void backToLogin() {
+        hasCheckedAccount = true;
         client.getsignupStage().close();
         client.gotoLogin();
     }

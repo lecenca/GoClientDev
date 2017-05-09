@@ -43,7 +43,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void login() {
-        if (/*checkValid()*/true) {
+        if (checkValid()) {
             client.getPrimaryStage().close();
             client.gotoLobby();
             /***** test *****/
@@ -84,6 +84,10 @@ public class LoginController implements Initializable {
             String json = Encoder.loginRequest(this.account.getText(), this.password.getText());
             Connect.send(json);
             Connect.waitForRec(Type.Response.LOGIN_SUCCESS, Type.Response.LOGIN_FAILED);
+            if(Connect.timeout) {
+                Connect.timeout = false;
+                return false;
+            }
             if (!correct) {
                 setTipsError(invaildMessageTips, "账号或密码错误");
             }
