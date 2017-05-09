@@ -188,10 +188,10 @@ public class Connect {
                         handleRegist(false);
                         break;
                     case Type.Response.LOGIN_SUCCESS:
-                        handleLogin(true);
+                        handleLogin(true, jsonObject);
                         break;
                     case Type.Response.LOGIN_FAILED:
-                        handleLogin(false);
+                        handleLogin(false, jsonObject);
                         break;
                     case Type.Response.FETCH_ROOM_INFO_SUCCESS:
                         handleFetchRoom(jsonObject);
@@ -231,17 +231,17 @@ public class Connect {
 
     private void handleAccountCheck(boolean state) {
         SignupController.accountCheckSuccess = state;
-        System.out.println("SingupController accountCheckSuccess:" + SignupController.accountCheckSuccess);
     }
 
     private void handleRegist(boolean state) {
         SignupController.registSuccess = state;
-        System.out.println("SinupController registSuccess:" + SignupController.registSuccess);
     }
 
-    private void handleLogin(boolean state) {
+    private void handleLogin(boolean state, JSONObject jsonObject) {
         LoginController.correct = state;
-        System.out.println("LoginController correct:" + LoginController.correct);
+        if(state){
+            Client.setUser(Decoder.parseUser(jsonObject.getJSONObject("user")));
+        }
     }
 
     private void handleFetchRoom(JSONObject jsonObject) {

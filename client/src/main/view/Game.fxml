@@ -63,12 +63,12 @@
             <Font size="40.0" />
          </font>
       </Label>
-      <Label layoutX="723.0" layoutY="123.0" prefHeight="20.0" prefWidth="65.0" text="玩家一">
+      <Label fx:id="player1Name" layoutX="723.0" layoutY="123.0" prefHeight="20.0" prefWidth="65.0" text="玩家一">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="967.0" layoutY="123.0" prefHeight="20.0" prefWidth="65.0" text="玩家二">
+      <Label fx:id="player2Name" layoutX="967.0" layoutY="123.0" prefHeight="20.0" prefWidth="65.0" text="玩家二">
          <font>
             <Font size="15.0" />
          </font>
@@ -89,7 +89,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label prefHeight="43.0" prefWidth="113.0" text="黑贴3.5" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+            <Label fx:id="komi" prefHeight="43.0" prefWidth="113.0" text="黑贴3.5" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
                <font>
                   <Font size="18.0" />
                </font>
@@ -97,12 +97,12 @@
                   <Insets bottom="1.0" right="1.0" top="1.0" />
                </VBox.margin>
             </Label>
-            <Label prefHeight="45.0" prefWidth="111.0" text="30分" textAlignment="CENTER">
+            <Label fx:id="mainTime" prefHeight="45.0" prefWidth="111.0" text="30分" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label prefHeight="43.0" prefWidth="114.0" text="30秒3次" textAlignment="CENTER">
+            <Label fx:id="periodTime" prefHeight="43.0" prefWidth="114.0" text="30秒3次" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>

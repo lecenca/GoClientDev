@@ -52,6 +52,11 @@ public class LoginController implements Initializable {
             Client.getUser().setState(Type.UserState.IDLE);
             Client.getLobbyController().addPlayer(Client.getUser());
         }
+        /*Client.setUser(new User());
+        Client.getLobbyController().addPlayer(Client.getUser());
+        Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
+        client.getPrimaryStage().close();
+        client.gotoLobby();*/
     }
 
     @FXML

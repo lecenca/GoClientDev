@@ -5,10 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import src.main.Board;
-import src.main.Client;
-import src.main.Room;
-import src.main.Stone;
+import src.main.*;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
@@ -24,8 +21,20 @@ public class GameController implements Initializable {
     private static boolean player1Ready = false;
     private static boolean player2Ready = false;
     private static int turn;
+
+    @FXML
+    private Label player1Name;
+    @FXML
+    private Label player2Name;
+    @FXML
+    private Label komi;
+    @FXML
+    private Label mainTime;
+    @FXML
+    private Label periodTime;
     @FXML
     private ToggleButton step;
+
     @FXML
     private ChessBoard boardController;
     @FXML
@@ -49,6 +58,14 @@ public class GameController implements Initializable {
 
     public void setRoom(Room room) {
         this.room = room;
+        player1Name.setText(room.getPlayer1Name());
+        player2Name.setText(room.getPlayer2Name());
+        komi.setText(room.getKomi());
+        mainTime.setText(room.getMainTime() + "分");
+        periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
+        player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+        player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+
         turn = Stone.White;
         /*if(room.getPlayer1() != null && room.getPlayer1() == client.getUser().getAccount()){
             turn = Stone.White;
@@ -58,9 +75,7 @@ public class GameController implements Initializable {
             turn = Stone.Black;
             boardController.setColor(Stone.Black);
         }*/
-        // TODO 设置Label 和时间
-        player1TimerController.init(2, 10, 3);
-        player2TimerController.init(2, 10, 3);
+
         //boardController.setTimer(player1TimerController, player2TimerController);
     }
 
@@ -88,6 +103,9 @@ public class GameController implements Initializable {
     public void clear() {
         ready.setText("准备");
         ready.setDisable(false);
+        player1Ready = false;
+        player2Ready = false;
+        step.setSelected(false);
         boardController.clear();
         chatBox.refresh();
         chatBoxController.clear();
@@ -132,15 +150,22 @@ public class GameController implements Initializable {
 
     @FXML
     private void ready() {
-        player1Ready = true;
-        String msg = Encoder.readyRequest(room, player1Ready, player2Ready);
-        System.out.println("ready msg: " + msg);
-        client.getConnect().send(msg);
-        ready.setText("取消准备");
-        ready.setDisable(true);
-        /*********** test **********/
-        player1TimerController.start();
-        /*********** test **********/
+        if (player1Ready == false) {
+            player1Ready = true;
+            String msg = Encoder.readyRequest(room, player1Ready, player2Ready);
+            System.out.println("ready msg: " + msg);
+            client.getConnect().send(msg);
+            ready.setText("取消准备");
+            Client.getUser().setState(Type.UserState.GAMING);
+            /*********** test **********/
+            player1TimerController.start();
+            /*********** test **********/
+        } else {
+            /*************** test *************/
+            ready.setText("准备");
+            Client.getUser().setState(Type.UserState.READY);
+            /*************** test *************/
+        }
     }
 
     @FXML
