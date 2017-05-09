@@ -88,10 +88,6 @@ public class Timer implements Initializable {
         /*********** test ***********/
     }
 
-    public void reset(){
-
-    }
-
     public void init(int main, int period, int times){
         mainTime = 60 * main;
         this.period = period;

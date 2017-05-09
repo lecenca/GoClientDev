@@ -109,6 +109,8 @@ public class GameController implements Initializable {
         boardController.clear();
         chatBox.refresh();
         chatBoxController.clear();
+        player1TimerController.stop();
+        player2TimerController.stop();
     }
 
     public void place(int x, int y, int color) {
