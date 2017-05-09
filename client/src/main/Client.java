@@ -1,6 +1,8 @@
 package src.main;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -31,6 +33,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.JOptionPane;
 
@@ -293,7 +296,10 @@ public class Client extends Application {
         gameController.setClient(this);
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
+
             public void handle(WindowEvent event) {
+                /*****************************************************/
+                /*
                 if(getUser().getState() == Type.UserState.GAMING){
                     int res = JOptionPane.showConfirmDialog(null,"您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分","提示",JOptionPane.YES_NO_OPTION);
                     if(res == JOptionPane.YES_OPTION){
@@ -305,6 +311,24 @@ public class Client extends Application {
                         return;
                     }
                 }
+                */
+                /**************************************************************/
+                /************************* test *****************************/
+                if(getUser().getState() == Type.UserState.GAMING){
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("提示");
+                    alert.setHeaderText("您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分");
+                    alert.initOwner(gameStage);
+                    alert.initModality(Modality.WINDOW_MODAL);
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK){
+                        getUser().gameResult(Type.GameResult.LOSE, 30.0);
+                    }else{
+                        event.consume();
+                        return;
+                    }
+                }
+                /************************* test *****************************/
                 // need connect
                 /*
                  * Room room = roomsMap.get(getUser().getRoom());
@@ -326,7 +350,10 @@ public class Client extends Application {
                 getUser().setState(Type.UserState.IDLE);
                 updateUser();
                 gameController.clear();
+
             }
+
+
         });
     }
 
