@@ -82,12 +82,14 @@ public class User {
             , "九级", "八级", "七级", "六级", "五级", "四级", "三级", "二级", "一级",
             "一段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段"};
 
+    /********** test **********/
     public User() {
         account = "1";
         nickname = "小明";
-        state = Type.UserState.OTHER;
+        state = Type.UserState.IDLE;
         room = 0;
     }
+    /********** test **********/
 
     public User(String nickname, int level, int win, int lose, int state) {
         this.nickname = nickname;
@@ -153,6 +155,33 @@ public class User {
 
     public void setRoom(int room) {
         this.room = room;
+    }
+
+    public void gameResult(int result, double point){
+        if(result == Type.GameResult.WIN){
+            ++data.win;
+            data.rank += (int)(point / 3.0);
+            adjustLevel();
+        }
+        else if(result == Type.GameResult.LOSE){
+            ++data.lose;
+            data.rank -= (int)(point / 3.0);
+            adjustLevel();
+        }
+        else{
+            ++data.draw;
+        }
+    }
+
+    private void adjustLevel(){
+        int level = (this.data.rank - 1000) / 50;
+        if(level < 0){
+            level = 0;
+        }
+        else if(level > 26){
+            level = 26;
+        }
+        this.data.level = level;
     }
 
     public int getLevel() {

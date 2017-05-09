@@ -296,6 +296,17 @@ public class Client extends Application {
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
+                if(getUser().getState() == Type.UserState.GAMING){
+                    int res = JOptionPane.showConfirmDialog(null,"您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分","提示",JOptionPane.YES_NO_OPTION);
+                    if(res == JOptionPane.YES_OPTION){
+                        getUser().gameResult(Type.GameResult.LOSE, 30.0);
+                        // TODO: 另一个玩家
+                    }
+                    else{
+                        event.consume();
+                        return;
+                    }
+                }
                 // need connect
                 /*
                  * Room room = roomsMap.get(getUser().getRoom());
@@ -318,7 +329,6 @@ public class Client extends Application {
                 String msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.CHANGE);
                 System.out.println("update player msg: " + msg);
                 Connect.send(msg);
-                System.out.println("关闭游戏界面 clear()");
                 gameController.clear();
             }
         });
@@ -395,8 +405,8 @@ public class Client extends Application {
     }
 
     public void gotoGame(Room room) {
-        gameStage.show();
         gameController.setRoom(room);
+        gameStage.show();
     }
 
     private Initializable replaceSceneContent(String fxml) throws Exception {
