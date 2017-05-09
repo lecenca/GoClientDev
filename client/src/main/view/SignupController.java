@@ -78,6 +78,9 @@ public class SignupController implements Initializable {
 
     @FXML
     private void signup() {
+        if(!hasCheckedAccount) {
+            checkAccountValid();
+        }
         signUpCall = true;
         synchronousCheck();
         signUpCall = false;
@@ -160,7 +163,7 @@ public class SignupController implements Initializable {
 
     private boolean accountNotExist() {
         if (!Connect.hasConnect()) {
-            return true;
+            return false;
         }
         accountCheckSuccess = false;
         String account = this.account.getText();

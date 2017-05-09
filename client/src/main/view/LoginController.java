@@ -44,19 +44,19 @@ public class LoginController implements Initializable {
     @FXML
     private void login() {
         if (checkValid()) {
+            /*client.getPrimaryStage().close();
+            client.gotoLobby();
+            *//***** test *****//*
+            Client.setUser(new User());
+            *//***** test *****//*
+            Client.getUser().setState(Type.UserState.IDLE);
+            Client.getLobbyController().addPlayer(Client.getUser());*/
+            Client.setUser(new User());
+            Client.getLobbyController().addPlayer(Client.getUser());
+            Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
             client.getPrimaryStage().close();
             client.gotoLobby();
-            /***** test *****/
-            Client.setUser(new User());
-            /***** test *****/
-            Client.getUser().setState(Type.UserState.IDLE);
-            Client.getLobbyController().addPlayer(Client.getUser());
         }
-        /*Client.setUser(new User());
-        Client.getLobbyController().addPlayer(Client.getUser());
-        Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
-        client.getPrimaryStage().close();
-        client.gotoLobby();*/
     }
 
     @FXML
@@ -116,7 +116,10 @@ public class LoginController implements Initializable {
     public void resetPassword() {
         account.setText("");
     }
-
+    @FXML
+    public void clearTip() {
+        setTipsError(invaildMessageTips, "");
+    }
     public void setClient(Client client) {
         this.client = client;
     }
