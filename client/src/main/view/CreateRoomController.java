@@ -86,9 +86,7 @@ public class CreateRoomController implements Initializable {
         Connect.send(msg);
         Client.getUser().setRoom(room.getId());
         Client.getUser().setState(Type.UserState.READY);
-        msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.IN);
-        System.out.println("update player msg: " + msg);
-        Connect.send(msg);
+        Client.updateUser();
         /************* release ********************/
     }
 

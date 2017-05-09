@@ -11,7 +11,6 @@ import src.main.communication.Encoder;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
@@ -20,6 +19,8 @@ public class GameController implements Initializable {
     private Room room;
     private static boolean player1Ready = false;
     private static boolean player2Ready = false;
+    private static boolean roomOwner = false;
+    private static boolean begin = false;
     private static int turn;
 
     @FXML
@@ -65,23 +66,22 @@ public class GameController implements Initializable {
         periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
         player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
         player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-
-        turn = Stone.White;
-        /*if(room.getPlayer1() != null && room.getPlayer1() == client.getUser().getAccount()){
-            turn = Stone.White;
+        turn = Stone.Black;
+        if(room.getPlayer1() != null && room.getPlayer1() == client.getUser().getAccount()){
+            roomOwner = true;
             boardController.setColor(Stone.White);
         }
         else{
-            turn = Stone.Black;
+            roomOwner = false;
             boardController.setColor(Stone.Black);
-        }*/
-
-        //boardController.setTimer(player1TimerController, player2TimerController);
+        }
+        /***** test *****/
+        turn = Stone.White;
+        /***** test *****/
     }
 
     public static boolean isBegin() {
-        return player1Ready;
-        //return player1Ready && player2Ready;
+        return begin;
     }
 
     public static int getTurn() {
@@ -105,6 +105,7 @@ public class GameController implements Initializable {
         ready.setDisable(false);
         player1Ready = false;
         player2Ready = false;
+        begin = false;
         step.setSelected(false);
         boardController.clear();
         chatBox.refresh();
@@ -148,23 +149,55 @@ public class GameController implements Initializable {
         send.setDisable(true);
     }
 
+    public void gameStart(){
+        ready.setText("游戏中");
+        ready.setDisable(true);
+        begin = true;
+        player2TimerController.start();
+        Client.getUser().setState(Type.UserState.GAMING);
+
+    }
+
     @FXML
     private void ready() {
+        /*************** test *************/
         if (player1Ready == false) {
             player1Ready = true;
-            String msg = Encoder.readyRequest(room, player1Ready, player2Ready);
+            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
             System.out.println("ready msg: " + msg);
             client.getConnect().send(msg);
             ready.setText("取消准备");
             Client.getUser().setState(Type.UserState.GAMING);
-            /*********** test **********/
             player1TimerController.start();
-            /*********** test **********/
         } else {
-            /*************** test *************/
             ready.setText("准备");
             Client.getUser().setState(Type.UserState.READY);
-            /*************** test *************/
+        }
+        /*************** test *************/
+
+        /***************** release **************/
+        /*if (player1Ready == false) {
+            player1Ready = true;
+            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
+            System.out.println("ready msg: " + msg);
+            client.getConnect().send(msg);
+            ready.setText("取消准备");
+        } else {
+            player1Ready = false;
+            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
+            System.out.println("ready msg: " + msg);
+            client.getConnect().send(msg);
+            ready.setText("准备");
+            Client.getUser().setState(Type.UserState.READY);
+        }*/
+        /***************** release **************/
+    }
+
+    public void setReady(boolean player1, boolean player2){
+        player1Ready = player1;
+        player2Ready = player2;
+        if(player1Ready && player2Ready){
+            gameStart();
         }
     }
 
@@ -193,8 +226,6 @@ public class GameController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        player1TimerController.init(1, 10, 3);
-        player2TimerController.init(1, 10, 3);
         boardController.setTimer(player1TimerController, player2TimerController);
     }
 }
