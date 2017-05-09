@@ -47,16 +47,8 @@ public class ChessBoard implements Initializable {
 
     @FXML
     private void onClick(MouseEvent event) {
-        if (GameController.isBegin()/* && GameController.getTurn() == color*/) {
-            /*********** test ***********/
-            if (color == -1) {
-                player1TimerController.pause();
-                player2TimerController.start();
-            } else {
-                player2TimerController.pause();
-                player1TimerController.start();
-            }
-            /*********** test ***********/
+        /****************************  release ****************************/
+        /*if (GameController.isBegin() && GameController.getTurn() == this.color) {
             getPixelPos(event);
             int action = action();
             if (action != Type.Action.INVALID) {
@@ -67,9 +59,39 @@ public class ChessBoard implements Initializable {
                     remove();
                     board.remove();
                 }
+                if (GameController.getTurn() == Stone.Black) {
+                    player2TimerController.pause();
+                    player1TimerController.start();
+                } else {
+                    player1TimerController.pause();
+                    player2TimerController.start();
+                }
+            }
+        }*/
+        /****************************  release ****************************/
+        /****************************  test ****************************/
+        if (GameController.isBegin()) {
+            getPixelPos(event);
+            int action = action();
+            if (action != Type.Action.INVALID) {
+                String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
+                System.out.println(jsonmsg);
+                place(index.x, index.y, color);
+                if (action == Type.Action.KILL) {
+                    remove();
+                    board.remove();
+                }
+                if (color == -1) {
+                    player2TimerController.pause();
+                    player1TimerController.start();
+                } else {
+                    player1TimerController.pause();
+                    player2TimerController.start();
+                }
                 color = -color;
             }
         }
+        /****************************  test ****************************/
     }
 
     private void getPixelPos(MouseEvent event) {

@@ -12,6 +12,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.paint.Color;
 import src.main.Client;
+import src.main.Room;
 import src.main.Type;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

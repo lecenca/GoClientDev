@@ -12,6 +12,9 @@ public class Encoder {
 
     private static Gson gson = new Gson();
 
+    public static String keepAliveRequest(){
+        return "{\"request_type\":0}";
+    }
     public static String chechAccountRequest(String account) {
         Map map = new HashMap();
         map.put("account", account);
@@ -43,10 +46,10 @@ public class Encoder {
         return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_PLAYERS_INFO) + "}";
     }
 
-    public static String updatePlayerRequest(User user, int type) {
-        JSONObject jsonObject = JSONObject.parseObject(gson.toJson(user).toString());
-        jsonObject.put("action", type);
-        return requestJson(gson.toJson(jsonObject), Type.Request.UPDATE_PLAYER);
+    public static String updatePlayerRequest(User user) {
+        /*JSONObject jsonObject = JSONObject.parseObject(gson.toJson(user).toString());
+        jsonObject.put("action", type);*/
+        return requestJson(gson.toJson(user), Type.Request.UPDATE_PLAYER);
     }
 
     public static String updateRoomRequest(Room room, int type) {
@@ -55,9 +58,9 @@ public class Encoder {
         return requestJson(gson.toJson(jsonObject), Type.Request.UPDATE_ROOM);
     }
 
-    public static String readyRequest(Room room, Boolean player1IsReady, Boolean player2IsReady) {
+    public static String readyRequest(int roomId, Boolean player1IsReady, Boolean player2IsReady) {
         Map map = new HashMap();
-        map.put("room_id", room.getId());
+        map.put("room_id", roomId);
         map.put("player1", player1IsReady);
         map.put("player2", player2IsReady);
         return requestJson(gson.toJson(map), Type.Request.READY);

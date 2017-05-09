@@ -95,9 +95,9 @@ public class LobbyController implements Initializable {
                     e.printStackTrace();
                 }
             }
-
         }
     });
+
     private Thread listenRoomList = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -192,9 +192,7 @@ public class LobbyController implements Initializable {
                 }
                 Client.getUser().setRoom(room.getId());
                 Client.getUser().setState(Type.UserState.READY);
-                String msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.IN);
-                System.out.println("update player msg: " + msg);
-                Connect.send(msg);
+                Client.updateUser();
                 break;
             }
         }
@@ -245,9 +243,7 @@ public class LobbyController implements Initializable {
             client.gotoGame(room);
             Client.getUser().setRoom(room.getId());
             Client.getUser().setState(Type.UserState.READY);
-            String msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.IN);
-            System.out.println("update player msg: " + msg);
-            Connect.send(msg);
+            Client.updateUser();
             //test
             //client.gotoGame(room);
         }
@@ -264,6 +260,7 @@ public class LobbyController implements Initializable {
     public void setClient(Client client) {
         this.client = client;
     }
+
 
     public void fetchLobbyInfo() {
         Connect.send(Encoder.fetchRoomsRequest());

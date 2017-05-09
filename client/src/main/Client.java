@@ -72,7 +72,7 @@ public class Client extends Application {
             while (true) {
                 if (System.currentTimeMillis() - lastTimeCheck > keepAliveDalay) {
                     try {
-                        Connect.sendMsgToserver("Normal Connection");// 一分钟心跳
+                        Connect.sendMsgToserver(Encoder.keepAliveRequest());
                     } catch (IOException e) {
                         // e.printStackTrace();
                         System.out.println("与服务器连接失败!");
@@ -259,9 +259,7 @@ public class Client extends Application {
                     } catch (Exception e) {
 
                     }
-
             }
-
         }
     });
 
@@ -332,9 +330,7 @@ public class Client extends Application {
                  */
                 getUser().setRoom(0);
                 getUser().setState(Type.UserState.IDLE);
-                String msg = Encoder.updatePlayerRequest(Client.getUser(), Type.UpdatePlayer.CHANGE);
-                System.out.println("update player msg: " + msg);
-                Connect.send(msg);
+                updateUser();
                 gameController.clear();
             }
         });
@@ -453,6 +449,12 @@ public class Client extends Application {
         }
     }
     // get the connection
+
+    static public void updateUser(){
+        String msg = Encoder.updatePlayerRequest(user);
+        Connect.send(msg);
+        System.out.println("update player msg: " + msg);
+    }
 
     public Connect getConnect() {
         return connect;
