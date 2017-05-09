@@ -86,6 +86,7 @@ public class User {
     public User() {
         account = "1";
         nickname = "小明";
+        password = "123456";
         state = Type.UserState.IDLE;
         room = 0;
     }

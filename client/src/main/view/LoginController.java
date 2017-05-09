@@ -12,6 +12,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.paint.Color;
 import src.main.Client;
+import src.main.Room;
 import src.main.Type;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -52,11 +53,10 @@ public class LoginController implements Initializable {
         /********** test **********/
 
         /********** release **********/
-        /*if (checkValid()) {
-            Client.getLobbyController().addPlayer(Client.getUser());
+        if (checkValid()) {
             client.getPrimaryStage().close();
             client.gotoLobby();
-        }*/
+        }
         /********** release **********/
     }
 
