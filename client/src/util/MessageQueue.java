@@ -14,7 +14,6 @@ public class MessageQueue<T> {
 	}
 	public  void add(T t) {
 		queue.add(t);
-		
 	}
 	public T remove() {
 		return queue.poll();
