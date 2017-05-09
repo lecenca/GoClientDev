@@ -54,10 +54,19 @@ public class LoginController implements Initializable {
 
         /********** release **********/
         if (checkValid()) {
+            /*client.getPrimaryStage().close();
+            client.gotoLobby();
+            *//***** test *****//*
+            Client.setUser(new User());
+            *//***** test *****//*
+            Client.getUser().setState(Type.UserState.IDLE);
+            Client.getLobbyController().addPlayer(Client.getUser());*/
+            Client.setUser(new User());
+            Client.getLobbyController().addPlayer(Client.getUser());
+            Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
             client.getPrimaryStage().close();
             client.gotoLobby();
         }
-        /********** release **********/
     }
 
     @FXML
@@ -90,6 +99,10 @@ public class LoginController implements Initializable {
             String json = Encoder.loginRequest(this.account.getText(), this.password.getText());
             Connect.send(json);
             Connect.waitForRec(Type.Response.LOGIN_SUCCESS, Type.Response.LOGIN_FAILED);
+            if(Connect.timeout) {
+                Connect.timeout = false;
+                return false;
+            }
             if (!correct) {
                 setTipsError(invaildMessageTips, "账号或密码错误");
             }
@@ -113,7 +126,10 @@ public class LoginController implements Initializable {
     public void resetPassword() {
         account.setText("");
     }
-
+    @FXML
+    public void clearTip() {
+        setTipsError(invaildMessageTips, "");
+    }
     public void setClient(Client client) {
         this.client = client;
     }

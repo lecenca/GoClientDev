@@ -281,10 +281,10 @@ public class LobbyController implements Initializable {
         roomList.setItems(client.getRoomData());
         roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
-        player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
-        player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
+        //player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
+        //player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
         roomStateCol.setCellValueFactory(cellData -> cellData.getValue().getStatesProperty());
-        configCol.setCellValueFactory(cellDate->cellDate.getValue().getConfigProperty());
+        //configCol.setCellValueFactory(cellDate->cellDate.getValue().getConfigProperty());
         playerList.setItems(client.getPlayerData());
         nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
         levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());

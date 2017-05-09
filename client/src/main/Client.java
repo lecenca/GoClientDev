@@ -1,6 +1,8 @@
 package src.main;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -31,9 +33,11 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.JOptionPane;
 
+import com.sun.org.apache.xpath.internal.axes.HasPositionalPredChecker;
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Receiver;
 
 public class Client extends Application {
@@ -48,6 +52,7 @@ public class Client extends Application {
     private ArrayList playerList = new ArrayList();
     private static LobbyController lobbyController;
     private static GameController gameController;
+    private static SignupController signupController;
     private ObservableList<Room> roomData = FXCollections.observableArrayList();
     private ObservableList<User> playerData = FXCollections.observableArrayList();
     private ObservableList<String> messageData = FXCollections.observableArrayList();
@@ -109,6 +114,10 @@ public class Client extends Application {
                         receiveThread.start();
                     if(!messageThread.isAlive())
                         messageThread.start();
+                    /*if(!SignupController.hasCheckedAccount) {
+                       signupController.checkAccountValid();
+                       SignupController.hasCheckedAccount = true;
+                    }*/
                     JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnknownHostException e) {
                     if (print2)
@@ -293,7 +302,10 @@ public class Client extends Application {
         gameController.setClient(this);
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
+
             public void handle(WindowEvent event) {
+                /*****************************************************/
+                /*
                 if(getUser().getState() == Type.UserState.GAMING){
                     int res = JOptionPane.showConfirmDialog(null,"您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分","提示",JOptionPane.YES_NO_OPTION);
                     if(res == JOptionPane.YES_OPTION){
@@ -305,6 +317,24 @@ public class Client extends Application {
                         return;
                     }
                 }
+                */
+                /**************************************************************/
+                /************************* test *****************************/
+                if(getUser().getState() == Type.UserState.GAMING){
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("提示");
+                    alert.setHeaderText("您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分");
+                    alert.initOwner(gameStage);
+                    alert.initModality(Modality.WINDOW_MODAL);
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK){
+                        getUser().gameResult(Type.GameResult.LOSE, 30.0);
+                    }else{
+                        event.consume();
+                        return;
+                    }
+                }
+                /************************* test *****************************/
                 // need connect
                 /*
                  * Room room = roomsMap.get(getUser().getRoom());
@@ -326,7 +356,10 @@ public class Client extends Application {
                 getUser().setState(Type.UserState.IDLE);
                 updateUser();
                 gameController.clear();
+
             }
+
+
         });
     }
 
@@ -374,7 +407,7 @@ public class Client extends Application {
     }
 
     public void gotoSignup() {
-        SignupController signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
+        signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
         signupController.setClient(this);
     }
 

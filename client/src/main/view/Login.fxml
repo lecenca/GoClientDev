@@ -14,11 +14,11 @@
 
 <AnchorPane fx:id="loginPane" maxHeight="307.0" maxWidth="500.0" minHeight="307.0" minWidth="500.0" prefHeight="307.0" prefWidth="500.0" GridPane.columnIndex="1" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src.main.view.LoginController">
     <children>
-        <TextField fx:id="account" layoutX="118.0" layoutY="94.0" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的帐号">
+        <TextField fx:id="account" layoutX="118.0" layoutY="94.0" onMouseClicked="#clearTip" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的帐号">
          <font>
             <Font size="20.0" />
          </font></TextField>
-      <PasswordField fx:id="password" layoutX="118.0" layoutY="155.0" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的密码">
+      <PasswordField fx:id="password" layoutX="118.0" layoutY="155.0" onMouseClicked="#clearTip" prefHeight="40.0" prefWidth="240.0" promptText="请输入您的密码">
          <font>
             <Font size="20.0" />
          </font></PasswordField>

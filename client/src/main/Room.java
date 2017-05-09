@@ -69,6 +69,7 @@ public class Room {
 
     public String getPlayer1Name(){
         if(player1 != null){
+            //String name = Client.playersMap.get(this.player1).getNickname();
             return Client.playersMap.get(this.player1).getNickname();
         }
         return "???";
@@ -76,6 +77,7 @@ public class Room {
 
     public String getPlayer2Name(){
         if(player2 != null){
+           //String name = Client.playersMap.get(this.player2).getNickname();
             return Client.playersMap.get(this.player2).getNickname();
         }
         return "???";
@@ -158,10 +160,12 @@ public class Room {
     }
 
     public StringProperty getPlayer1Property() {
+        //getPlayer1Name();
         return new SimpleStringProperty(getPlayer1Name());
     }
 
     public StringProperty getPlayer2Property() {
+       // getPlayer2Name();
         return new SimpleStringProperty(getPlayer2Name());
     }
 

@@ -21,6 +21,7 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Connect {
     /*
@@ -44,10 +45,11 @@ public class Connect {
     //private String loginMessage;
     //private String registerMessage;
     private String chatMessage = "hello";
-    private static ArrayList<Integer> responseValues = new ArrayList<>();
+    private static ConcurrentLinkedDeque<Integer> responseValues = new ConcurrentLinkedDeque<>();
     public static ArrayList<Integer> requestValues = new ArrayList<>();
     public static boolean recv = false;
     private static boolean connect = false;
+    public static boolean timeout = false;
     public static Thread waitThrea = new Thread(new Runnable() {
 
         @Override
@@ -73,6 +75,7 @@ public class Connect {
                 i++;
                 if (i == 100) {
                     JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                    
                     break;
                 }
             }
@@ -146,13 +149,16 @@ public class Connect {
             if (recv)
                 for (Integer requestValue : requestValues) {
                     for (Integer resonseValue : responseValues) {
-                        if (resonseValue == requestValue)
+                        if (resonseValue == requestValue) {
+                            responseValues.remove(resonseValue);
                             break outer;
+                        }
                     }
                 }
             i++;
             if (i == 100) {
                 JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                timeout = true;
                 break;
             }
         }

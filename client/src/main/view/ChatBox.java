@@ -40,6 +40,6 @@ public class ChatBox implements Initializable {
     }
 
     public void clear() {
-        chatBox.refresh();
+        chatBox.getItems().clear();
     }
 }
