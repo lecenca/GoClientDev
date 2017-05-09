@@ -13,6 +13,7 @@ import src.main.Type;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Random;
@@ -29,8 +30,6 @@ public class CreateRoomController implements Initializable {
 
     @FXML
     private TextField roomNameField;
-    @FXML
-    private TextField passwordField;
     @FXML
     private Button createRoomBtn;
     @FXML
@@ -61,16 +60,17 @@ public class CreateRoomController implements Initializable {
 
     @FXML
     private void createRoom() {
-        /************* release ********************/
+        /************* release *****************/
         Room room = new Room();
         room.setId(getRoomId());
         String name = roomNameField.getText();
-        if (name != null && !name.isEmpty())
+        if(name == null || name.isEmpty()){
+            JOptionPane.showMessageDialog(null,"房间名称不能为空");
+        }
+        else{
             room.setName(name);
-        String password = passwordField.getText();
-        if (password != null)
-            room.setPassword(password);
-        room.setPlayer1(Client.getUser().getNickname());
+        }
+        room.setPlayer1(Client.getUser().getAccount());
         room.setState(Type.RoomState.WATING);
         room.setConfig(
                 this.komi.getSelectionModel().getSelectedIndex(),
@@ -78,9 +78,9 @@ public class CreateRoomController implements Initializable {
                 this.period.getSelectionModel().getSelectedIndex(),
                 this.period.getSelectionModel().getSelectedIndex()
                 );
-        Client.getLobbyController().addRoom(room);
         client.backToLobby();
         client.gotoGame(room);
+        Client.getLobbyController().addRoom(room);
         String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
         System.out.println("update room msg: " + msg);
         Connect.send(msg);

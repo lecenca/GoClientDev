@@ -21,7 +21,6 @@ public class Room {
 
     private int id;
     private String name;
-    private String password = null;
     private String player1 = null;
     private String player2 = null;
     private int state;
@@ -32,6 +31,9 @@ public class Room {
     private static String[] period = {"15秒", "20秒", "30秒", "40秒", "50秒", "60秒"};
     private static String[] periodTimes = {"1次", "3次", "5次", "7次", "10次"};
     private static String[] roomState = {"等人中", "准备中", "游戏中"};
+    private static int[] corMainTime = {1,5,10,15,20,30,40,60,90};
+    private static int[] corPeriodTime = {15,20,30,40,50,60};
+    private static int[] corTimes = {1,3,5,7,10};
 
     public Room() {
 
@@ -64,6 +66,37 @@ public class Room {
         }
         return num;
     }
+
+    public String getPlayer1Name(){
+        if(player1 != null){
+            return Client.playersMap.get(this.player1).getNickname();
+        }
+        return "???";
+    }
+
+    public String getPlayer2Name(){
+        if(player2 != null){
+            return Client.playersMap.get(this.player2).getNickname();
+        }
+        return "???";
+    }
+
+    public String getKomi(){
+        return komi[this.config.komi];
+    }
+
+    public int getMainTime(){
+        return corMainTime[this.config.mainTime];
+    }
+
+    public int getPeriodTime(){
+        return corPeriodTime[this.config.period];
+    }
+
+    public int getPeriodTimes(){
+        return corTimes[this.config.periodTimes];
+    }
+
     public String getPlayer1Form(Room room) {
         return room.player1;
     }
@@ -115,14 +148,6 @@ public class Room {
         this.config.periodTimes = periodTimes;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     /************* test ********************/
     public StringProperty getIdProperty() {
         return new SimpleStringProperty(Integer.toString(this.id));
@@ -133,11 +158,11 @@ public class Room {
     }
 
     public StringProperty getPlayer1Property() {
-        return new SimpleStringProperty(this.player1);
+        return new SimpleStringProperty(getPlayer1Name());
     }
 
     public StringProperty getPlayer2Property() {
-        return new SimpleStringProperty(this.player2);
+        return new SimpleStringProperty(getPlayer2Name());
     }
 
     public StringProperty getStatesProperty() {

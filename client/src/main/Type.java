@@ -114,4 +114,11 @@ public class Type {
                 SURRENDER = 3, // 认输
                 JUDGE = 4;      // 请求判子
     }
+
+    public static class GameResult{
+        public static final int
+            WIN = 0,
+            LOSE = 1,
+            DRAW = 2;
+    }
 }
