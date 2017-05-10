@@ -29,7 +29,7 @@ public class Connect {
      * private ChatBox chatBox;
      */
     //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "110.209.142.133";
+    private static String IP = "111.151.169.30";
     private static int PORT = 60000;
     public static Socket socket;
     private static OutputStream os;
@@ -204,6 +204,9 @@ public class Connect {
                     case Type.Response.GROUP_CHAT_MSG:
                         handleChatMessage(jsonObject);
                         break;
+                    case Type.Response.SEND_MSG_SUCCESS:
+                        handlePrivateChatMessage(jsonObject);
+                        break;
                     case Type.Response.READYGO_SUCCESS:
                         handleReady(jsonObject);
                         break;
@@ -228,8 +231,15 @@ public class Connect {
         }
     }
 
+    private void handlePrivateChatMessage(JSONObject jsonObject) {
+        String msg = jsonObject.getString("message");
+        MessageQueue<String> messages = Client.getPrivateChatMessages();
+        messages.add(msg);
+        
+    }
+
     private void handleChatMessage(JSONObject jsonObject) {
-        String string = jsonObject.getString("chatMessage");
+        String string = jsonObject.getString("message");
         MessageQueue<String> messages = Client.getChatMessages();
         messages.add(string);
     }

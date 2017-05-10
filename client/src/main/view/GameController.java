@@ -309,9 +309,13 @@ public class GameController implements Initializable {
     @FXML
     private void chat() {
         chatBoxController.sendMessage(Client.getUser().getNickname() + ":" + inputField.getText());
-        Connect.send(inputField.getText());
+        String msg = Encoder.sendMessageRequest(room.getId(),inputField.getText());
+        Connect.send(msg);
         inputField.clear();
         send.setDisable(true);
     }
 
+    public ChatBox getChatBoxController() {
+        return chatBoxController;
+    } 
 }
