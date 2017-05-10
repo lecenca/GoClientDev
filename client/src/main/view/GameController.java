@@ -3,19 +3,17 @@ package src.main.view;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import src.main.*;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
 
-    private Client client;
     private Room room;
     private static boolean player1Ready = false;
     private static boolean player2Ready = false;
@@ -57,8 +55,9 @@ public class GameController implements Initializable {
     @FXML
     private Button judge;
 
-    public void setClient(Client client) {
-        this.client = client;
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        boardController.setTimer(player1TimerController, player2TimerController);
     }
 
     public void setRoom(Room room) {
@@ -87,18 +86,6 @@ public class GameController implements Initializable {
         /***** test *****/
     }
 
-    public boolean isBegin() {
-        return begin;
-    }
-
-    public int getTurn() {
-        return turn;
-    }
-
-    public void takeTurns() {
-        turn = -turn;
-    }
-
     public void clear() {
         ready.setText("准备");
         ready.setDisable(false);
@@ -113,6 +100,101 @@ public class GameController implements Initializable {
         chatBoxController.clear();
         player1TimerController.stop();
         player2TimerController.stop();
+    }
+
+    public boolean isBegin() {
+        return begin;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public void takeTurns() {
+        turn = -turn;
+    }
+
+    public void setReady(boolean player1, boolean player2) {
+        player1Ready = player1;
+        player2Ready = player2;
+        if (player1Ready && player2Ready) {
+            gameStart();
+        }
+    }
+
+    @FXML
+    private void ready() {
+        /*************** test *************/
+        if (player1Ready == false) {
+            player1Ready = true;
+            begin = true;
+            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
+            System.out.println("ready msg: " + msg);
+            Connect.send(msg);
+            ready.setText("取消准备");
+            Client.getUser().setState(Type.UserState.GAMING);
+            player2TimerController.start();
+        } else {
+            begin = false;
+            ready.setText("准备");
+            Client.getUser().setState(Type.UserState.READY);
+        }
+        /*************** test *************/
+
+        /***************** release **************/
+        if (player1Ready == false) {
+            player1Ready = true;
+            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
+            System.out.println("ready msg: " + msg);
+            Connect.send(msg);
+            ready.setText("取消准备");
+        } else {
+            player1Ready = false;
+            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
+            System.out.println("ready msg: " + msg);
+            Connect.send(msg);
+            ready.setText("准备");
+        }
+        /***************** release **************/
+    }
+
+    @FXML
+    public void gameStart() {
+        ready.setText("游戏中");
+        ready.setDisable(true);
+        begin = true;
+        surrender.setDisable(false);
+        player2TimerController.start();
+        Client.getUser().setState(Type.UserState.GAMING);
+        Client.updateUser();
+        room.setState(Type.RoomState.GAMING);
+        Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+    }
+
+    @FXML
+    public void gameOver() {
+        begin = false;
+        player1TimerController.pause();
+        player2TimerController.pause();
+        if (roomOwner) {
+            ArrayList<Number> point = boardController.getPlayerPoint();
+            double p1 = (double) point.get(0);
+            double p2 = (double) point.get(1);
+            double diff = p1 - p2;
+            if (diff < 0.001) {
+                String msg = Encoder.gameOverRequest(room.getId(), 0.0, 0.0, Type.GameResult.DRAW);
+                Connect.send(msg);
+                System.out.println("game result msg: " + msg);
+            } else if (diff > 0) {
+                String msg = Encoder.gameOverRequest(room.getId(), diff, diff, Type.GameResult.WIN);
+                Connect.send(msg);
+                System.out.println("game result msg: " + msg);
+            } else {
+                String msg = Encoder.gameOverRequest(room.getId(), -diff, -diff, Type.GameResult.LOSE);
+                Connect.send(msg);
+                System.out.println("game result msg: " + msg);
+            }
+        }
     }
 
     public void place(int x, int y, int color) {
@@ -130,14 +212,32 @@ public class GameController implements Initializable {
         }
     }
 
-    @FXML
-    public boolean isShowStep() {
-        return step.isSelected();
+    public void overTime() {
+        if (roomOwner) {
+            ArrayList<Number> point = boardController.getPlayerPoint();
+            double p1 = (double) point.get(0);
+            double p2 = (double) point.get(1);
+            double diff = p1 - p2;
+            boolean lose = player1TimerController.getPeriodTimes() == 0;
+            if (diff < 0.001) {
+                p1 = lose ? 6.0 : 0.0;
+                p2 = lose ? 0.0 : 6.0;
+            } else if (diff > 0) {
+                p1 = lose ? 3.0 : diff;
+                p2 = lose ? diff : 3.0;
+            } else {
+                p1 = lose ? -diff : 6.0;
+                p2 = lose ? 6.0 : -diff;
+            }
+            String msg = Encoder.gameOverRequest(room.getId(), p1, p2, lose ? Type.GameResult.PLAYER1_OVERTIME : Type.GameResult.PLAYER2_OVERTIME);
+            Connect.send(msg);
+            System.out.println("game result msg: " + msg);
+        }
     }
 
     @FXML
-    public void judgeEnable(){
-        judge.setDisable(false);
+    public boolean isShowStep() {
+        return step.isSelected();
     }
 
     @FXML
@@ -150,136 +250,68 @@ public class GameController implements Initializable {
     }
 
     @FXML
+    private void surrender() {
+        ArrayList<Number> point = boardController.getPlayerPoint();
+        double p1 = (double) point.get(0);
+        double p2 = (double) point.get(1);
+        double diff = p1 - p2;
+        if (diff < 0.001) {
+            p1 = roomOwner ? 6.0 : 0.0;
+            p2 = roomOwner ? 0.0 : 6.0;
+        } else if (diff > 0) {
+            p1 = roomOwner ? 3.0 : diff;
+            p2 = roomOwner ? diff : 3.0;
+        } else {
+            p1 = roomOwner ? -diff : 6.0;
+            p2 = roomOwner ? 6.0 : -diff;
+        }
+        String msg = Encoder.gameOverRequest(room.getId(), p1, p2, roomOwner ? Type.GameResult.PLAYER1_SURRENDER : Type.GameResult.PLAYER2_SURRENDER);
+        Connect.send(msg);
+        System.out.println("game result msg: " + msg);
+    }
+
+    @FXML
+    public void judge() {
+        String msg = Encoder.judgeRequest(room.getId(), roomOwner);
+        Connect.send(msg);
+        System.out.println("judge request msg: " + msg);
+    }
+
+    @FXML
+    public void judgeEnable() {
+        judge.setDisable(false);
+    }
+
+    @FXML
+    public void judgeForcedEnable() {
+        judge.setText("强制判子");
+        judge.setDisable(false);
+    }
+
+    public void judgeFromOpponent() {
+        int res = JOptionPane.showConfirmDialog(null, "对方请求提前判子\n请问您是否同意？", "请求", JOptionPane.YES_NO_OPTION);
+        if (res == JOptionPane.YES_OPTION) {
+            gameOver();
+        }
+    }
+
+    // chat windows
+    @FXML
+    private void hasText() {
+        String text = inputField.getText();
+        if (text == null || "".equals(text) || text.isEmpty()) {
+            send.setDisable(true);
+        } else {
+            send.setDisable(false);
+        }
+    }
+
+    @FXML
     private void chat() {
-        chatBoxController.sendMessage(client.getUser().getNickname() + ":" + inputField.getText());
-        client.getConnect().send(inputField.getText());
+        chatBoxController.sendMessage(Client.getUser().getNickname() + ":" + inputField.getText());
+        Connect.send(inputField.getText());
         inputField.clear();
         send.setDisable(true);
     }
 
-    public void setReady(boolean player1, boolean player2){
-        player1Ready = player1;
-        player2Ready = player2;
-        if(player1Ready && player2Ready){
-            gameStart();
-        }
-    }
-
-    @FXML
-    private void ready() {
-        /*************** test *************/
-        if (player1Ready == false) {
-            player1Ready = true;
-            begin = true;
-            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
-            System.out.println("ready msg: " + msg);
-            client.getConnect().send(msg);
-            ready.setText("取消准备");
-            Client.getUser().setState(Type.UserState.GAMING);
-            player2TimerController.start();
-        } else {
-            begin = false;
-            ready.setText("准备");
-            Client.getUser().setState(Type.UserState.READY);
-        }
-        /*************** test *************/
-
-        /***************** release **************/
-        /*if (player1Ready == false) {
-            player1Ready = true;
-            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
-            System.out.println("ready msg: " + msg);
-            client.getConnect().send(msg);
-            ready.setText("取消准备");
-        } else {
-            player1Ready = false;
-            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
-            System.out.println("ready msg: " + msg);
-            client.getConnect().send(msg);
-            ready.setText("准备");
-            Client.getUser().setState(Type.UserState.READY);
-        }*/
-        /***************** release **************/
-    }
-
-    @FXML
-    public void gameStart(){
-        ready.setText("游戏中");
-        ready.setDisable(true);
-        begin = true;
-        surrender.setDisable(false);
-        player2TimerController.start();
-        Client.getUser().setState(Type.UserState.GAMING);
-        Client.updateUser();
-        room.setState(Type.RoomState.GAMING);
-        Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
-    }
-
-    @FXML
-    public void gameOver(){
-        begin = false;
-        ArrayList<Number> point = boardController.getPlayerPoint();
-        double p1 = (double)point.get(0);
-        double p2 = (double)point.get(1);
-        double diff = p1 - p2;
-        if(diff < 0.001){
-            String msg = Encoder.gameOverRequest(room.getId(), 0.0, 0.0,Type.GameResult.WIN);
-            client.getConnect().send(msg);
-            System.out.println("game result msg: "+ msg);
-        }
-        else if(diff > 0){
-            String msg = Encoder.gameOverRequest(room.getId(), diff, diff,Type.GameResult.WIN);
-            client.getConnect().send(msg);
-            System.out.println("game result msg: "+ msg);
-        }
-        else{
-            String msg = Encoder.gameOverRequest(room.getId(), -diff, -diff,Type.GameResult.LOSE);
-            client.getConnect().send(msg);
-            System.out.println("game result msg: "+ msg);
-        }
-    }
-
-    @FXML
-    private void surrender() {
-        ArrayList<Number> point = boardController.getPlayerPoint();
-        double p1 = (double)point.get(0);
-        double p2 = (double)point.get(1);
-        double diff = p1 - p2;
-        if(diff < 0.001){
-            p1 = roomOwner ? 6.0 : 0.0;
-            p2 = roomOwner ? 0.0 : 6.0;
-        }
-        else if(diff > 0){
-            p1 = roomOwner ? 3.0 : diff;
-            p2 = roomOwner ? diff : 3.0;
-        }
-        else{
-            p1 = roomOwner ? -diff : 6.0;
-            p2 = roomOwner ? 6.0 : -diff;
-        }
-        String msg = Encoder.gameOverRequest(room.getId(), p1,p2,roomOwner ? Type.GameResult.PLAYER1_SURRENDER : Type.GameResult.PLAYER2_SURRENDER);
-        client.getConnect().send(msg);
-        System.out.println("game result msg: "+ msg);
-    }
-
-    @FXML
-    private void judge() {
-        String msg = Encoder.judgeRequest(room.getId(), roomOwner);
-        client.getConnect().send(msg);
-        System.out.println("judge request msg: "+msg);
-    }
-
-    @FXML
-    private void hasText() {
-        String text = inputField.getText();
-        if (text == null || "".equals(text) || text.length() == 0)
-            send.setDisable(true);
-        else
-            send.setDisable(false);
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        boardController.setTimer(player1TimerController, player2TimerController);
-    }
 }

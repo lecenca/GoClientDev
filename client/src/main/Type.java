@@ -16,11 +16,11 @@ public class Type {
                 UPDATE_PLAYER = 9,
                 LEAVE = 9,
                 READY = 10,
+                JUDGE = 15,
                 GAME_ACTION = 11,
                 GAME_OVER = 12,
                 SEND_MSG = 13,
-                GROUP_CHAT = 14,
-                JUDGE = 15;
+                GROUP_CHAT = 14;
     }
 
     public static class Response {
@@ -64,7 +64,8 @@ public class Type {
                 SINGLECAST_CHAT = 36,
                 BROADCAST_GAMERESULT_UPDATE = 37,
                 ACCOUNT_CHECK_SUCCESS = 38,
-                ACCOUNT_CHECK_FAILED = 39;
+                ACCOUNT_CHECK_FAILED = 39,
+                JUDGE = 40;
     }
 
     public static class UserState {
@@ -120,9 +121,11 @@ public class Type {
             WIN = 0,
             LOSE = 1,
             DRAW = 2,
-            PLAYER1_SURRENDER = 3,
-            PLAYER2_SURRENDER = 4,
-            PLAYER1_ESCAPE = 5,
-            PLAYER2_ESCAPE = 6;
+            PLAYER1_OVERTIME= 3,
+            PLAYER2_OVERTIME = 4,
+            PLAYER1_SURRENDER = 5,
+            PLAYER2_SURRENDER = 6,
+            PLAYER1_ESCAPE = 7,
+            PLAYER2_ESCAPE = 8;
     }
 }
