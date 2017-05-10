@@ -66,17 +66,19 @@ public class Encoder {
         return requestJson(gson.toJson(map), Type.Request.READY);
     }
 
-    public static String surrenderRequest(Room room) {
+    public static String gameOverRequest(int roomId, double player1Point, double player2Point, int type){
         Map map = new HashMap();
-        map.put("room_id", room.getId());
-        map.put("player", Client.getUser().getAccount());
-        return requestJson(gson.toJson(map), Type.Request.GAMERESULT);
+        map.put("room_id", roomId);
+        map.put("point1",player1Point);
+        map.put("point2",player2Point);
+        map.put("result",type);
+        return requestJson(gson.toJson(map), Type.Request.GAME_OVER);
     }
 
-    public static String judgeRequest(Room room) {
+    public static String judgeRequest(int roomId, boolean player1) {
         Map map = new HashMap();
-        map.put("room_id", room.getId());
-        map.put("player", Client.getUser().getAccount());
+        map.put("room_id", roomId);
+        map.put("player1", player1);
         return requestJson(gson.toJson(map), Type.Request.JUDGE);
     }
 
@@ -108,7 +110,7 @@ public class Encoder {
             }
             map.put("kill", killList);
         }
-        return requestJson(gson.toJson(map), Type.Request.ACTION);
+        return requestJson(gson.toJson(map), Type.Request.GAME_ACTION);
     }
 
     private static String requestJson(String json, int type) {

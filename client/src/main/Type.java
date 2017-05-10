@@ -16,8 +16,8 @@ public class Type {
                 UPDATE_PLAYER = 9,
                 LEAVE = 9,
                 READY = 10,
-                ACTION = 11,
-                GAMERESULT = 12,
+                GAME_ACTION = 11,
+                GAME_OVER = 12,
                 SEND_MSG = 13,
                 GROUP_CHAT = 14,
                 JUDGE = 15;
@@ -80,7 +80,8 @@ public class Type {
         public static final int
                 WATING = 0,
                 READY = 1,
-                GAMING = 2;
+                GAMING = 2,
+                NONE = 3;
     }
 
     public static class UpdatePlayer {
@@ -96,7 +97,8 @@ public class Type {
                 PLAYER2IN = 1,
                 PLAYER1OUT = 2,
                 PLAYER2OUT = 3,
-                DESTROY = 4;
+                DESTROY = 4,
+                STATE_CHANGE = 5;
     }
 
     public static class KOMI {
@@ -110,15 +112,17 @@ public class Type {
         public static final int
                 INVALID = 0,    // 无效
                 PLACE = 1,      // 落子
-                KILL = 2,       // 提子
-                SURRENDER = 3, // 认输
-                JUDGE = 4;      // 请求判子
+                KILL = 2;       // 提子
     }
 
     public static class GameResult{
         public static final int
             WIN = 0,
             LOSE = 1,
-            DRAW = 2;
+            DRAW = 2,
+            PLAYER1_SURRENDER = 3,
+            PLAYER2_SURRENDER = 4,
+            PLAYER1_ESCAPE = 5,
+            PLAYER2_ESCAPE = 6;
     }
 }
