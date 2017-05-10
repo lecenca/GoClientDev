@@ -72,7 +72,6 @@ public class User {
     private String nickname;
     private String password;
     private Birthday birthday = new Birthday();
-
     private boolean sex;  // true for man, false for woman
     private int state;
     private int room;
@@ -91,14 +90,6 @@ public class User {
         room = 0;
     }
     /********** test **********/
-
-    public User(String nickname, int level, int win, int lose, int state) {
-        this.nickname = nickname;
-        this.data.level = level;
-        this.data.win = win;
-        this.data.lose = lose;
-        this.state = state;
-    }
 
     public void setAccount(String account) {
         this.account = account;

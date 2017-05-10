@@ -399,7 +399,7 @@ public class Client extends Application {
          * listenRoomList = lobbyController.getListenRoomList();
          * listenRoomList.setDaemon(true); listenRoomList.start();
          */
-        Thread chatThread = lobbyController.getChatThread();
+        //Thread chatThread = lobbyController.getChatThread();
         /*
          * chatThread.setDaemon(true); chatThread.start();
          */
@@ -481,6 +481,12 @@ public class Client extends Application {
         String msg = Encoder.updatePlayerRequest(user);
         Connect.send(msg);
         System.out.println("update player msg: " + msg);
+    }
+
+    static public void updateRoom(Room room, int type){
+        String msg = Encoder.updateRoomRequest(room, type);
+        Connect.send(msg);
+        System.out.println("update room msg: " + msg);
     }
 
     public Connect getConnect() {

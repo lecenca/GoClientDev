@@ -45,28 +45,22 @@ public class LoginController implements Initializable {
     @FXML
     private void login() {
         /********** test **********/
-        /*Client.setUser(new User());
+        Client.setUser(new User());
         Client.getLobbyController().addPlayer(Client.getUser());
         Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
         client.getPrimaryStage().close();
-        client.gotoLobby();*/
+        client.gotoLobby();
         /********** test **********/
 
         /********** release **********/
-        if (checkValid()) {
-            /*client.getPrimaryStage().close();
-            client.gotoLobby();
-            *//***** test *****//*
-            Client.setUser(new User());
-            *//***** test *****//*
-            Client.getUser().setState(Type.UserState.IDLE);
-            Client.getLobbyController().addPlayer(Client.getUser());*/
+        /*if (checkValid()) {
             Client.setUser(new User());
             Client.getLobbyController().addPlayer(Client.getUser());
             Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
             client.getPrimaryStage().close();
             client.gotoLobby();
-        }
+        }*/
+        /********** release **********/
     }
 
     @FXML

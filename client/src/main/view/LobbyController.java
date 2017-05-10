@@ -79,14 +79,14 @@ public class LobbyController implements Initializable {
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessage = new MessageQueue<>();
 
-    private Thread listenPlayerList = new Thread(new Runnable() {
+    /*private Thread listenPlayerList = new Thread(new Runnable() {
         @Override
         public void run() {
             System.out.println("监听玩家列表线程启动！");
             while (true) {
-                /*if(!players.isEmpty()) {
+                *//*if(!players.isEmpty()) {
 					playerData.add(players.remove());
-				}*/
+				}*//*
                 try {
                     Thread.currentThread().sleep(1000);
                     playerData.add(new User("tom", 10, 100, 60, 1));
@@ -104,9 +104,9 @@ public class LobbyController implements Initializable {
             System.out.println("监听房间列表线程启动！");
             // TODO Auto-generated method stub
             while (true) {
-				/*if(!rooms.isEmpty()) {
+				*//*if(!rooms.isEmpty()) {
 					roomData.add(rooms.remove());
-				}*/
+				}*//*
                 roomData.add(new Room(2, "room..", "player1", "player2", 1));
                 try {
                     Thread.currentThread().sleep(2000);
@@ -125,9 +125,9 @@ public class LobbyController implements Initializable {
             System.out.println("聊天线程启动");
             // TODO Auto-generated method stub
             while (true) {
-				/*if(!chatMessage.isEmpty()) {
+				*//*if(!chatMessage.isEmpty()) {
 					 chatBoxController.sendMessage(chatMessage.remove());
-				}*/
+				}*//*
 
                 try {
                     chatBoxController.sendMessage("hello");
@@ -140,7 +140,7 @@ public class LobbyController implements Initializable {
                 }
             }
         }
-    });
+    });*/
 
     public LobbyController() {
 
@@ -176,19 +176,14 @@ public class LobbyController implements Initializable {
         for(Room room : Client.roomsMap.values()){
             if(room.hasSeat()){
                 match = room;
+                match.setState(Type.RoomState.READY);
                 if(match.getPlayer1() == null || match.getPlayer1().isEmpty()){
                     match.setPlayer1(Client.getUser().getAccount());
-                    match.setState(Type.RoomState.READY);
-                    String msg = Encoder.updateRoomRequest(match, Type.UpdateRoom.PLAYER1IN);
-                    System.out.println("update room msg: " + msg);
-                    Connect.send(msg);
+                    Client.updateRoom(room, Type.UpdateRoom.PLAYER1IN);
                 }
                 else{
                     match.setPlayer2(Client.getUser().getAccount());
-                    match.setState(Type.RoomState.READY);
-                    String msg = Encoder.updateRoomRequest(match, Type.UpdateRoom.PLAYER2IN);
-                    System.out.println("update room msg: " + msg);
-                    Connect.send(msg);
+                    Client.updateRoom(room, Type.UpdateRoom.PLAYER2IN);
                 }
                 Client.getUser().setRoom(room.getId());
                 Client.getUser().setState(Type.UserState.READY);
@@ -231,23 +226,18 @@ public class LobbyController implements Initializable {
             room.setState(Type.RoomState.READY);
             if (room.getPlayer1() == null || room.getPlayer1().isEmpty()) {
                 room.setPlayer1(Client.getUser().getAccount());
-                String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
-                System.out.println("update room msg: " + msg);
-                Connect.send(msg);
+                Client.updateRoom(room, Type.UpdateRoom.PLAYER1IN);
             } else {
                 room.setPlayer2(Client.getUser().getAccount());
-                String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER2IN);
-                System.out.println("update room msg: " + msg);
-                Connect.send(msg);
+                Client.updateRoom(room, Type.UpdateRoom.PLAYER2IN);
             }
-            client.gotoGame(room);
             Client.getUser().setRoom(room.getId());
             Client.getUser().setState(Type.UserState.READY);
             Client.updateUser();
-            //test
-            //client.gotoGame(room);
+            client.gotoGame(room);
         }
     }
+
     @FXML
     private void hasText() {
     	String text = inputField.getText();
@@ -281,10 +271,10 @@ public class LobbyController implements Initializable {
         roomList.setItems(client.getRoomData());
         roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
-        //player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
-        //player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
+        player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
+        player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
         roomStateCol.setCellValueFactory(cellData -> cellData.getValue().getStatesProperty());
-        //configCol.setCellValueFactory(cellDate->cellDate.getValue().getConfigProperty());
+        configCol.setCellValueFactory(cellDate->cellDate.getValue().getConfigProperty());
         playerList.setItems(client.getPlayerData());
         nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
         levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
@@ -319,18 +309,6 @@ public class LobbyController implements Initializable {
 
     public static MessageQueue<String> getChatMessage() {
         return chatMessage;
-    }
-
-    public Thread getListenPlayerList() {
-        return listenPlayerList;
-    }
-
-    public Thread getListenRoomList() {
-        return listenRoomList;
-    }
-
-    public Thread getChatThread() {
-        return chatThread;
     }
 
 }

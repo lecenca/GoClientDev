@@ -13,14 +13,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import src.main.Board;
-import src.main.Client;
-import src.main.Stone;
-import src.main.Type;
+import src.main.*;
 import src.main.communication.Encoder;
 
 import java.awt.Point;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
@@ -48,29 +46,22 @@ public class ChessBoard implements Initializable {
     @FXML
     private void onClick(MouseEvent event) {
         /****************************  release ****************************/
-        /*if (GameController.isBegin() && GameController.getTurn() == this.color) {
+        if (Client.getGameController().isBegin() && Client.getGameController().getTurn() == this.color) {
             getPixelPos(event);
             int action = action();
             if (action != Type.Action.INVALID) {
-                String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
-                System.out.println(jsonmsg);
+                String msg = Encoder.actionRequest(action, color, index.x, index.y);
+                System.out.println(msg);
                 place(index.x, index.y, color);
                 if (action == Type.Action.KILL) {
                     remove();
                     board.remove();
                 }
-                if (GameController.getTurn() == Stone.Black) {
-                    player2TimerController.pause();
-                    player1TimerController.start();
-                } else {
-                    player1TimerController.pause();
-                    player2TimerController.start();
-                }
             }
-        }*/
+        }
         /****************************  release ****************************/
         /****************************  test ****************************/
-        if (GameController.isBegin()) {
+        if (Client.getGameController().isBegin()) {
             getPixelPos(event);
             int action = action();
             if (action != Type.Action.INVALID) {
@@ -92,42 +83,6 @@ public class ChessBoard implements Initializable {
             }
         }
         /****************************  test ****************************/
-    }
-
-    private void getPixelPos(MouseEvent event) {
-        pixel.setLocation(event.getX(), event.getY());
-    }
-
-    private void getIndexPos() {
-        index.setLocation((pixel.x - borderGap) / stoneGap, (pixel.y - borderGap) / stoneGap);
-    }
-
-    private int action() {
-        if (pixel.x < borderGap - stoneRadius || pixel.x > xLen - borderGap + stoneRadius
-                || pixel.y < borderGap - stoneRadius || pixel.y > yLen - borderGap + stoneRadius) {
-            return Type.Action.INVALID;
-        }
-        int gridX = (pixel.x - borderGap) % stoneGap;
-        int gridY = (pixel.y - borderGap) % stoneGap;
-        int indexX = (pixel.x - borderGap) / stoneGap;
-        int indexY = (pixel.y - borderGap) / stoneGap;
-        if (gridX < stoneRadius && gridY < stoneRadius) {
-            pixel.x = indexX * stoneGap + borderGap;
-            pixel.y = indexY * stoneGap + borderGap;
-        } else if (gridX < stoneRadius && gridY > stoneGap - stoneRadius) {
-            pixel.x = indexX * stoneGap + borderGap;
-            pixel.y = (indexY + 1) * stoneGap + borderGap;
-        } else if (gridX > stoneGap - stoneRadius && gridY < stoneRadius) {
-            pixel.x = (indexX + 1) * stoneGap + borderGap;
-            pixel.y = indexY * stoneGap + borderGap;
-        } else if (gridX > stoneGap - stoneRadius && gridY > stoneGap - stoneRadius) {
-            pixel.x = (indexX + 1) * stoneGap + borderGap;
-            pixel.y = (indexY + 1) * stoneGap + borderGap;
-        } else {
-            return Type.Action.INVALID;
-        }
-        getIndexPos();
-        return board.action(index, color);
     }
 
     public void place(int x, int y, int color) {
@@ -153,6 +108,22 @@ public class ChessBoard implements Initializable {
         step.setAlignment(Pos.BASELINE_CENTER);
         if (Client.getGameController().isShowStep()) {
             chessPane.getChildren().add(step);
+        }
+        // reverse turns
+        if (Client.getGameController().getTurn() == Stone.Black) {
+            player2TimerController.pause();
+            player1TimerController.start();
+        } else {
+            player1TimerController.pause();
+            player2TimerController.start();
+        }
+        Client.getGameController().takeTurns();
+        // judge enable
+        if(getStep() > 100){
+            Client.getGameController().judgeEnable();
+            if(getStep() >= 360){
+                Client.getGameController().gameOver();
+            }
         }
     }
 
@@ -191,6 +162,14 @@ public class ChessBoard implements Initializable {
         }
     }
 
+    public int getStep(){
+        return Board.step;
+    }
+
+    public ArrayList<Number> getPlayerPoint(){
+        return Core.scoring(board);
+    }
+
     public void setTimer(Timer timer01, Timer timer02) {
         this.player1TimerController = timer01;
         this.player2TimerController = timer02;
@@ -210,6 +189,42 @@ public class ChessBoard implements Initializable {
             }
         }
         board.clear();
+    }
+
+    private void getPixelPos(MouseEvent event) {
+        pixel.setLocation(event.getX(), event.getY());
+    }
+
+    private void getIndexPos() {
+        index.setLocation((pixel.x - borderGap) / stoneGap, (pixel.y - borderGap) / stoneGap);
+    }
+
+    private int action() {
+        if (pixel.x < borderGap - stoneRadius || pixel.x > xLen - borderGap + stoneRadius
+                || pixel.y < borderGap - stoneRadius || pixel.y > yLen - borderGap + stoneRadius) {
+            return Type.Action.INVALID;
+        }
+        int gridX = (pixel.x - borderGap) % stoneGap;
+        int gridY = (pixel.y - borderGap) % stoneGap;
+        int indexX = (pixel.x - borderGap) / stoneGap;
+        int indexY = (pixel.y - borderGap) / stoneGap;
+        if (gridX < stoneRadius && gridY < stoneRadius) {
+            pixel.x = indexX * stoneGap + borderGap;
+            pixel.y = indexY * stoneGap + borderGap;
+        } else if (gridX < stoneRadius && gridY > stoneGap - stoneRadius) {
+            pixel.x = indexX * stoneGap + borderGap;
+            pixel.y = (indexY + 1) * stoneGap + borderGap;
+        } else if (gridX > stoneGap - stoneRadius && gridY < stoneRadius) {
+            pixel.x = (indexX + 1) * stoneGap + borderGap;
+            pixel.y = indexY * stoneGap + borderGap;
+        } else if (gridX > stoneGap - stoneRadius && gridY > stoneGap - stoneRadius) {
+            pixel.x = (indexX + 1) * stoneGap + borderGap;
+            pixel.y = (indexY + 1) * stoneGap + borderGap;
+        } else {
+            return Type.Action.INVALID;
+        }
+        getIndexPos();
+        return board.action(index, color);
     }
 
     @Override
