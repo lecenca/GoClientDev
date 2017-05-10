@@ -150,7 +150,8 @@ public class LobbyController implements Initializable {
     private void send() {
         /************* test ********************/
         chatBoxController.sendMessage(Client.getUser().getNickname()+":"+ inputField.getText());
-        client.getConnect().send(Client.getUser().getNickname()+":" + inputField.getText());
+        String msg = Encoder.groupMessageRequest(inputField.getText());
+        client.getConnect().send(msg);
         inputField.clear();
         sendbtn.setDisable(true);
         /************* test ********************/
