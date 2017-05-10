@@ -4,6 +4,7 @@ public class Type {
 
     public static class Request {
         public static int
+                KEEP_ALIVE = -1,
                 CHECK_ACCOUNT = 0,
                 FETCH_PLAYER_INFO = 1,
                 FETCH_PLAYERS_INFO = 2,
@@ -37,7 +38,7 @@ public class Type {
                 LOGOUT_FAILED = 9,
                 FETCH_LOBBY_INFO_SUCCESS = 10,
                 FETCH_LOBBY_INFO_FAILED = 11,
-                FETCH_ROOM_INFO_SUCCESS = 12,
+                FETCH_ROOMS_INFO_SUCCESS = 12,
                 FETCH_ROOM_INFO_FAILED = 13,
                 BROADCAST_SITDOWN = 14,
                 SITDOWN_SUCCESS = 15,

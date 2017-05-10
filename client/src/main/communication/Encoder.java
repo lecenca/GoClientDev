@@ -13,8 +13,9 @@ public class Encoder {
     private static Gson gson = new Gson();
 
     public static String keepAliveRequest(){
-        return "{\"request_type\":0}";
+        return "{\"request_type\":" + String.valueOf(Type.Request.KEEP_ALIVE) + "}";
     }
+
     public static String chechAccountRequest(String account) {
         Map map = new HashMap();
         map.put("account", account);
@@ -56,6 +57,14 @@ public class Encoder {
         JSONObject jsonObject = JSONObject.parseObject(gson.toJson(room).toString());
         jsonObject.put("action", type);
         return requestJson(gson.toJson(jsonObject), Type.Request.UPDATE_ROOM);
+    }
+
+    public static String sendMessageRequest(int roomId, String message){
+        Map map = new HashMap();
+        map.put("room_id",roomId);
+        map.put("account", Client.getUser().getAccount());
+        map.put("message",message);
+        return requestJson(gson.toJson(map), Type.Request.SEND_MSG);
     }
 
     public static String readyRequest(int roomId, Boolean player1IsReady, Boolean player2IsReady) {

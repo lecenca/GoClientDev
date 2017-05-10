@@ -355,10 +355,7 @@ public class Client extends Application {
                 getUser().setState(Type.UserState.IDLE);
                 updateUser();
                 gameController.clear();
-
             }
-
-
         });
     }
 
@@ -367,8 +364,8 @@ public class Client extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("MicroOnlineGo");
         gotoLogin();
-        /*keepAliveThread.setDaemon(true);
-        keepAliveThread.start();*/
+        keepAliveThread.setDaemon(true);
+        keepAliveThread.start();
         if (Connect.hasConnect()) {
             receiveThread.setDaemon(true);
             receiveThread.start();

@@ -29,7 +29,7 @@ public class Connect {
      * private ChatBox chatBox;
      */
     //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "110.209.142.133";
+    private static String IP = "111.151.169.30";
     private static int PORT = 60000;
     public static Socket socket;
     private static OutputStream os;
@@ -192,7 +192,7 @@ public class Connect {
                     case Type.Response.LOGIN_FAILED:
                         handleLogin(false, jsonObject);
                         break;
-                    case Type.Response.FETCH_ROOM_INFO_SUCCESS:
+                    case Type.Response.FETCH_ROOMS_INFO_SUCCESS:
                         handleFetchRoom(jsonObject);
                         break;
                     case Type.Response.FETCH_PLAYERS_INFO_SUCCESS:
@@ -209,6 +209,9 @@ public class Connect {
                         break;
                     case Type.Response.JUDGE:
                         handleJudge();
+                        break;
+                    case Type.Response.UPDATE_GAMERESULT_SUCCESS:
+                        handleGameResult(jsonObject);
                         break;
                     default:
                         break;
@@ -295,6 +298,9 @@ public class Connect {
         }
     }
 
+    private void handleGameResult(JSONObject jsonObject){
+
+    }
     // For C/C++ on Windows.
     public static byte[] intToByteLH(int n) {
         return new byte[]{

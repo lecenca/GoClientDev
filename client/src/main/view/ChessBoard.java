@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -98,6 +99,7 @@ public class ChessBoard implements Initializable {
         stone.setLayoutX(pixel.x);
         stone.setLayoutY(pixel.y);
         stone.setRadius(stoneRadius);
+        stone.setEffect(new Lighting());
         chessPane.getChildren().add(stone);
         board.add(x, y, color);
         step.setText(Integer.toString(Board.stones[x][y].step));

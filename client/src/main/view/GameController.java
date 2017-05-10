@@ -15,12 +15,13 @@ import java.util.ResourceBundle;
 public class GameController implements Initializable {
 
     private Room room;
-    private static boolean player1Ready = false;
-    private static boolean player2Ready = false;
-    private static boolean roomOwner = false;
-    private static boolean begin = false;
-    private static int turn;
+    private boolean player1Ready = false;
+    private boolean player2Ready = false;
+    private boolean roomOwner = false;
+    private boolean begin = false;
+    private int turn;
 
+    // Room
     @FXML
     private Label player1Name;
     @FXML
@@ -31,29 +32,32 @@ public class GameController implements Initializable {
     private Label mainTime;
     @FXML
     private Label periodTime;
-    @FXML
-    private ToggleButton step;
 
     @FXML
     private ChessBoard boardController;
-    @FXML
-    private TextField inputField;
-    @FXML
-    private Button send;
-    @FXML
-    private ListView<String> chatBox;
-    @FXML
-    private Timer player1TimerController;
-    @FXML
-    private Timer player2TimerController;
-    @FXML
-    private ChatBox chatBoxController;
     @FXML
     private Button ready;
     @FXML
     private Button surrender;
     @FXML
     private Button judge;
+
+    @FXML
+    private ToggleButton step;
+
+
+    @FXML
+    private ChatBox chatBoxController;
+    @FXML
+    private ListView<String> chatBox;
+    @FXML
+    private TextField inputField;
+    @FXML
+    private Button send;
+    @FXML
+    private Timer player1TimerController;
+    @FXML
+    private Timer player2TimerController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,19 +74,19 @@ public class GameController implements Initializable {
         player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
         player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
         /********** release ******/
-        /*turn = Stone.Black;
-        if(room.getPlayer1() != null && room.getPlayer1() == client.getUser().getAccount()){
+        turn = Stone.Black;
+        if((room.getPlayer1() != null || room.getPlayer1().isEmpty()) && room.getPlayer1() == Client.getUser().getAccount()){
             roomOwner = true;
             boardController.setColor(Stone.White);
         }
         else{
             roomOwner = false;
             boardController.setColor(Stone.Black);
-        }*/
+        }
         /********** release ******/
         /***** test *****/
-        turn = Stone.Black;
-        boardController.setColor(Stone.Black);
+        /*turn = Stone.Black;
+        boardController.setColor(Stone.Black);*/
         /***** test *****/
     }
 
@@ -125,7 +129,7 @@ public class GameController implements Initializable {
     @FXML
     private void ready() {
         /*************** test *************/
-        if (player1Ready == false) {
+        /*if (player1Ready == false) {
             player1Ready = true;
             begin = true;
             String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
@@ -138,7 +142,7 @@ public class GameController implements Initializable {
             begin = false;
             ready.setText("准备");
             Client.getUser().setState(Type.UserState.READY);
-        }
+        }*/
         /*************** test *************/
 
         /***************** release **************/
