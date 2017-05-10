@@ -37,6 +37,7 @@ import java.util.Optional;
 
 import javax.swing.JOptionPane;
 
+import com.sun.org.apache.xpath.internal.axes.HasPositionalPredChecker;
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Receiver;
 
 public class Client extends Application {
@@ -51,6 +52,7 @@ public class Client extends Application {
     private ArrayList playerList = new ArrayList();
     private static LobbyController lobbyController;
     private static GameController gameController;
+    private static SignupController signupController;
     private ObservableList<Room> roomData = FXCollections.observableArrayList();
     private ObservableList<User> playerData = FXCollections.observableArrayList();
     private ObservableList<String> messageData = FXCollections.observableArrayList();
@@ -112,6 +114,10 @@ public class Client extends Application {
                         receiveThread.start();
                     if(!messageThread.isAlive())
                         messageThread.start();
+                    /*if(!SignupController.hasCheckedAccount) {
+                       signupController.checkAccountValid();
+                       SignupController.hasCheckedAccount = true;
+                    }*/
                     JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnknownHostException e) {
                     if (print2)
@@ -393,7 +399,7 @@ public class Client extends Application {
          * listenRoomList = lobbyController.getListenRoomList();
          * listenRoomList.setDaemon(true); listenRoomList.start();
          */
-        Thread chatThread = lobbyController.getChatThread();
+        //Thread chatThread = lobbyController.getChatThread();
         /*
          * chatThread.setDaemon(true); chatThread.start();
          */
@@ -401,7 +407,7 @@ public class Client extends Application {
     }
 
     public void gotoSignup() {
-        SignupController signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
+        signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
         signupController.setClient(this);
     }
 
@@ -475,6 +481,12 @@ public class Client extends Application {
         String msg = Encoder.updatePlayerRequest(user);
         Connect.send(msg);
         System.out.println("update player msg: " + msg);
+    }
+
+    static public void updateRoom(Room room, int type){
+        String msg = Encoder.updateRoomRequest(room, type);
+        Connect.send(msg);
+        System.out.println("update room msg: " + msg);
     }
 
     public Connect getConnect() {

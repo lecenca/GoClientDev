@@ -10,7 +10,6 @@ public class Room {
         public int mainTime;    // 主时间 [1,5,10,15,20,30,40,60,90](单位：分)
         public int period;      // 读秒时间 [15,20,30,40,50,60]（单位：秒）
         public int periodTimes; // 读秒次数 [1,3,5,7,10]
-
         public Config() {
             this.komi = Type.KOMI.SIX_FIVE;
             this.mainTime = 20;
@@ -19,33 +18,23 @@ public class Room {
         }
     }
 
-    private int id;
-    private String name;
-    private String player1 = null;
-    private String player2 = null;
-    private int state;
+    private int id = 0;
+    private String name = new String();
+    private String player1 = new String();
+    private String player2 = new String();
     private Config config = new Config();
+    private int state = Type.RoomState.NONE;
 
     private static String[] komi = {"让先", "黑贴3.5目", "黑贴6.5目"};
     private static String[] mainTime = {"1分", "5分", "10分", "15分", "20分", "30分", "40分", "60分", "90分"};
     private static String[] period = {"15秒", "20秒", "30秒", "40秒", "50秒", "60秒"};
     private static String[] periodTimes = {"1次", "3次", "5次", "7次", "10次"};
-    private static String[] roomState = {"等人中", "准备中", "游戏中"};
+    private static String[] roomState = {"等待中", "准备中", "对战中"};
     private static int[] corMainTime = {1,5,10,15,20,30,40,60,90};
     private static int[] corPeriodTime = {15,20,30,40,50,60};
     private static int[] corTimes = {1,3,5,7,10};
 
     public Room() {
-
-    }
-
-    //test
-    public Room(int id, String name, String player1, String player2, int state) {
-        this.id = id;
-        this.name = name;
-        this.player1 = player1;
-        this.player2 = player2;
-        this.state = state;
     }
 
     public boolean hasSeat(){
@@ -68,15 +57,21 @@ public class Room {
     }
 
     public String getPlayer1Name(){
-        if(player1 != null){
-            return Client.playersMap.get(this.player1).getNickname();
+        if(player1 != null && !player1.isEmpty()){
+            // TODO: 讲道理是可以把这个 if 去掉
+            if(Client.playersMap.get(this.player1) != null) {
+                return Client.playersMap.get(this.player1).getNickname();
+            }
         }
         return "???";
     }
 
     public String getPlayer2Name(){
-        if(player2 != null){
-            return Client.playersMap.get(this.player2).getNickname();
+        if(player2 != null && !player2.isEmpty()){
+            // TODO: 讲道理是可以把这个 if 去掉
+            if(Client.playersMap.get(this.player2) != null) {
+                return Client.playersMap.get(this.player2).getNickname();
+            }
         }
         return "???";
     }
@@ -148,7 +143,6 @@ public class Room {
         this.config.periodTimes = periodTimes;
     }
 
-    /************* test ********************/
     public StringProperty getIdProperty() {
         return new SimpleStringProperty(Integer.toString(this.id));
     }
