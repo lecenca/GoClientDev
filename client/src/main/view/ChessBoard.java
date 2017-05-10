@@ -9,14 +9,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import src.main.*;
 import src.main.communication.Encoder;
 
-import java.awt.Point;
+import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -119,10 +118,13 @@ public class ChessBoard implements Initializable {
         }
         Client.getGameController().takeTurns();
         // judge enable
-        if(getStep() > 100){
+        if (getStep() >= 100) {
             Client.getGameController().judgeEnable();
-            if(getStep() >= 360){
-                Client.getGameController().gameOver();
+            if (getStep() >= 300) {
+                Client.getGameController().judgeForcedEnable();
+                if (getStep() >= 360) {
+                    Client.getGameController().gameOver();
+                }
             }
         }
     }
@@ -162,11 +164,11 @@ public class ChessBoard implements Initializable {
         }
     }
 
-    public int getStep(){
+    public int getStep() {
         return Board.step;
     }
 
-    public ArrayList<Number> getPlayerPoint(){
+    public ArrayList<Number> getPlayerPoint() {
         return Core.scoring(board);
     }
 

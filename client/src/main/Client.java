@@ -299,7 +299,6 @@ public class Client extends Application {
         Scene gameScene = new Scene(gamePane);
         gameStage.setScene(gameScene);
         gameController = loader2.getController();
-        gameController.setClient(this);
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
 

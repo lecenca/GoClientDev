@@ -1,22 +1,16 @@
 package src.main.communication;
 
 import com.alibaba.fastjson.JSONObject;
-
 import src.main.*;
-
-import src.main.view.GameController;
 import src.main.view.LoginController;
 import src.main.view.SignupController;
 import src.util.MessageQueue;
 
-import javax.swing.JOptionPane;
-import java.io.BufferedReader;
+import javax.swing.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -75,7 +69,7 @@ public class Connect {
                 i++;
                 if (i == 100) {
                     JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
-                    
+
                     break;
                 }
             }
@@ -213,6 +207,9 @@ public class Connect {
                     case Type.Response.READYGO_SUCCESS:
                         handleReady(jsonObject);
                         break;
+                    case Type.Response.JUDGE:
+                        handleJudge();
+                        break;
                     default:
                         break;
                 }
@@ -247,7 +244,7 @@ public class Connect {
 
     private void handleLogin(boolean state, JSONObject jsonObject) {
         LoginController.correct = state;
-        if(state){
+        if (state) {
             Client.setUser(Decoder.parseUser(jsonObject.getJSONObject("user")));
         }
     }
@@ -274,9 +271,13 @@ public class Connect {
         }
     }
 
-    private void handleReady(JSONObject jsonObject){
+    private void handleReady(JSONObject jsonObject) {
         Client.getGameController().setReady(jsonObject.getBooleanValue("player1"),
-                jsonObject.getBooleanValue("player2"));
+                                            jsonObject.getBooleanValue("player2"));
+    }
+
+    private void handleJudge(){
+        Client.getGameController().judgeFromOpponent();
     }
 
     private void handleGameAction(JSONObject jsonObject) {
@@ -295,38 +296,37 @@ public class Connect {
     }
 
     // For C/C++ on Windows.
-    private static byte[] toLH(int n) {
-        byte[] b = new byte[4];
-        b[0] = (byte) (n & 0xff);
-        b[1] = (byte) (n >> 8 & 0xff);
-        b[2] = (byte) (n >> 16 & 0xff);
-        b[3] = (byte) (n >> 24 & 0xff);
-        return b;
-    }
-
-    // For C/C++ on Windows.
     public static byte[] intToByteLH(int n) {
-        byte[] b = new byte[4];
-        b[0] = (byte) (n & 0xff);
-        b[1] = (byte) (n >> 8 & 0xff);
-        b[2] = (byte) (n >> 16 & 0xff);
-        b[3] = (byte) (n >> 24 & 0xff);
-        return new byte[]{(byte) (n & 0xff), (byte) ((n >> 8) & 0xff), (byte) ((n >> 16) & 0xff),
-                (byte) ((n >> 24) & 0xff)};
+        return new byte[]{
+                (byte) (n & 0xff),
+                (byte) ((n >> 8) & 0xff),
+                (byte) ((n >> 16) & 0xff),
+                (byte) ((n >> 24) & 0xff)
+        };
     }
 
     // For C/C++ on Linux/Unix.
     public static byte[] intToByteHH(int n) {
-        return new byte[]{(byte) ((n >> 24) & 0xff), (byte) ((n >> 16) & 0xff), (byte) ((n >> 8) & 0xff),
-                (byte) (n & 0xff)};
+        return new byte[]{
+                (byte) ((n >> 24) & 0xff),
+                (byte) ((n >> 16) & 0xff),
+                (byte) ((n >> 8) & 0xff),
+                (byte) (n & 0xff)
+        };
     }
 
     public static int byteToIntLH(byte[] bytes) {
-        return ((bytes[3] & 0xFF) << 24) | ((bytes[2] & 0xFF) << 16) | ((bytes[1] & 0xFF) << 8) | (bytes[0] & 0xFF);
+        return ((bytes[3] & 0xFF) << 24)
+                | ((bytes[2] & 0xFF) << 16)
+                | ((bytes[1] & 0xFF) << 8)
+                | (bytes[0] & 0xFF);
     }
 
     public static int byteToIntHH(byte[] bytes) {
-        return ((bytes[0] & 0xFF) << 24) | ((bytes[1] & 0xFF) << 16) | ((bytes[2] & 0xFF) << 8) | (bytes[3] & 0xFF);
+        return ((bytes[0] & 0xFF) << 24)
+                | ((bytes[1] & 0xFF) << 16)
+                | ((bytes[2] & 0xFF) << 8)
+                | (bytes[3] & 0xFF);
     }
 
     public void closeInputstream() {
@@ -340,7 +340,7 @@ public class Connect {
     }
 
 	/*public String getLoginMessage() {
-		return loginMessage;
+        return loginMessage;
 	}
 
 	public void setLoginMessage(String loginMessage) {
@@ -350,7 +350,7 @@ public class Connect {
     public Thread getReceiveThread() {
         return receiveThread;
     }
-	/*
+    /*
 	public String getRegisterMessage() {
 		return registerMessage;
 	}
@@ -359,9 +359,9 @@ public class Connect {
 		this.registerMessage = registerMessage;
 	}*/
 
-	public static boolean interrupted(){
-        if(!connect){
-            JOptionPane.showMessageDialog(null, "请检查您的网络连接","连接失败",JOptionPane.ERROR_MESSAGE);
+    public static boolean interrupted() {
+        if (!connect) {
+            JOptionPane.showMessageDialog(null, "请检查您的网络连接", "连接失败", JOptionPane.ERROR_MESSAGE);
             return true;
         }
         return false;

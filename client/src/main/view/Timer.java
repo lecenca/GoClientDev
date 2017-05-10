@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
+import src.main.Client;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,7 +21,7 @@ public class Timer implements Initializable {
     private Timeline periodTimeline;
     private int mainTime; //以秒的方式计算，如2分钟，mainTime存有120
     private int period;
-    private int periodTime;
+    private int periodTimes;
 
     private int tempPeriod;
 
@@ -38,9 +39,9 @@ public class Timer implements Initializable {
             --tempPeriod;
             displaySecond(tempPeriod);
             if (tempPeriod == 0) {
-                --periodTime;
-                if(periodTime==0){
-                    //player lose?
+                --periodTimes;
+                if(periodTimes ==0){
+                    Client.getGameController().overTime();
                 }else{
                     tempPeriod = period;
                     displaySecond(tempPeriod);
@@ -88,10 +89,14 @@ public class Timer implements Initializable {
         /*********** test ***********/
     }
 
+    public int getPeriodTimes(){
+        return this.periodTimes;
+    }
+
     public void init(int main, int period, int times){
         mainTime = 60 * main;
         this.period = period;
-        periodTime = times;
+        periodTimes = times;
 
         mainTimeTimeline = new Timeline();
         mainTimeTimeline.setCycleCount(mainTime);
