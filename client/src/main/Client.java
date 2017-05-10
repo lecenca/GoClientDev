@@ -56,10 +56,11 @@ public class Client extends Application {
     private ObservableList<Room> roomData = FXCollections.observableArrayList();
     private ObservableList<User> playerData = FXCollections.observableArrayList();
     private ObservableList<String> messageData = FXCollections.observableArrayList();
+    private ObservableList<String> privateMessageData = FXCollections.observableArrayList();
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessages = new MessageQueue<>();
-
+    public static MessageQueue<String> privateChatMessages = new MessageQueue<>();
     public static Map<String, User> playersMap = new HashMap<>();
     public static Map<Integer, Room> roomsMap = new HashMap<>();
 
@@ -262,6 +263,20 @@ public class Client extends Application {
                     } catch (Exception e) {
 
                     }
+                if(!privateChatMessages.isEmpty()) 
+                    try {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                if (!privateChatMessages.isEmpty())
+                                    privateMessageData.add(privateChatMessages.remove());
+                            }
+                        });
+
+                    } catch (Exception e) {
+
+                    }
             }
         }
     });
@@ -360,6 +375,8 @@ public class Client extends Application {
 
 
         });
+        privateMessageData.add("good night");
+        privateMessageData.add("Do you have dinner?");
     }
 
     @Override
@@ -434,6 +451,7 @@ public class Client extends Application {
 
     public void gotoGame(Room room) {
         gameController.setRoom(room);
+        gameController.getChatBoxController().setItems(privateMessageData);
         gameStage.show();
     }
 
@@ -547,9 +565,17 @@ public class Client extends Application {
     public ObservableList<String> getMessageData() {
         return messageData;
     }
+    
+    public ObservableList<String> getPrivateMessageData() {
+        return privateMessageData;
+    }
 
     public static MessageQueue<String> getChatMessages() {
         return chatMessages;
+    }
+    
+    public static MessageQueue<String> getPrivateChatMessages() {
+        return privateChatMessages;
     }
 
     public static void main(String[] args) {

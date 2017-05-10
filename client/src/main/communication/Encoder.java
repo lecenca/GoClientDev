@@ -116,5 +116,18 @@ public class Encoder {
     private static String requestJson(String json, int type) {
         return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
     }
+    public static String sendMessageRequest(int roomId, String message){
+        Map map = new HashMap();
+        map.put("room_id",roomId);
+        map.put("account", Client.getUser().getAccount());
+        map.put("message",message);
+        return requestJson(gson.toJson(map), Type.Request.SEND_MSG);
+    }
+    public static String groupMessageRequest(String message) {
+        Map map = new HashMap();
+        map.put("account", Client.getUser().getAccount());
+        map.put("message",message);
+        return requestJson(gson.toJson(map), Type.Request.GROUP_CHAT);
+    }
 
 }
