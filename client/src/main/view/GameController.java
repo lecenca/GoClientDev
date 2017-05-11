@@ -3,6 +3,7 @@ package src.main.view;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import src.main.*;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
@@ -62,8 +63,12 @@ public class GameController implements Initializable {
     @FXML
     private Timer player2TimerController;
 
+    @FXML
+    private Label gameResultShow;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        gameResultShow.setVisible(false);
         boardController.setTimer(player1TimerController, player2TimerController);
     }
 
@@ -101,6 +106,7 @@ public class GameController implements Initializable {
         player2Ready = false;
         begin = false;
         step.setSelected(false);
+        gameResultShow.setVisible(false);
         boardController.clear();
         chatBox.refresh();
         chatBoxController.clear();
@@ -152,6 +158,7 @@ public class GameController implements Initializable {
         /*************** test *************/
 
         /***************** release **************/
+        gameResultShow.setVisible(false);
         if (player1Ready == false) {
             player1Ready = true;
             String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
@@ -328,13 +335,63 @@ public class GameController implements Initializable {
     }
 
     public void showGameResult() {
-        if(roomOwner){
-            if(gameResult == Type.GameResult.PLAYER1_ESCAPE){
-                Client.getUser().updateGameDate(Type.GameResult.LOSE, score);
+        if ((gameResult & 0x40) != 0) {
+            // escape
+            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
+                // self
+                Client.getUser().setRoom(0);
+                Client.getUser().setState(Type.UserState.IDLE);
+                Client.getUser().updateGameDate(score);
                 Client.updateUser();
-                return;
+            } else {
+                gameResultShow.setText("对方逃跑，你赢了！");
+                /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
+                gameResultShow.setVisible(true);*/
             }
+        } else if ((gameResult & 0x20) != 0) {
+            // surrender
+            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_SURRENDER) {
+                // self
+                gameResultShow.setText("你投降了，对方赢了！");
+                /*gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
+                gameResultShow.setVisible(true);*/
+            } else {
+                gameResultShow.setText("对方投降，你赢了！");
+                /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
+                gameResultShow.setVisible(true);*/
+            }
+        } else if ((gameResult & 0x10) != 0) {
+            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_OVERTIME) {
+                gameResultShow.setText("你超时了，对方赢了！");
+                /*gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
+                gameResultShow.setVisible(true);*/
+            } else {
+                gameResultShow.setText("对方超时，你赢了！");
+                /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
+                gameResultShow.setVisible(true);*/
+            }
+        } else if (gameResult == Type.GameResult.WIN) {
+            gameResultShow.setText("你赢了！");
+            /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
+            gameResultShow.setVisible(true);*/
+        } else if (gameResult == Type.GameResult.LOSE) {
+            gameResultShow.setText("你输了！");
+            /*gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
+            gameResultShow.setVisible(true);*/
+        } else {
+            gameResultShow.setText("双方打平，平局！");
+            /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
+            gameResultShow.setVisible(true);*/
         }
+        if((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)){
+            gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
+        }
+        else{
+            gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
+        }
+        gameResultShow.setVisible(true);
+        Client.getUser().updateGameDate(score);
+        Client.getUser().setState(Type.UserState.READY);
     }
 
     // chat windows
