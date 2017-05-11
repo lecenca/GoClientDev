@@ -30,10 +30,6 @@
          <font>
             <Font size="15.0" />
          </font></Button>
-      <Button fx:id="ready" layoutX="284.0" layoutY="651.0" mnemonicParsing="false" onMouseClicked="#ready" prefHeight="30.0" prefWidth="112.0" text="准备">
-         <font>
-            <Font size="15.0" />
-         </font></Button>
       <Button fx:id="judge" layoutX="498.0" layoutY="651.0" mnemonicParsing="false" onAction="#judge" prefHeight="30.0" prefWidth="112.0" text="请求判子">
          <font>
             <Font size="15.0" />
@@ -110,5 +106,10 @@
             <Font size="36.0" />
          </font>
       </Label>
+      <ToggleButton fx:id="ready" layoutX="286.0" layoutY="648.0" mnemonicParsing="false" onAction="#ready" prefHeight="30.0" prefWidth="124.0" text="准备">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </ToggleButton>
    </children>
 </AnchorPane>

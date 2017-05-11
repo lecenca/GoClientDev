@@ -29,7 +29,7 @@ public class Connect {
      * private ChatBox chatBox;
      */
     //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "192.168.191.2";
+    private static String IP = "221.172.208.157";
     private static int PORT = 60000;
     public static Socket socket;
     private static OutputStream os;
@@ -191,11 +191,20 @@ public class Connect {
                     case Type.Response.LOGIN_FAILED:
                         handleLogin(false, jsonObject);
                         break;
+                    case Type.Response.LOGOUT:
+                        handleLogout(jsonObject);
+                        break;
                     case Type.Response.FETCH_ROOMS_INFO_SUCCESS:
                         handleFetchRoom(jsonObject);
                         break;
                     case Type.Response.FETCH_PLAYERS_INFO_SUCCESS:
                         handleFetchPlayer(jsonObject);
+                        break;
+                    case Type.Response.UPDATE_PLAYER:
+                        handleUpdatePlayer(jsonObject);
+                        break;
+                    case Type.Response.UPDATE_ROOM:
+                        handleUpdateRoom(jsonObject);
                         break;
                     case Type.Response.LOBBY_CHAT_MSG:
                         handleChatMessage(jsonObject);
@@ -267,6 +276,11 @@ public class Connect {
         }
     }
 
+    private void handleLogout(JSONObject jsonObject){
+        String account = jsonObject.getString("account");
+        Client.removePlayer(account);
+    }
+
     private void handleFetchRoom(JSONObject jsonObject) {
         ArrayList<Room> roomList = Decoder.parseRoomList(jsonObject);
         if (roomList.size() != 0) {
@@ -274,7 +288,6 @@ public class Connect {
             for (Room room : roomList) {
                 rooms.add(room);
             }
-            System.out.println("handle list:" + roomList);
         }
     }
 
@@ -285,8 +298,21 @@ public class Connect {
             for (User user : playerList) {
                 players.add(user);
             }
-            System.out.println("handle list:" + playerList);
         }
+    }
+
+    private void handleUpdatePlayer(JSONObject jsonObject){
+        MessageQueue<User> players = Client.getPlayers();
+        players.add(Decoder.parseUser(jsonObject.getJSONObject("user")));
+    }
+
+    private void handleUpdateRoom(JSONObject jsonObject){
+        if(jsonObject.getIntValue("action") == Type.UpdateRoom.DESTROY){
+            Client.removeRoom(jsonObject.getJSONObject("room").getIntValue("id"));
+            return;
+        }
+        MessageQueue<Room> rooms = Client.getRooms();
+        rooms.add(Decoder.parseRoom(jsonObject.getJSONObject("room")));
     }
 
     private void handleReady(JSONObject jsonObject) {
@@ -306,10 +332,6 @@ public class Connect {
         if (jsonObject.getIntValue("action") == Type.Action.KILL) {
             ArrayList<Stone> deadList = Decoder.parseKillList(jsonObject);
             Client.getGameController().kill(deadList);
-            Client.getGameController().checkKo(
-                    jsonObject.getIntValue("x"),
-                    jsonObject.getIntValue("y"),
-                    deadList);
         }
     }
 

@@ -20,7 +20,7 @@ public class GameController implements Initializable {
     private boolean player2Ready = false;
     private boolean roomOwner = false;
     private boolean begin = false;
-    private int turn;
+    private int turn = Stone.Black;
 
     private int gameResult;
     private int score;
@@ -40,15 +40,13 @@ public class GameController implements Initializable {
     @FXML
     private ChessBoard boardController;
     @FXML
-    private Button ready;
+    private ToggleButton ready;
     @FXML
     private Button surrender;
     @FXML
     private Button judge;
-
     @FXML
     private ToggleButton step;
-
 
     @FXML
     private ChatBox chatBoxController;
@@ -69,6 +67,12 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         gameResultShow.setVisible(false);
+        surrender.setDisable(true);
+        judge.setDisable(true);
+        player1Ready = false;
+        player2Ready = false;
+        begin = false;
+        turn = Stone.Black;
         boardController.setTimer(player1TimerController, player2TimerController);
     }
 
@@ -81,8 +85,12 @@ public class GameController implements Initializable {
         periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
         player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
         player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+        if(Client.offlineMode){
+            turn = Stone.Black;
+            boardController.setColor(Stone.Black);
+            return;
+        }
         /********** release ******/
-        turn = Stone.Black;
         if ((room.getPlayer1() != null || room.getPlayer1().isEmpty()) && room.getPlayer1() == Client.getUser().getAccount()) {
             roomOwner = true;
             boardController.setColor(Stone.White);
@@ -91,10 +99,6 @@ public class GameController implements Initializable {
             boardController.setColor(Stone.Black);
         }
         /********** release ******/
-        /***** test *****/
-        /*turn = Stone.Black;
-        boardController.setColor(Stone.Black);*/
-        /***** test *****/
     }
 
     public void clear() {
@@ -114,61 +118,40 @@ public class GameController implements Initializable {
         player2TimerController.stop();
     }
 
-    public boolean isBegin() {
-        return begin;
-    }
-
-    public boolean isRoomOwner() {
-        return roomOwner;
-    }
-
-    public int getTurn() {
-        return turn;
-    }
-
-    public void takeTurns() {
-        turn = -turn;
-    }
-
-    public void setReady(boolean player1, boolean player2) {
-        player1Ready = player1;
-        player2Ready = player2;
-        if (player1Ready && player2Ready) {
-            gameStart();
-        }
-    }
-
     @FXML
     private void ready() {
-        /*************** test *************/
-        /*if (player1Ready == false) {
-            player1Ready = true;
-            begin = true;
-            String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
-            System.out.println("ready msg: " + msg);
-            Connect.send(msg);
-            ready.setText("取消准备");
-            Client.getUser().setState(Type.UserState.GAMING);
-            player2TimerController.start();
-        } else {
-            begin = false;
-            ready.setText("准备");
-            Client.getUser().setState(Type.UserState.READY);
-        }*/
-        /*************** test *************/
-
+        if(Client.offlineMode){
+            /*************** test *************/
+            gameResultShow.setVisible(false);
+            if (ready.isSelected()) {
+                player1Ready = true;
+                String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
+                System.out.println("ready request msg: " + msg);
+                Connect.send(msg);
+                ready.setText("取消准备");
+                gameStart();
+            } else {
+                player1Ready = false;
+                String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
+                System.out.println("ready request msg: " + msg);
+                Connect.send(msg);
+                ready.setText("准备");
+            }
+            return;
+            /*************** test *************/
+        }
         /***************** release **************/
         gameResultShow.setVisible(false);
-        if (player1Ready == false) {
+        if (ready.isSelected()) {
             player1Ready = true;
             String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
-            System.out.println("ready msg: " + msg);
+            System.out.println("ready request msg: " + msg);
             Connect.send(msg);
             ready.setText("取消准备");
         } else {
             player1Ready = false;
             String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
-            System.out.println("ready msg: " + msg);
+            System.out.println("ready request msg: " + msg);
             Connect.send(msg);
             ready.setText("准备");
         }
@@ -191,8 +174,6 @@ public class GameController implements Initializable {
     @FXML
     public void gameOver() {
         begin = false;
-        player1TimerController.pause();
-        player2TimerController.pause();
         if (roomOwner) {
             ArrayList<Number> point = boardController.getPlayerPoint();
             double p1 = (double) point.get(0);
@@ -214,6 +195,56 @@ public class GameController implements Initializable {
         }
     }
 
+    public void showGameResult() {
+        player1TimerController.pause();
+        player2TimerController.pause();
+        ready.setDisable(false);
+        if ((gameResult & 0x40) != 0) {
+            // escape
+            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
+                // self
+                Client.getUser().setRoom(0);
+                Client.getUser().setState(Type.UserState.IDLE);
+                Client.getUser().updateGameDate(score);
+                Client.updateUser();
+                return;
+            } else {
+                gameResultShow.setText("对方逃跑，你赢了！");
+            }
+        } else if ((gameResult & 0x20) != 0) {
+            // surrender
+            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_SURRENDER) {
+                // self
+                gameResultShow.setText("你投降了，对方赢了！");
+            } else {
+                gameResultShow.setText("对方投降，你赢了！");
+            }
+        } else if ((gameResult & 0x10) != 0) {
+            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_OVERTIME) {
+                gameResultShow.setText("你超时了，对方赢了！");
+            } else {
+                gameResultShow.setText("对方超时，你赢了！");
+            }
+        } else if (gameResult == Type.GameResult.WIN) {
+            gameResultShow.setText("你赢了！");
+        } else if (gameResult == Type.GameResult.LOSE) {
+            gameResultShow.setText("你输了！");
+        } else {
+            gameResultShow.setText("双方打平，平局！");
+        }
+        if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)) {
+            gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
+        } else {
+            gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
+        }
+        gameResultShow.setVisible(true);
+        Client.getUser().updateGameDate(score);
+        Client.getUser().setState(Type.UserState.READY);
+        Client.updateUser();
+        room.setState(Type.RoomState.READY);
+        Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+    }
+
     public void place(int x, int y, int color) {
         boardController.place(x, y, color);
     }
@@ -221,26 +252,6 @@ public class GameController implements Initializable {
     public void kill(ArrayList<Stone> deadList) {
         Board.addDead(deadList);
         boardController.remove();
-    }
-
-    public void checkKo(int x, int y, ArrayList<Stone> deadList) {
-        if (deadList.size() == 1) {
-            Board.setKoPoint(x, y, deadList);
-        }
-    }
-
-    @FXML
-    public boolean isShowStep() {
-        return step.isSelected();
-    }
-
-    @FXML
-    private void showStep() {
-        if (step.isSelected()) {
-            boardController.showStep();
-        } else {
-            boardController.hideStep();
-        }
     }
 
     public void overTime() {
@@ -307,6 +318,44 @@ public class GameController implements Initializable {
         System.out.println("game result msg: " + msg);
     }
 
+    public void setReady(boolean player1, boolean player2) {
+        player1Ready = player1;
+        player2Ready = player2;
+        if (player1Ready && player2Ready) {
+            gameStart();
+        }
+    }
+
+    public boolean isBegin() {
+        return begin;
+    }
+
+    public boolean isRoomOwner() {
+        return roomOwner;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public void takeTurns() {
+        turn = -turn;
+    }
+
+    @FXML
+    public boolean isShowStep() {
+        return step.isSelected();
+    }
+
+    @FXML
+    private void showStep() {
+        if (step.isSelected()) {
+            boardController.showStep();
+        } else {
+            boardController.hideStep();
+        }
+    }
+
     @FXML
     public void judge() {
         String msg = Encoder.judgeRequest(room.getId(), roomOwner);
@@ -332,66 +381,6 @@ public class GameController implements Initializable {
 
     public void setScore(int score) {
         this.score = score;
-    }
-
-    public void showGameResult() {
-        if ((gameResult & 0x40) != 0) {
-            // escape
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
-                // self
-                Client.getUser().setRoom(0);
-                Client.getUser().setState(Type.UserState.IDLE);
-                Client.getUser().updateGameDate(score);
-                Client.updateUser();
-            } else {
-                gameResultShow.setText("对方逃跑，你赢了！");
-                /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
-                gameResultShow.setVisible(true);*/
-            }
-        } else if ((gameResult & 0x20) != 0) {
-            // surrender
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_SURRENDER) {
-                // self
-                gameResultShow.setText("你投降了，对方赢了！");
-                /*gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
-                gameResultShow.setVisible(true);*/
-            } else {
-                gameResultShow.setText("对方投降，你赢了！");
-                /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
-                gameResultShow.setVisible(true);*/
-            }
-        } else if ((gameResult & 0x10) != 0) {
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_OVERTIME) {
-                gameResultShow.setText("你超时了，对方赢了！");
-                /*gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
-                gameResultShow.setVisible(true);*/
-            } else {
-                gameResultShow.setText("对方超时，你赢了！");
-                /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
-                gameResultShow.setVisible(true);*/
-            }
-        } else if (gameResult == Type.GameResult.WIN) {
-            gameResultShow.setText("你赢了！");
-            /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
-            gameResultShow.setVisible(true);*/
-        } else if (gameResult == Type.GameResult.LOSE) {
-            gameResultShow.setText("你输了！");
-            /*gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
-            gameResultShow.setVisible(true);*/
-        } else {
-            gameResultShow.setText("双方打平，平局！");
-            /*gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
-            gameResultShow.setVisible(true);*/
-        }
-        if((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)){
-            gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
-        }
-        else{
-            gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
-        }
-        gameResultShow.setVisible(true);
-        Client.getUser().updateGameDate(score);
-        Client.getUser().setState(Type.UserState.READY);
     }
 
     // chat windows
