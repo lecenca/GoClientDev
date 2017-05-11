@@ -29,6 +29,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -475,9 +476,19 @@ public class Client extends Application {
     public static void adjustPlayer(User player) {
         if (playerData.contains(player)) {
             // TODO: 如何修改现有player的属性
+            int index = playerData.indexOf(player);
+            User user = playerData.get(index);
+            user.setData(player.getData());
+            user.setRoom(player.getRoom());
+            user.setState(player.getState());
+            
         } else {
             playerData.add(player);
         }
+        List<User> subList = playerData.subList(1, playerData.size() - 1);
+        subList.sort(new UserComparator());
+        subList.add(0, playerData.get(0));
+        playerData.setAll(subList);
         playersMap.put(player.getAccount(), player);
     }
 
@@ -489,6 +500,13 @@ public class Client extends Application {
     public static void adjustRoom(Room room) {
         if (roomData.contains(room)) {
             // TODO: 如何修改现有 room 的属性
+            int index = roomData.indexOf(room);
+            Room room2 = roomData.get(index);
+            room2.setId(room.getId());
+            room2.setName(room.getName());
+            room2.setPlayer1(room.getPlayer1());
+            room2.setPlayer2(room.getPlayer2());
+            room2.setState(room.getState());
         } else {
             roomData.add(room);
         }
