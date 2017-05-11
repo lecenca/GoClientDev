@@ -1,5 +1,7 @@
 package src.main;
 
+import java.util.Random;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -223,6 +225,20 @@ public class User {
     public StringProperty getLoseProperty() {
         return new SimpleStringProperty(Integer.toString(this.data.lose));
     }
-
+    @Override
+    public int hashCode() {
+        // TODO Auto-generated method stub
+        return account.hashCode();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        if(!(obj instanceof User))
+            throw new ClassCastException();
+        User user = (User)obj;
+        return this.account == user.account;
+    }
+    
 }
 
