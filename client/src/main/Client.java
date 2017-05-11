@@ -56,10 +56,11 @@ public class Client extends Application {
     private ObservableList<Room> roomData = FXCollections.observableArrayList();
     private ObservableList<User> playerData = FXCollections.observableArrayList();
     private ObservableList<String> messageData = FXCollections.observableArrayList();
+    private ObservableList<String> privateMessageData = FXCollections.observableArrayList();
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessages = new MessageQueue<>();
-
+    public static MessageQueue<String> privateChatMessages = new MessageQueue<>();
     public static Map<String, User> playersMap = new HashMap<>();
     public static Map<Integer, Room> roomsMap = new HashMap<>();
 
@@ -262,6 +263,20 @@ public class Client extends Application {
                     } catch (Exception e) {
 
                     }
+                if(!privateChatMessages.isEmpty()) 
+                    try {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+                                if (!privateChatMessages.isEmpty())
+                                    privateMessageData.add(privateChatMessages.remove());
+                            }
+                        });
+
+                    } catch (Exception e) {
+
+                    }
             }
         }
     });
@@ -273,8 +288,10 @@ public class Client extends Application {
         receiveThread = connect.getReceiveThread();
         /*****************************/
         signupStage = new Stage();
+        signupStage.setTitle("MicroOnlineGo - 注册");
+        signupStage.setResizable(false);
+
         lobbyStage = new Stage();
-        gameStage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/Lobby.fxml"));
         Pane lobbyPane = null;
@@ -288,6 +305,8 @@ public class Client extends Application {
         lobbyController = loader.getController();
         lobbyController.setClient(this);
         lobbyController.setAssociation();
+
+        gameStage = new Stage();
         FXMLLoader loader2 = new FXMLLoader();
         loader2.setLocation(getClass().getResource("view/Game.fxml"));
         Pane gamePane = null;
@@ -301,7 +320,6 @@ public class Client extends Application {
         gameController = loader2.getController();
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
-
             public void handle(WindowEvent event) {
                 /*****************************************************/
                 /*
@@ -355,17 +373,15 @@ public class Client extends Application {
                 getUser().setState(Type.UserState.IDLE);
                 updateUser();
                 gameController.clear();
-
             }
-
-
         });
     }
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("MicroOnlineGo");
+        primaryStage.setTitle("MicroOnlineGo - 登录");
+        primaryStage.setResizable(false);
         gotoLogin();
         /*keepAliveThread.setDaemon(true);
         keepAliveThread.start();*/
@@ -390,24 +406,14 @@ public class Client extends Application {
         loginController.resetPassword();
     }
 
-    public void gotoLobby() {
-        lobbyStage.show();
-        /*
-         * Thread listenPlayerList = lobbyController.getListenPlayerList();
-         * listenPlayerList.setDaemon(true); listenPlayerList.start(); Thread
-         * listenRoomList = lobbyController.getListenRoomList();
-         * listenRoomList.setDaemon(true); listenRoomList.start();
-         */
-        //Thread chatThread = lobbyController.getChatThread();
-        /*
-         * chatThread.setDaemon(true); chatThread.start();
-         */
-        lobbyController.fetchLobbyInfo();
-    }
-
     public void gotoSignup() {
         signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
         signupController.setClient(this);
+    }
+
+    public void gotoLobby() {
+        lobbyStage.show();
+        lobbyController.fetchLobbyInfo();
     }
 
     public void backToLobby() {
@@ -428,12 +434,13 @@ public class Client extends Application {
             e.printStackTrace();
         }
         createRoomStage.show();
-        CreateRoomController createRoomController = (CreateRoomController) loader.getController();
+        CreateRoomController createRoomController = loader.getController();
         createRoomController.setClient(this);
     }
 
     public void gotoGame(Room room) {
         gameController.setRoom(room);
+        gameController.getChatBoxController().setItems(privateMessageData);
         gameStage.show();
     }
 
@@ -474,10 +481,9 @@ public class Client extends Application {
             return (Initializable) loader.getController();
         }
     }
-    // get the connection
 
     static public void updateUser(){
-        String msg = Encoder.updatePlayerRequest(user);
+        String msg = Encoder.updatePlayerRequest();
         Connect.send(msg);
         System.out.println("update player msg: " + msg);
     }
@@ -547,9 +553,17 @@ public class Client extends Application {
     public ObservableList<String> getMessageData() {
         return messageData;
     }
+    
+    public ObservableList<String> getPrivateMessageData() {
+        return privateMessageData;
+    }
 
     public static MessageQueue<String> getChatMessages() {
         return chatMessages;
+    }
+    
+    public static MessageQueue<String> getPrivateChatMessages() {
+        return privateChatMessages;
     }
 
     public static void main(String[] args) {

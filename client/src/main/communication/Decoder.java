@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import src.main.Client;
 import src.main.Room;
 import src.main.Stone;
 import src.main.User;
@@ -37,4 +38,5 @@ public class Decoder {
         JSONArray kill = object.getJSONArray("kill");
         return new ArrayList<>(JSON.parseArray(kill.toJSONString(), Stone.class));
     }
+
 }

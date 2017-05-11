@@ -13,8 +13,9 @@ public class Encoder {
     private static Gson gson = new Gson();
 
     public static String keepAliveRequest(){
-        return "{\"request_type\":0}";
+        return "{\"request_type\":" + String.valueOf(Type.Request.KEEP_ALIVE) + "}";
     }
+
     public static String chechAccountRequest(String account) {
         Map map = new HashMap();
         map.put("account", account);
@@ -46,16 +47,23 @@ public class Encoder {
         return "{\"request_type\":" + String.valueOf(Type.Request.FETCH_PLAYERS_INFO) + "}";
     }
 
-    public static String updatePlayerRequest(User user) {
+    public static String updatePlayerRequest() {
         /*JSONObject jsonObject = JSONObject.parseObject(gson.toJson(user).toString());
         jsonObject.put("action", type);*/
-        return requestJson(gson.toJson(user), Type.Request.UPDATE_PLAYER);
+        return requestJson(gson.toJson(Client.getUser()), Type.Request.UPDATE_PLAYER);
     }
 
     public static String updateRoomRequest(Room room, int type) {
         JSONObject jsonObject = JSONObject.parseObject(gson.toJson(room).toString());
         jsonObject.put("action", type);
         return requestJson(gson.toJson(jsonObject), Type.Request.UPDATE_ROOM);
+    }
+
+    public static String sitdownRequest(int roomId){
+        Map map = new HashMap();
+        map.put("room_id", roomId);
+        map.put("player", Client.getUser().getAccount());
+        return requestJson(gson.toJson(map), Type.Request.SITDOWN);
     }
 
     public static String readyRequest(int roomId, Boolean player1IsReady, Boolean player2IsReady) {
@@ -75,10 +83,10 @@ public class Encoder {
         return requestJson(gson.toJson(map), Type.Request.GAME_OVER);
     }
 
-    public static String judgeRequest(int roomId, boolean player1) {
+    public static String judgeRequest(int roomId, boolean player) {
         Map map = new HashMap();
         map.put("room_id", roomId);
-        map.put("player1", player1);
+        map.put("account", player);
         return requestJson(gson.toJson(map), Type.Request.JUDGE);
     }
 
@@ -115,6 +123,21 @@ public class Encoder {
 
     private static String requestJson(String json, int type) {
         return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
+    }
+
+    public static String roomMessageRequest(int roomId, String message){
+        Map map = new HashMap();
+        map.put("room_id",roomId);
+        map.put("account", Client.getUser().getAccount());
+        map.put("message",message);
+        return requestJson(gson.toJson(map), Type.Request.ROOM_CHAT);
+    }
+
+    public static String lobbyMessageRequest(String message) {
+        Map map = new HashMap();
+        map.put("account", Client.getUser().getAccount());
+        map.put("message",message);
+        return requestJson(gson.toJson(map), Type.Request.LOBBY_CHAT);
     }
 
 }

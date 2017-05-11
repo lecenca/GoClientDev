@@ -99,6 +99,7 @@ public class ChessBoard implements Initializable {
         stone.setLayoutX(pixel.x);
         stone.setLayoutY(pixel.y);
         stone.setRadius(stoneRadius);
+        stone.setEffect(new Lighting());
         chessPane.getChildren().add(stone);
         board.add(x, y, color);
         step.setText(Integer.toString(Board.stones[x][y].step));
@@ -121,11 +122,8 @@ public class ChessBoard implements Initializable {
         // judge enable
         if (getStep() >= 100) {
             Client.getGameController().judgeEnable();
-            if (getStep() >= 300) {
-                Client.getGameController().judgeForcedEnable();
-                if (getStep() >= 360) {
-                    Client.getGameController().gameOver();
-                }
+            if (getStep() >= 360) {
+                Client.getGameController().gameOver();
             }
         }
     }
