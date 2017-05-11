@@ -45,6 +45,32 @@ public class ChessBoard implements Initializable {
 
     @FXML
     private void onClick(MouseEvent event) {
+        if (Client.offlineMode) {
+            /****************************  test ****************************/
+            if (Client.getGameController().isBegin()) {
+                getPixelPos(event);
+                int action = action();
+                if (action != Type.Action.INVALID) {
+                    String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
+                    System.out.println(jsonmsg);
+                    place(index.x, index.y, color);
+                    if (action == Type.Action.KILL) {
+                        remove();
+                        board.remove();
+                    }
+                    if (color == -1) {
+                        player2TimerController.pause();
+                        player1TimerController.start();
+                    } else {
+                        player1TimerController.pause();
+                        player2TimerController.start();
+                    }
+                    color = -color;
+                }
+            }
+            return;
+            /****************************  test ****************************/
+        }
         /****************************  release ****************************/
         if (Client.getGameController().isBegin() && Client.getGameController().getTurn() == this.color) {
             getPixelPos(event);
@@ -60,29 +86,6 @@ public class ChessBoard implements Initializable {
             }
         }
         /****************************  release ****************************/
-        /****************************  test ****************************/
-        if (Client.getGameController().isBegin()) {
-            getPixelPos(event);
-            int action = action();
-            if (action != Type.Action.INVALID) {
-                String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
-                System.out.println(jsonmsg);
-                place(index.x, index.y, color);
-                if (action == Type.Action.KILL) {
-                    remove();
-                    board.remove();
-                }
-                if (color == -1) {
-                    player2TimerController.pause();
-                    player1TimerController.start();
-                } else {
-                    player1TimerController.pause();
-                    player2TimerController.start();
-                }
-                color = -color;
-            }
-        }
-        /****************************  test ****************************/
     }
 
     public void place(int x, int y, int color) {
@@ -225,7 +228,7 @@ public class ChessBoard implements Initializable {
             return Type.Action.INVALID;
         }
         getIndexPos();
-        return board.action(index, color);
+        return board.action(index.x, index.y, color);
     }
 
     @Override

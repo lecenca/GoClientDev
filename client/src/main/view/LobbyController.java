@@ -98,7 +98,7 @@ public class LobbyController implements Initializable {
         /************* test ********************/
         chatBoxController.sendMessage(Client.getUser().getNickname()+":"+ inputField.getText());
         String msg = Encoder.lobbyMessageRequest(inputField.getText());
-        client.getConnect().send(msg);
+        Connect.send(msg);
         inputField.clear();
         sendbtn.setDisable(true);
         /************* test ********************/
@@ -180,7 +180,6 @@ public class LobbyController implements Initializable {
             }
             else{
                 JOptionPane.showMessageDialog(null,"房间已经满人");
-                return;
             }
         }
     }

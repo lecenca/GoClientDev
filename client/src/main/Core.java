@@ -1,6 +1,6 @@
 package src.main;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,30 +11,34 @@ public class Core {
     private static boolean hasKilled;
     private static boolean hasKo;
 
-    public static int action(Board board, int x, int y, int color) {
-        Stone up = board.stones[x][y].up();
-        Stone down = board.stones[x][y].down();
-        Stone left = board.stones[x][y].left();
-        Stone right = board.stones[x][y].right();
+    public static int action(int x, int y, int color) {
+        Stone up = Board.stones[x][y].up();
+        Stone down = Board.stones[x][y].down();
+        Stone left = Board.stones[x][y].left();
+        Stone right = Board.stones[x][y].right();
         hasLiberty = false;
         hasKilled = false;
         hasKo = false;
         if (up != null) {
-            actionWith(board, x, y, up, color);
+            actionWith(x, y, up, color);
         }
         if (down != null) {
-            actionWith(board, x, y, down, color);
+            actionWith(x, y, down, color);
         }
         if (left != null) {
-            actionWith(board, x, y, left, color);
+            actionWith(x, y, left, color);
         }
         if (right != null) {
-            actionWith(board, x, y, right, color);
+            actionWith(x, y, right, color);
         }
         if (hasKo) {
             return Type.Action.INVALID;
         }
-        return hasKilled ? Type.Action.KILL : hasLiberty ? Type.Action.PLACE : Type.Action.INVALID;
+        if (hasKilled) {
+            checkKo(x, y);
+            return Type.Action.KILL;
+        }
+        return hasLiberty ? Type.Action.PLACE : Type.Action.INVALID;
     }
 
     public static ArrayList<Number> scoring(Board board) {
@@ -72,33 +76,51 @@ public class Core {
         return result;
     }
 
-    private static void actionWith(Board board, int x, int y, Stone stone, int color) {
-        if (stone.color == Stone.None || (stone.color == color && liberty(board, stone) > 1)) {
+    private static void actionWith(int x, int y, Stone stone, int color) {
+        if (stone.color == Stone.None || (stone.color == color && liberty(stone) > 1)) {
             hasLiberty = true;
-        } else if (stone.color == -color && liberty(board, stone) == 1) {
-            if (!isKo(board, x, y, stone)) {
+        } else if (stone.color == -color && liberty(stone) == 1) {
+            if (!isKo(x, y, stone)) {
                 hasKilled = true;
-                board.dead.add(board.chainMap.get(stone));
+                Board.dead.add(Board.chainMap.get(stone));
             }
         }
     }
 
-    private static boolean isKo(Board board, int x, int y, Stone stone) {
-        if (x == board.maybeKo[1].x && y == board.maybeKo[1].y
-                && stone.x == board.maybeKo[0].x && stone.y == board.maybeKo[0].y
-                && stone.color == board.maybeKo[0].color
+    private static void checkKo(int x, int y) {
+        if (Board.dead.size() == 1) {
+            for (int chain : Board.dead) {
+                if (Board.stonesMap.get(chain).size() == 1) {
+                    for (Stone stone : Board.stonesMap.get(chain)) {
+                        Board.maybeKo[0].x = x;
+                        Board.maybeKo[0].y = y;
+                        Board.maybeKo[0].step = Board.step;
+                        Board.maybeKo[0].color = -stone.color;
+                        Board.maybeKo[1] = stone;
+                    }
+                    break;
+                }
+                break;
+            }
+        }
+    }
+
+    private static boolean isKo(int x, int y, Stone stone) {
+        if (x == Board.maybeKo[1].x && y == Board.maybeKo[1].y
+                && stone.x == Board.maybeKo[0].x && stone.y == Board.maybeKo[0].y
+                && stone.color == Board.maybeKo[0].color
                 && stone.step == Board.step - 1
-                && board.stonesMap.get(board.chainMap.get(stone)).size() == 1) {
+                && Board.stonesMap.get(Board.chainMap.get(stone)).size() == 1) {
             hasKo = true;
             return true;
         }
         return false;
     }
 
-    public static int liberty(Board board, Stone stone) {
-        int chain = board.chainMap.get(stone);
-        System.out.println("Point (" + stone.x + "," + stone.y + ") in chain " + chain + " has libertyMap " + board.libertyMap.get(chain).size());
-        return board.libertyMap.get(board.chainMap.get(stone)).size();
+    public static int liberty(Stone stone) {
+        int chain = Board.chainMap.get(stone);
+        System.out.println("Point (" + stone.x + "," + stone.y + ") in chain " + chain + " has libertyMap " + Board.libertyMap.get(chain).size());
+        return Board.libertyMap.get(Board.chainMap.get(stone)).size();
     }
 
 }

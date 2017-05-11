@@ -29,7 +29,7 @@ public class Connect {
      * private ChatBox chatBox;
      */
     //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "172.20.10.3";
+    private static String IP = "221.172.208.157";
     private static int PORT = 60000;
     public static Socket socket;
     private static OutputStream os;
@@ -332,10 +332,6 @@ public class Connect {
         if (jsonObject.getIntValue("action") == Type.Action.KILL) {
             ArrayList<Stone> deadList = Decoder.parseKillList(jsonObject);
             Client.getGameController().kill(deadList);
-            Client.getGameController().checkKo(
-                    jsonObject.getIntValue("x"),
-                    jsonObject.getIntValue("y"),
-                    deadList);
         }
     }
 

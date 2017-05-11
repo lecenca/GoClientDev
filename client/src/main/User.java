@@ -68,9 +68,9 @@ public class User {
 
     }
 
-    private String account;
-    private String nickname;
-    private String password;
+    private String account = new String();
+    private String nickname = new String();
+    private String password = new String();
     private Birthday birthday = new Birthday();
     private boolean sex;  // true for man, false for woman
     private int state;
@@ -90,6 +90,10 @@ public class User {
         room = 0;
     }
     /********** test **********/
+    public User(String account, String nickname){
+        this.account = account;
+        this.nickname = nickname;
+    }
 
     public void setAccount(String account) {
         this.account = account;
