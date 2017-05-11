@@ -1,30 +1,27 @@
 package src.main;
 
-import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
-import javafx.stage.WindowEvent;
-import src.main.communication.Connect;
-import src.main.communication.Encoder;
-import src.main.view.CreateRoomController;
-import src.main.view.GameController;
-import src.main.view.LobbyController;
-import src.main.view.LoginController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import src.main.view.SignupController;
+import javafx.stage.WindowEvent;
+import src.main.communication.Connect;
+import src.main.communication.Encoder;
+import src.main.view.*;
 import src.util.MessageQueue;
 import src.util.UserComparator;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,11 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.swing.JOptionPane;
-
-import com.sun.org.apache.xpath.internal.axes.HasPositionalPredChecker;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Receiver;
 
 public class Client extends Application {
     private UserComparator comparator = new UserComparator();
@@ -53,14 +45,14 @@ public class Client extends Application {
     private static LobbyController lobbyController;
     private static GameController gameController;
     private static SignupController signupController;
-    private ObservableList<Room> roomData = FXCollections.observableArrayList();
-    private ObservableList<User> playerData = FXCollections.observableArrayList();
-    private ObservableList<String> messageData = FXCollections.observableArrayList();
-    private ObservableList<String> privateMessageData = FXCollections.observableArrayList();
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessages = new MessageQueue<>();
     public static MessageQueue<String> privateChatMessages = new MessageQueue<>();
+    private static ObservableList<Room> roomData = FXCollections.observableArrayList();
+    private static ObservableList<User> playerData = FXCollections.observableArrayList();
+    private static ObservableList<String> messageData = FXCollections.observableArrayList();
+    private static ObservableList<String> privateMessageData = FXCollections.observableArrayList();
     public static Map<String, User> playersMap = new HashMap<>();
     public static Map<Integer, Room> roomsMap = new HashMap<>();
 
@@ -111,9 +103,9 @@ public class Client extends Application {
                     connect.setIs(is);
                     connect.setOs(os);
                     System.out.println("重新连接服务器成功！");
-                    if(!receiveThread.isAlive())
+                    if (!receiveThread.isAlive())
                         receiveThread.start();
-                    if(!messageThread.isAlive())
+                    if (!messageThread.isAlive())
                         messageThread.start();
                     /*if(!SignupController.hasCheckedAccount) {
                        signupController.checkAccountValid();
@@ -238,15 +230,11 @@ public class Client extends Application {
             while (true) {
                 // players
                 if (!players.isEmpty()) {
-                    User player = players.remove();
-                    playerData.add(player);
-                    playersMap.put(player.getAccount(), player);
+                    adjustPlayer(players.remove());
                 }
                 // rooms
                 if (!rooms.isEmpty()) {
-                    Room room = rooms.remove();
-                    roomData.add(room);
-                    roomsMap.put(room.getId(), room);
+                    adjustRoom(rooms.remove());
                 }
                 // chat
                 if (!chatMessages.isEmpty())
@@ -263,7 +251,7 @@ public class Client extends Application {
                     } catch (Exception e) {
 
                     }
-                if(!privateChatMessages.isEmpty()) 
+                if (!privateChatMessages.isEmpty())
                     try {
                         Platform.runLater(new Runnable() {
                             @Override
@@ -321,58 +309,25 @@ public class Client extends Application {
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                /*****************************************************/
-                /*
-                if(getUser().getState() == Type.UserState.GAMING){
-                    int res = JOptionPane.showConfirmDialog(null,"您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分","提示",JOptionPane.YES_NO_OPTION);
-                    if(res == JOptionPane.YES_OPTION){
-                        getUser().gameResult(Type.GameResult.LOSE, 30.0);
-                        // TODO: 另一个玩家
-                    }
-                    else{
-                        event.consume();
-                        return;
-                    }
-                }
-                */
-                /**************************************************************/
-                /************************* test *****************************/
-                if(getUser().getState() == Type.UserState.GAMING){
+                if (getUser().getState() == Type.UserState.GAMING) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("提示");
                     alert.setHeaderText("您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分");
                     alert.initOwner(gameStage);
                     alert.initModality(Modality.WINDOW_MODAL);
                     Optional<ButtonType> result = alert.showAndWait();
-                    if (result.get() == ButtonType.OK){
-                        getUser().gameResult(Type.GameResult.LOSE, 30.0);
-                    }else{
+                    if (result.get() == ButtonType.OK) {
+                        gameController.escape();
+                        gameController.clear();
+
+                        user.setState(Type.UserState.IDLE);
+                        user.setRoom(0);
+
+                    } else {
                         event.consume();
                         return;
                     }
                 }
-                /************************* test *****************************/
-                // need connect
-                /*
-                 * Room room = roomsMap.get(getUser().getRoom());
-                 * if(room.playerNum() == 1){ String msg =
-                 * Encoder.updateRoomRequest(room, Type.UpdateRoom.DESTROY);
-                 * System.out.println("update player msg: " + msg);
-                 * Connect.send(msg); } room.setState(Type.RoomState.WATING);
-                 * if(room.getPlayer1() == getUser().getAccount()){
-                 * room.setPlayer1(null); String msg =
-                 * Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1OUT);
-                 * System.out.println("update player msg: " + msg);
-                 * Connect.send(msg); }else { room.setPlayer2(null); String msg
-                 * = Encoder.updateRoomRequest(room,
-                 * Type.UpdateRoom.PLAYER2OUT);
-                 * System.out.println("update player msg: " + msg);
-                 * Connect.send(msg); }
-                 */
-                getUser().setRoom(0);
-                getUser().setState(Type.UserState.IDLE);
-                updateUser();
-                gameController.clear();
             }
         });
     }
@@ -482,16 +437,36 @@ public class Client extends Application {
         }
     }
 
-    static public void updateUser(){
+    static public void updateUser() {
         String msg = Encoder.updatePlayerRequest();
         Connect.send(msg);
         System.out.println("update player msg: " + msg);
     }
 
-    static public void updateRoom(Room room, int type){
+    static public void updateRoom(Room room, int type) {
         String msg = Encoder.updateRoomRequest(room, type);
         Connect.send(msg);
         System.out.println("update room msg: " + msg);
+    }
+
+    public static void adjustPlayer(User player){
+        // TODO: 判断新的还是修改属性
+        playersMap.put(player.getAccount(), player);
+    }
+
+    public static void removePlayer(String account){
+        playerData.remove(playersMap.get(account));
+        playersMap.remove(account);
+    }
+
+    public static void adjustRoom(Room room){
+        // TODO:
+        roomsMap.put(room.getId(), room);
+    }
+
+    public static void removeRoom(int id){
+        roomData.remove(roomsMap.get(id));
+        roomsMap.remove(id);
     }
 
     public Connect getConnect() {
@@ -553,7 +528,7 @@ public class Client extends Application {
     public ObservableList<String> getMessageData() {
         return messageData;
     }
-    
+
     public ObservableList<String> getPrivateMessageData() {
         return privateMessageData;
     }
@@ -561,7 +536,7 @@ public class Client extends Application {
     public static MessageQueue<String> getChatMessages() {
         return chatMessages;
     }
-    
+
     public static MessageQueue<String> getPrivateChatMessages() {
         return privateChatMessages;
     }
