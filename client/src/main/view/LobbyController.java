@@ -17,7 +17,6 @@ import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
 import javax.swing.*;
-import javax.swing.text.html.Option;
 import java.net.URL;
 import java.util.*;
 
@@ -79,82 +78,10 @@ public class LobbyController implements Initializable {
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessage = new MessageQueue<>();
 
-    /*private Thread listenPlayerList = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println("监听玩家列表线程启动！");
-            while (true) {
-                *//*if(!players.isEmpty()) {
-					playerData.add(players.remove());
-				}*//*
-                try {
-                    Thread.currentThread().sleep(1000);
-                    playerData.add(new User("tom", 10, 100, 60, 1));
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-    });
-
-    private Thread listenRoomList = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println("监听房间列表线程启动！");
-            // TODO Auto-generated method stub
-            while (true) {
-				*//*if(!rooms.isEmpty()) {
-					roomData.add(rooms.remove());
-				}*//*
-                roomData.add(new Room(2, "room..", "player1", "player2", 1));
-                try {
-                    Thread.currentThread().sleep(2000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    });
-
-    private Thread chatThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println("聊天线程启动");
-            // TODO Auto-generated method stub
-            while (true) {
-				*//*if(!chatMessage.isEmpty()) {
-					 chatBoxController.sendMessage(chatMessage.remove());
-				}*//*
-
-                try {
-                    chatBoxController.sendMessage("hello");
-                    Thread.currentThread().sleep(2000);
-                } catch (IllegalStateException e) {
-                    System.out.println("异常了");
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-    });*/
+    private boolean canSitDown;
 
     public LobbyController() {
 
-    }
-
-    @FXML
-    private void send() {
-        /************* test ********************/
-        chatBoxController.sendMessage(Client.getUser().getNickname()+":"+ inputField.getText());
-        String msg = Encoder.groupMessageRequest(inputField.getText());
-        client.getConnect().send(msg);
-        inputField.clear();
-        sendbtn.setDisable(true);
-        /************* test ********************/
     }
 
     @FXML
@@ -164,6 +91,17 @@ public class LobbyController implements Initializable {
         client.getLobbyStage().close();
         client.gotoLogin();
         /************* release *****************/
+    }
+
+    @FXML
+    private void send() {
+        /************* test ********************/
+        chatBoxController.sendMessage(Client.getUser().getNickname()+":"+ inputField.getText());
+        String msg = Encoder.lobbyMessageRequest(inputField.getText());
+        client.getConnect().send(msg);
+        inputField.clear();
+        sendbtn.setDisable(true);
+        /************* test ********************/
     }
 
     @FXML
@@ -224,19 +162,31 @@ public class LobbyController implements Initializable {
                 JOptionPane.showMessageDialog(null,"您已经在房间中");
                 return;
             }
-            room.setState(Type.RoomState.READY);
-            if (room.getPlayer1() == null || room.getPlayer1().isEmpty()) {
-                room.setPlayer1(Client.getUser().getAccount());
-                Client.updateRoom(room, Type.UpdateRoom.PLAYER1IN);
-            } else {
-                room.setPlayer2(Client.getUser().getAccount());
-                Client.updateRoom(room, Type.UpdateRoom.PLAYER2IN);
+            Connect.send(Encoder.sitdownRequest(room.getId()));
+            Connect.waitForRec(Type.Response.SITDOWN_SUCCESS, Type.Response.SITDOWN_FAILED);
+            if(canSitDown){
+                room.setState(Type.RoomState.READY);
+                if (room.getPlayer1() == null || room.getPlayer1().isEmpty()) {
+                    room.setPlayer1(Client.getUser().getAccount());
+                    Client.updateRoom(room, Type.UpdateRoom.PLAYER1IN);
+                } else {
+                    room.setPlayer2(Client.getUser().getAccount());
+                    Client.updateRoom(room, Type.UpdateRoom.PLAYER2IN);
+                }
+                Client.getUser().setRoom(room.getId());
+                Client.getUser().setState(Type.UserState.READY);
+                Client.updateUser();
+                client.gotoGame(room);
             }
-            Client.getUser().setRoom(room.getId());
-            Client.getUser().setState(Type.UserState.READY);
-            Client.updateUser();
-            client.gotoGame(room);
+            else{
+                JOptionPane.showMessageDialog(null,"房间已经满人");
+                return;
+            }
         }
+    }
+
+    public void setSitDown(boolean canSitDown){
+        this.canSitDown = canSitDown;
     }
 
     @FXML

@@ -29,7 +29,7 @@ public class Connect {
      * private ChatBox chatBox;
      */
     //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "111.151.169.30";
+    private static String IP = "172.20.10.3";
     private static int PORT = 60000;
     public static Socket socket;
     private static OutputStream os;
@@ -172,12 +172,11 @@ public class Connect {
                 System.out.println("receive from server: " + msg);
                 JSONObject jsonObject = Decoder.parseObject(msg);
                 int response_type = jsonObject.getIntValue("response_type");
-                // System.out.println("response_type：" + response_type);
                 switch (response_type) {
-                    case Type.Response.ACCOUNT_CHECK_SUCCESS:
+                    case Type.Response.CHECK_ACCOUNT_SUCCESS:
                         handleAccountCheck(true);
                         break;
-                    case Type.Response.ACCOUNT_CHECK_FAILED:
+                    case Type.Response.CHECK_ACCOUNT_FAILED:
                         handleAccountCheck(false);
                         break;
                     case Type.Response.REGIST_SUCCESS:
@@ -192,36 +191,42 @@ public class Connect {
                     case Type.Response.LOGIN_FAILED:
                         handleLogin(false, jsonObject);
                         break;
-                    case Type.Response.FETCH_ROOM_INFO_SUCCESS:
+                    case Type.Response.FETCH_ROOMS_INFO_SUCCESS:
                         handleFetchRoom(jsonObject);
                         break;
                     case Type.Response.FETCH_PLAYERS_INFO_SUCCESS:
                         handleFetchPlayer(jsonObject);
                         break;
-                    case Type.Response.PLACECHESS_SUCCESS:
-                        handleGameAction(jsonObject);
-                        break;
-                    case Type.Response.GROUP_CHAT_MSG:
+                    case Type.Response.LOBBY_CHAT_MSG:
                         handleChatMessage(jsonObject);
                         break;
-                    case Type.Response.SEND_MSG_SUCCESS:
+                    case Type.Response.ROOM_CHAT_MSG:
                         handlePrivateChatMessage(jsonObject);
                         break;
-                    case Type.Response.READYGO_SUCCESS:
+                    case Type.Response.SITDOWN_SUCCESS:
+                        handleSitDown(true);
+                        break;
+                    case Type.Response.SITDOWN_FAILED:
+                        handleSitDown(false);
+                        break;
+                    case Type.Response.GAME_ACTION:
+                        handleGameAction(jsonObject);
+                        break;
+                    case Type.Response.READY:
                         handleReady(jsonObject);
                         break;
                     case Type.Response.JUDGE:
                         handleJudge();
+                        break;
+                    case Type.Response.GAME_RESULT:
+                        handleGameResult(jsonObject);
                         break;
                     default:
                         break;
                 }
                 responseValues.add(response_type);
                 recv = true;
-                //registerMessage = msg;
-                //chatMessage = msg;
             }
-
         } catch (ConnectException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -235,13 +240,16 @@ public class Connect {
         String msg = jsonObject.getString("message");
         MessageQueue<String> messages = Client.getPrivateChatMessages();
         messages.add(msg);
-        
     }
 
     private void handleChatMessage(JSONObject jsonObject) {
         String string = jsonObject.getString("message");
         MessageQueue<String> messages = Client.getChatMessages();
         messages.add(string);
+    }
+
+    private void handleSitDown(boolean state){
+        Client.getLobbyController().setSitDown(state);
     }
 
     private void handleAccountCheck(boolean state) {
@@ -303,6 +311,16 @@ public class Connect {
                     jsonObject.getIntValue("y"),
                     deadList);
         }
+    }
+
+    private void handleGameResult(JSONObject jsonObject){
+        Client.getGameController().setGameResult(
+                jsonObject.getIntValue("result")
+        );
+        Client.getGameController().setScore(
+                jsonObject.getIntValue("score")
+        );
+        Client.getGameController().showGameResult();
     }
 
     // For C/C++ on Windows.
