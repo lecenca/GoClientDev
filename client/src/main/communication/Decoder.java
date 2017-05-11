@@ -20,10 +20,12 @@ public class Decoder {
     }
 
     public static User parseUser(JSONObject jsonObject){
-        User user = JSON.parseObject(jsonObject.toJSONString(), User.class);
-        return user;
+        return JSON.parseObject(jsonObject.toJSONString(), User.class);
     }
 
+    public static Room parseRoom(JSONObject jsonObject){
+        return JSON.parseObject(jsonObject.toJSONString(), Room.class);
+    }
     public static ArrayList<Room> parseRoomList(JSONObject object) {
         JSONArray rooms = object.getJSONArray("rooms_list");
         return new ArrayList<>(JSON.parseArray(rooms.toJSONString(), Room.class));

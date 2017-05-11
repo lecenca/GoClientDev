@@ -149,20 +149,18 @@ public class User {
         this.room = room;
     }
 
-    public void gameResult(int result, double point){
+    public void updateGameDate(int result, double point){
         if(result == Type.GameResult.WIN){
             ++data.win;
-            data.rank += (int)(point / 3.0);
-            adjustLevel();
         }
         else if(result == Type.GameResult.LOSE){
             ++data.lose;
-            data.rank -= (int)(point / 3.0);
-            adjustLevel();
         }
         else{
             ++data.draw;
         }
+        data.rank += (int)(point / 3.0);
+        adjustLevel();
     }
 
     private void adjustLevel(){

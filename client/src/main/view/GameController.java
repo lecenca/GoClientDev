@@ -78,11 +78,10 @@ public class GameController implements Initializable {
         player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
         /********** release ******/
         turn = Stone.Black;
-        if((room.getPlayer1() != null || room.getPlayer1().isEmpty()) && room.getPlayer1() == Client.getUser().getAccount()){
+        if ((room.getPlayer1() != null || room.getPlayer1().isEmpty()) && room.getPlayer1() == Client.getUser().getAccount()) {
             roomOwner = true;
             boardController.setColor(Stone.White);
-        }
-        else{
+        } else {
             roomOwner = false;
             boardController.setColor(Stone.Black);
         }
@@ -113,7 +112,7 @@ public class GameController implements Initializable {
         return begin;
     }
 
-    public boolean isRoomOwner(){
+    public boolean isRoomOwner() {
         return roomOwner;
     }
 
@@ -223,29 +222,6 @@ public class GameController implements Initializable {
         }
     }
 
-    public void overTime() {
-        if (roomOwner) {
-            ArrayList<Number> point = boardController.getPlayerPoint();
-            double p1 = (double) point.get(0);
-            double p2 = (double) point.get(1);
-            double diff = p1 - p2;
-            boolean lose = player1TimerController.getPeriodTimes() == 0;
-            if (diff < 0.001) {
-                p1 = lose ? -6.0 : 0.0;
-                p2 = lose ? 0.0 : -6.0;
-            } else if (diff > 0) {
-                p1 = lose ? -3.0 : diff;
-                p2 = lose ? diff : -3.0;
-            } else {
-                p1 = lose ? diff : 6.0;
-                p2 = lose ? 6.0 : diff;
-            }
-            String msg = Encoder.gameOverRequest(room.getId(), p1, p2, lose ? Type.GameResult.PLAYER1_OVERTIME : Type.GameResult.PLAYER2_OVERTIME);
-            Connect.send(msg);
-            System.out.println("game result msg: " + msg);
-        }
-    }
-
     @FXML
     public boolean isShowStep() {
         return step.isSelected();
@@ -260,6 +236,29 @@ public class GameController implements Initializable {
         }
     }
 
+    public void overTime() {
+        if (roomOwner) {
+            ArrayList<Number> point = boardController.getPlayerPoint();
+            double p1 = (double) point.get(0);
+            double p2 = (double) point.get(1);
+            double diff = p1 - p2;
+            boolean lose = player1TimerController.getPeriodTimes() == 0;
+            if (diff < 0.001) {
+                p1 = lose ? -6.0 : 6.0;
+                p2 = lose ? 6.0 : -6.0;
+            } else if (diff > 0) {
+                p1 = lose ? -3.0 : 6.0;
+                p2 = lose ? 6.0 : -3.0;
+            } else {
+                p1 = lose ? diff - 6.0 : -diff;
+                p2 = lose ? -diff : diff - 6.0;
+            }
+            String msg = Encoder.gameOverRequest(room.getId(), p1, p2, lose ? Type.GameResult.PLAYER1_OVERTIME : Type.GameResult.PLAYER2_OVERTIME);
+            Connect.send(msg);
+            System.out.println("game result msg: " + msg);
+        }
+    }
+
     @FXML
     private void surrender() {
         ArrayList<Number> point = boardController.getPlayerPoint();
@@ -267,16 +266,36 @@ public class GameController implements Initializable {
         double p2 = (double) point.get(1);
         double diff = p1 - p2;
         if (diff < 0.001) {
-            p1 = roomOwner ? -6.0 : 0.0;
-            p2 = roomOwner ? 0.0 : -6.0;
+            p1 = roomOwner ? -9.0 : 6.0;
+            p2 = roomOwner ? 6.0 : -9.0;
         } else if (diff > 0) {
-            p1 = roomOwner ? -3.0 : diff;
-            p2 = roomOwner ? diff : -3.0;
+            p1 = roomOwner ? -6.0 : 6.0;
+            p2 = roomOwner ? 6.0 : -6.0;
         } else {
-            p1 = roomOwner ? diff : 6.0;
-            p2 = roomOwner ? 6.0 : diff;
+            p1 = roomOwner ? diff - 9.0 : -diff;
+            p2 = roomOwner ? -diff : diff - 9.0;
         }
         String msg = Encoder.gameOverRequest(room.getId(), p1, p2, roomOwner ? Type.GameResult.PLAYER1_SURRENDER : Type.GameResult.PLAYER2_SURRENDER);
+        Connect.send(msg);
+        System.out.println("game result msg: " + msg);
+    }
+
+    public void escape() {
+        ArrayList<Number> point = boardController.getPlayerPoint();
+        double p1 = (double) point.get(0);
+        double p2 = (double) point.get(1);
+        double diff = p1 - p2;
+        if (diff < 0.001) {
+            p1 = roomOwner ? -15.0 : 6.0;
+            p2 = roomOwner ? 6.0 : -15.0;
+        } else if (diff > 0) {
+            p1 = roomOwner ? -12.0 : 6.0;
+            p2 = roomOwner ? 6.0 : -12.0;
+        } else {
+            p1 = roomOwner ? diff - 15.0 : -diff;
+            p2 = roomOwner ? -diff : diff - 15.0;
+        }
+        String msg = Encoder.gameOverRequest(room.getId(), p1, p2, roomOwner ? Type.GameResult.PLAYER1_ESCAPE : Type.GameResult.PLAYER2_ESCAPE);
         Connect.send(msg);
         System.out.println("game result msg: " + msg);
     }
@@ -300,16 +319,22 @@ public class GameController implements Initializable {
         }
     }
 
-    public void setGameResult(int result){
+    public void setGameResult(int result) {
         this.gameResult = result;
     }
 
-    public void setScore(int score){
+    public void setScore(int score) {
         this.score = score;
     }
 
-    public void showGameResult(){
-
+    public void showGameResult() {
+        if(roomOwner){
+            if(gameResult == Type.GameResult.PLAYER1_ESCAPE){
+                Client.getUser().updateGameDate(Type.GameResult.LOSE, score);
+                Client.updateUser();
+                return;
+            }
+        }
     }
 
     // chat windows
@@ -326,7 +351,7 @@ public class GameController implements Initializable {
     @FXML
     private void chat() {
         chatBoxController.sendMessage(Client.getUser().getNickname() + ":" + inputField.getText());
-        String msg = Encoder.roomMessageRequest(room.getId(),inputField.getText());
+        String msg = Encoder.roomMessageRequest(room.getId(), inputField.getText());
         Connect.send(msg);
         inputField.clear();
         send.setDisable(true);
@@ -334,5 +359,5 @@ public class GameController implements Initializable {
 
     public ChatBox getChatBoxController() {
         return chatBoxController;
-    } 
+    }
 }
