@@ -338,8 +338,8 @@ public class Client extends Application {
         primaryStage.setTitle("MicroOnlineGo - 登录");
         primaryStage.setResizable(false);
         gotoLogin();
-        keepAliveThread.setDaemon(true);
-        keepAliveThread.start();
+        /*keepAliveThread.setDaemon(true);
+        keepAliveThread.start();*/
         if (Connect.hasConnect()) {
             receiveThread.setDaemon(true);
             receiveThread.start();
