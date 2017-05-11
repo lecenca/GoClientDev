@@ -42,15 +42,11 @@ public class Board {
     }
 
     // Checks if the stones in color can be placed in the Point p.
-    public int action(Point p, int color) {
-        return action(p.x, p.y, color);
-    }
-
     public int action(int x, int y, int color) {
         if (stones[x][y].color != Stone.None) {
             return Type.Action.INVALID;
         }
-        return Core.action(this, x, y, color);
+        return Core.action(x, y, color);
     }
 
     // Adds a stone at the Point (x, y)
@@ -62,7 +58,7 @@ public class Board {
         initStone(stones[x][y]);
         update(stones[x][y]);
         System.out.println("Board add stone(" + x + "," + y + ") in chain " + chainMap.get(stones[x][y])
-                + " has libertyMap " + Core.liberty(this, stones[x][y]));
+                + " has libertyMap " + Core.liberty(stones[x][y]));
     }
 
     // Removes the stones that were dead.
@@ -97,18 +93,6 @@ public class Board {
     public static void addDead(ArrayList<Stone> list) {
         for (Stone stone : list) {
             dead.add(chainMap.get(stones[stone.x][stone.y]));
-        }
-    }
-
-    // Sets some point that look like ko.
-    public static void setKoPoint(int x, int y, ArrayList<Stone> list) {
-        if (stonesMap.get(chainMap.get(list.get(0))).size() == 1) {
-            maybeKo[0].x = x;
-            maybeKo[0].y = y;
-            maybeKo[1].x = list.get(0).x;
-            maybeKo[1].y = list.get(0).y;
-            maybeKo[1].color = list.get(0).color;
-            maybeKo[0].color = -maybeKo[1].color;
         }
     }
 
