@@ -11,10 +11,10 @@ public class Room {
         public int period;      // 读秒时间 [15,20,30,40,50,60]（单位：秒）
         public int periodTimes; // 读秒次数 [1,3,5,7,10]
         public Config() {
-            this.komi = Type.KOMI.SIX_FIVE;
-            this.mainTime = 20;
-            this.period = 30;
-            this.periodTimes = 3;
+            this.komi = 0;
+            this.mainTime = 0;
+            this.period = 0;
+            this.periodTimes = 0;
         }
     }
 

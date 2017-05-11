@@ -122,11 +122,8 @@ public class ChessBoard implements Initializable {
         // judge enable
         if (getStep() >= 100) {
             Client.getGameController().judgeEnable();
-            if (getStep() >= 300) {
-                Client.getGameController().judgeForcedEnable();
-                if (getStep() >= 360) {
-                    Client.getGameController().gameOver();
-                }
+            if (getStep() >= 360) {
+                Client.getGameController().gameOver();
             }
         }
     }

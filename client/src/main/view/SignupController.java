@@ -18,9 +18,6 @@ import src.main.communication.Encoder;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Created by touhoudoge on 2017/3/23.
- */
 public class SignupController implements Initializable {
 
     private Client client;
@@ -169,7 +166,7 @@ public class SignupController implements Initializable {
         String account = this.account.getText();
         String json = Encoder.chechAccountRequest(account);
         Connect.send(json);
-        Connect.waitForRec(Type.Response.ACCOUNT_CHECK_SUCCESS, Type.Response.ACCOUNT_CHECK_FAILED);
+        Connect.waitForRec(Type.Response.CHECK_ACCOUNT_SUCCESS, Type.Response.CHECK_ACCOUNT_FAILED);
         return accountCheckSuccess;
     }
 
@@ -316,7 +313,6 @@ public class SignupController implements Initializable {
 
     @FXML
     private void backToLogin() {
-        //hasCheckedAccount = true;
         client.getsignupStage().close();
         client.gotoLogin();
     }

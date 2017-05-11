@@ -21,6 +21,9 @@ public class GameController implements Initializable {
     private boolean begin = false;
     private int turn;
 
+    private int gameResult;
+    private int score;
+
     // Room
     @FXML
     private Label player1Name;
@@ -110,6 +113,10 @@ public class GameController implements Initializable {
         return begin;
     }
 
+    public boolean isRoomOwner(){
+        return roomOwner;
+    }
+
     public int getTurn() {
         return turn;
     }
@@ -190,11 +197,11 @@ public class GameController implements Initializable {
                 Connect.send(msg);
                 System.out.println("game result msg: " + msg);
             } else if (diff > 0) {
-                String msg = Encoder.gameOverRequest(room.getId(), diff, diff, Type.GameResult.WIN);
+                String msg = Encoder.gameOverRequest(room.getId(), diff, -diff, Type.GameResult.WIN);
                 Connect.send(msg);
                 System.out.println("game result msg: " + msg);
             } else {
-                String msg = Encoder.gameOverRequest(room.getId(), -diff, -diff, Type.GameResult.LOSE);
+                String msg = Encoder.gameOverRequest(room.getId(), diff, -diff, Type.GameResult.LOSE);
                 Connect.send(msg);
                 System.out.println("game result msg: " + msg);
             }
@@ -224,14 +231,14 @@ public class GameController implements Initializable {
             double diff = p1 - p2;
             boolean lose = player1TimerController.getPeriodTimes() == 0;
             if (diff < 0.001) {
-                p1 = lose ? 6.0 : 0.0;
-                p2 = lose ? 0.0 : 6.0;
+                p1 = lose ? -6.0 : 0.0;
+                p2 = lose ? 0.0 : -6.0;
             } else if (diff > 0) {
-                p1 = lose ? 3.0 : diff;
-                p2 = lose ? diff : 3.0;
+                p1 = lose ? -3.0 : diff;
+                p2 = lose ? diff : -3.0;
             } else {
-                p1 = lose ? -diff : 6.0;
-                p2 = lose ? 6.0 : -diff;
+                p1 = lose ? diff : 6.0;
+                p2 = lose ? 6.0 : diff;
             }
             String msg = Encoder.gameOverRequest(room.getId(), p1, p2, lose ? Type.GameResult.PLAYER1_OVERTIME : Type.GameResult.PLAYER2_OVERTIME);
             Connect.send(msg);
@@ -260,14 +267,14 @@ public class GameController implements Initializable {
         double p2 = (double) point.get(1);
         double diff = p1 - p2;
         if (diff < 0.001) {
-            p1 = roomOwner ? 6.0 : 0.0;
-            p2 = roomOwner ? 0.0 : 6.0;
+            p1 = roomOwner ? -6.0 : 0.0;
+            p2 = roomOwner ? 0.0 : -6.0;
         } else if (diff > 0) {
-            p1 = roomOwner ? 3.0 : diff;
-            p2 = roomOwner ? diff : 3.0;
+            p1 = roomOwner ? -3.0 : diff;
+            p2 = roomOwner ? diff : -3.0;
         } else {
-            p1 = roomOwner ? -diff : 6.0;
-            p2 = roomOwner ? 6.0 : -diff;
+            p1 = roomOwner ? diff : 6.0;
+            p2 = roomOwner ? 6.0 : diff;
         }
         String msg = Encoder.gameOverRequest(room.getId(), p1, p2, roomOwner ? Type.GameResult.PLAYER1_SURRENDER : Type.GameResult.PLAYER2_SURRENDER);
         Connect.send(msg);
@@ -286,17 +293,23 @@ public class GameController implements Initializable {
         judge.setDisable(false);
     }
 
-    @FXML
-    public void judgeForcedEnable() {
-        judge.setText("强制判子");
-        judge.setDisable(false);
-    }
-
     public void judgeFromOpponent() {
         int res = JOptionPane.showConfirmDialog(null, "对方请求提前判子\n请问您是否同意？", "请求", JOptionPane.YES_NO_OPTION);
         if (res == JOptionPane.YES_OPTION) {
             gameOver();
         }
+    }
+
+    public void setGameResult(int result){
+        this.gameResult = result;
+    }
+
+    public void setScore(int score){
+        this.score = score;
+    }
+
+    public void showGameResult(){
+
     }
 
     // chat windows
@@ -313,7 +326,7 @@ public class GameController implements Initializable {
     @FXML
     private void chat() {
         chatBoxController.sendMessage(Client.getUser().getNickname() + ":" + inputField.getText());
-        String msg = Encoder.sendMessageRequest(room.getId(),inputField.getText());
+        String msg = Encoder.roomMessageRequest(room.getId(),inputField.getText());
         Connect.send(msg);
         inputField.clear();
         send.setDisable(true);
