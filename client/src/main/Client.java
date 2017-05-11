@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Client extends Application {
+    public static boolean offlineMode;
     private UserComparator comparator = new UserComparator();
     private Stage primaryStage;
     private Stage createRoomStage;
@@ -280,6 +281,7 @@ public class Client extends Application {
         signupStage.setResizable(false);
 
         lobbyStage = new Stage();
+        lobbyStage.setTitle("MicroOnlineGo - 大厅");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/Lobby.fxml"));
         Pane lobbyPane = null;
@@ -309,6 +311,18 @@ public class Client extends Application {
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
+                if (offlineMode) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("提示");
+                    alert.setHeaderText("您正在游戏中，确认要退出游戏吗？");
+                    alert.initOwner(gameStage);
+                    alert.initModality(Modality.WINDOW_MODAL);
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.CANCEL) {
+                        event.consume();
+                    }
+                    return;
+                }
                 if (getUser().getState() == Type.UserState.GAMING) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("提示");
@@ -319,10 +333,18 @@ public class Client extends Application {
                     if (result.get() == ButtonType.OK) {
                         gameController.escape();
                         gameController.clear();
-
+                        Room room = roomsMap.get(user.getRoom());
+                        room.setState(Type.RoomState.READY);
+                        if (room.getPlayer1() == user.getAccount()) {
+                            room.setPlayer1("");
+                            updateRoom(room, Type.UpdateRoom.PLAYER1OUT);
+                        } else {
+                            room.setPlayer2("");
+                            updateRoom(room, Type.UpdateRoom.PLAYER2OUT);
+                        }
                         user.setState(Type.UserState.IDLE);
                         user.setRoom(0);
-
+                        updateUser();
                     } else {
                         event.consume();
                         return;
@@ -396,6 +418,7 @@ public class Client extends Application {
     public void gotoGame(Room room) {
         gameController.setRoom(room);
         gameController.getChatBoxController().setItems(privateMessageData);
+        gameStage.setTitle("MicroOnlineGo - 房间 " + Integer.toString(room.getId()) + " " + room.getName());
         gameStage.show();
     }
 
@@ -449,22 +472,30 @@ public class Client extends Application {
         System.out.println("update room msg: " + msg);
     }
 
-    public static void adjustPlayer(User player){
-        // TODO: 判断新的还是修改属性
+    public static void adjustPlayer(User player) {
+        if (playerData.contains(player)) {
+            // TODO: 如何修改现有player的属性
+        } else {
+            playerData.add(player);
+        }
         playersMap.put(player.getAccount(), player);
     }
 
-    public static void removePlayer(String account){
+    public static void removePlayer(String account) {
         playerData.remove(playersMap.get(account));
         playersMap.remove(account);
     }
 
-    public static void adjustRoom(Room room){
-        // TODO:
+    public static void adjustRoom(Room room) {
+        if (roomData.contains(room)) {
+            // TODO: 如何修改现有 room 的属性
+        } else {
+            roomData.add(room);
+        }
         roomsMap.put(room.getId(), room);
     }
 
-    public static void removeRoom(int id){
+    public static void removeRoom(int id) {
         roomData.remove(roomsMap.get(id));
         roomsMap.remove(id);
     }

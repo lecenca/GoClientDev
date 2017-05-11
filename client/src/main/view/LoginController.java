@@ -1,5 +1,6 @@
 package src.main.view;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -28,6 +29,8 @@ public class LoginController implements Initializable {
     private Client client;
 
     @FXML
+    private Button offlineMode;
+    @FXML
     private TextField account;
     @FXML
     private PasswordField password;
@@ -42,6 +45,27 @@ public class LoginController implements Initializable {
 
     public static boolean correct;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        emptyAccountTips.setVisible(false);
+        emptyPasswordTips.setVisible(false);
+        invaildMessageTips.setVisible(false);
+        Image image = new Image("resources/image/bg001.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(500, 285, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        loginPane.setBackground(background);
+    }
+
+    @FXML
+    private void offline(){
+        Client.offlineMode = true;
+        User player1 = new User("1","玩家一");
+        User player2 = new User("2","玩家二");
+        Client.setUser(player1);
+        client.gotoCreateRoom();
+    }
+
     @FXML
     private void login() {
         /********** test **********/
@@ -54,6 +78,7 @@ public class LoginController implements Initializable {
 
         /********** release **********/
         if (checkValid()) {
+            Client.offlineMode = false;
             Client.getLobbyController().addPlayer(Client.getUser());
             Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
             client.getPrimaryStage().close();
@@ -127,16 +152,6 @@ public class LoginController implements Initializable {
         this.client = client;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        emptyAccountTips.setVisible(false);
-        emptyPasswordTips.setVisible(false);
-        invaildMessageTips.setVisible(false);
-        Image image = new Image("resources/image/bg001.jpg");
-        BackgroundSize backgroundSize = new BackgroundSize(500, 285, true, true, true, false);
-        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        Background background = new Background(backgroundImage);
-        loginPane.setBackground(background);
-    }
+
 
 }
