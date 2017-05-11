@@ -101,11 +101,11 @@ public class Type {
             WIN = 0,
             LOSE = 1,
             DRAW = 2,
-            PLAYER1_OVERTIME= 3,
-            PLAYER2_OVERTIME = 4,
-            PLAYER1_SURRENDER = 5,
-            PLAYER2_SURRENDER = 6,
-            PLAYER1_ESCAPE = 7,
-            PLAYER2_ESCAPE = 8;
+            PLAYER1_OVERTIME= 16,
+            PLAYER2_OVERTIME = 17,
+            PLAYER1_SURRENDER = 32,
+            PLAYER2_SURRENDER = 33,
+            PLAYER1_ESCAPE = 64,
+            PLAYER2_ESCAPE = 65;
     }
 }

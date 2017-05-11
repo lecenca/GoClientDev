@@ -105,5 +105,10 @@
          </children>
       </VBox>
       <ToggleButton fx:id="step" layoutX="693.0" layoutY="363.0" mnemonicParsing="false" onAction="#showStep" text="步数" />
+      <Label fx:id="gameResultShow" alignment="CENTER" layoutX="96.0" layoutY="221.0" prefHeight="116.0" prefWidth="448.0" text="这里显示游戏结果！">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
