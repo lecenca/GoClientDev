@@ -288,8 +288,10 @@ public class Client extends Application {
         receiveThread = connect.getReceiveThread();
         /*****************************/
         signupStage = new Stage();
+        signupStage.setTitle("MicroOnlineGo - 注册");
+        signupStage.setResizable(false);
+
         lobbyStage = new Stage();
-        gameStage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/Lobby.fxml"));
         Pane lobbyPane = null;
@@ -303,6 +305,8 @@ public class Client extends Application {
         lobbyController = loader.getController();
         lobbyController.setClient(this);
         lobbyController.setAssociation();
+
+        gameStage = new Stage();
         FXMLLoader loader2 = new FXMLLoader();
         loader2.setLocation(getClass().getResource("view/Game.fxml"));
         Pane gamePane = null;
@@ -316,7 +320,6 @@ public class Client extends Application {
         gameController = loader2.getController();
         gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
-
             public void handle(WindowEvent event) {
                 /*****************************************************/
                 /*
@@ -370,19 +373,15 @@ public class Client extends Application {
                 getUser().setState(Type.UserState.IDLE);
                 updateUser();
                 gameController.clear();
-
             }
-
-
         });
-        privateMessageData.add("good night");
-        privateMessageData.add("Do you have dinner?");
     }
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("MicroOnlineGo");
+        primaryStage.setTitle("MicroOnlineGo - 登录");
+        primaryStage.setResizable(false);
         gotoLogin();
         keepAliveThread.setDaemon(true);
         keepAliveThread.start();
@@ -407,24 +406,14 @@ public class Client extends Application {
         loginController.resetPassword();
     }
 
-    public void gotoLobby() {
-        lobbyStage.show();
-        /*
-         * Thread listenPlayerList = lobbyController.getListenPlayerList();
-         * listenPlayerList.setDaemon(true); listenPlayerList.start(); Thread
-         * listenRoomList = lobbyController.getListenRoomList();
-         * listenRoomList.setDaemon(true); listenRoomList.start();
-         */
-        //Thread chatThread = lobbyController.getChatThread();
-        /*
-         * chatThread.setDaemon(true); chatThread.start();
-         */
-        lobbyController.fetchLobbyInfo();
-    }
-
     public void gotoSignup() {
         signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
         signupController.setClient(this);
+    }
+
+    public void gotoLobby() {
+        lobbyStage.show();
+        lobbyController.fetchLobbyInfo();
     }
 
     public void backToLobby() {
@@ -445,7 +434,7 @@ public class Client extends Application {
             e.printStackTrace();
         }
         createRoomStage.show();
-        CreateRoomController createRoomController = (CreateRoomController) loader.getController();
+        CreateRoomController createRoomController = loader.getController();
         createRoomController.setClient(this);
     }
 
@@ -492,10 +481,9 @@ public class Client extends Application {
             return (Initializable) loader.getController();
         }
     }
-    // get the connection
 
     static public void updateUser(){
-        String msg = Encoder.updatePlayerRequest(user);
+        String msg = Encoder.updatePlayerRequest();
         Connect.send(msg);
         System.out.println("update player msg: " + msg);
     }
