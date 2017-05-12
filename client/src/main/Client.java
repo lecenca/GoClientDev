@@ -248,8 +248,6 @@ public class Client extends Application {
 
     public Client() {
         playerData.sort(comparator);
-        /********* 这是要的 ***********/
-        /*****************************/
         signupStage = new Stage();
         signupStage.setTitle("MicroOnlineGo - 注册");
         signupStage.setResizable(false);
