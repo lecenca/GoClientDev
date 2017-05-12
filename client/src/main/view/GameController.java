@@ -1,9 +1,12 @@
 package src.main.view;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import src.main.*;
@@ -115,6 +118,21 @@ public class GameController implements Initializable {
         BackgroundImage backgroundImage3 = new BackgroundImage(image3, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize3);
         Background background3 = new Background(backgroundImage3);
         scorePane.setBackground(background3);
+        inputField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                String text = inputField.getText();
+                if(text == null || "".equals(text) || text.length() == 0) {
+                    send.setDisable(true);
+                }
+                else {
+                    send.setDisable(false);
+                    if(event.getCode() == KeyCode.ENTER)
+                        chat();
+                } 
+            }
+        });
     }
 
     public void setRoom(Room room) {
@@ -492,7 +510,7 @@ public class GameController implements Initializable {
     }
 
     // chat windows
-    @FXML
+    /*@FXML
     private void hasText() {
         String text = inputField.getText();
         if (text == null || "".equals(text) || text.isEmpty()) {
@@ -502,7 +520,7 @@ public class GameController implements Initializable {
             send.setDisable(false);
             
         }
-    }
+    }*/
 
     @FXML
     private void chat() {
