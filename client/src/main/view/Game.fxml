@@ -39,8 +39,6 @@
          <font>
             <Font size="15.0" />
          </font></Button>
-      <fx:include fx:id="player1Timer" layoutX="661.0" layoutY="286.0" prefHeight="46.0" prefWidth="154.0" source="Timer.fxml" />
-      <fx:include fx:id="player2Timer" layoutX="926.0" layoutY="286.0" prefHeight="46.0" prefWidth="154.0" source="Timer.fxml" />
       <HBox fx:id="playerPane" layoutX="673.0" layoutY="21.0" prefHeight="200.0" prefWidth="371.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="124.0">
@@ -112,16 +110,18 @@
       </ToggleButton>
       <AnchorPane fx:id="scorePane" layoutX="610.0" layoutY="238.0" prefHeight="123.0" prefWidth="531.0">
          <children>
-            <Label fx:id="hhhh" layoutX="57.0" layoutY="39.0" prefHeight="46.0" prefWidth="154.0" text="00 分 00 秒">
+            <Label fx:id="hhhh" layoutX="57.0" layoutY="39.0" prefHeight="46.0" prefWidth="154.0" text="00 分 00 秒" visible="false">
                <font>
                   <Font size="28.0" />
                </font>
             </Label>
-            <Label fx:id="uuuuuuuuuuuu" layoutX="330.0" layoutY="39.0" prefHeight="46.0" prefWidth="154.0" text="00 分 00 秒">
+            <Label fx:id="uuuuuuuuuuuu" layoutX="330.0" layoutY="39.0" prefHeight="46.0" prefWidth="154.0" text="00 分 00 秒" visible="false">
                <font>
                   <Font size="28.0" />
                </font>
             </Label>
+            <fx:include fx:id="player1Timer" layoutX="57.0" layoutY="39.0" prefHeight="46.0" prefWidth="154.0" source="Timer.fxml" />
+            <fx:include fx:id="player2Timer" layoutX="330.0" layoutY="39.0" prefHeight="46.0" prefWidth="154.0" source="Timer.fxml" />
             <Label layoutX="211.0" layoutY="29.0" prefHeight="30.0" prefWidth="30.0" text="0次">
                <font>
                   <Font size="15.0" />
