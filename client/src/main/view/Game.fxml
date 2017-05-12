@@ -173,5 +173,6 @@
          </children>
       </AnchorPane>
       <ListView layoutX="641.0" layoutY="433.0" prefHeight="218.0" prefWidth="500.0" visible="false" />
+      <Slider fx:id="volumeSlider" layoutX="14.0" layoutY="168.0" max="1.5" orientation="VERTICAL" prefHeight="431.0" prefWidth="14.0" value="1.5" />
    </children>
 </AnchorPane>

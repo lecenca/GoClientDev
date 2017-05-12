@@ -1,14 +1,21 @@
 package src.main.view;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import src.main.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,6 +27,7 @@ import src.main.communication.Encoder;
 import src.util.MessageQueue;
 
 import javax.swing.*;
+import java.awt.*;
 import java.net.URL;
 import java.util.*;
 
@@ -67,11 +75,15 @@ public class LobbyController implements Initializable {
     @FXML
     private TableColumn<User, String> playerStateCol;
     @FXML
+    private Slider volumeSlider;
+    @FXML
     private AnchorPane lobbyPane;
     @FXML
     private ChatBox chatBoxController;
     private ObservableList<Room> roomData = FXCollections.observableArrayList();
     private ObservableList<User> playerData = FXCollections.observableArrayList();
+
+    private MediaPlayer music;
 
     /*
      * private static ArrayList<Room> rooms; private static ArrayList<User>
@@ -83,7 +95,12 @@ public class LobbyController implements Initializable {
 
     private boolean canSitDown;
     public LobbyController() {
-        
+        music = new MediaPlayer(new Media(getClass().getResource("/resources/music/testMusic.mp3").toExternalForm()));
+        music.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                music.seek(Duration.ZERO);
+            }
+        });
     }
 
     @FXML
@@ -96,6 +113,8 @@ public class LobbyController implements Initializable {
         client.getRoomData().clear();
         client.playersMap.clear();
         client.roomsMap.clear();
+
+        music.stop();
         /************* release *****************/
     }
 
@@ -217,6 +236,14 @@ public class LobbyController implements Initializable {
         Connect.send(Encoder.fetchPlayersRequest());
     }
 
+    public void playMusic(){
+        music.play();
+    }
+
+    public void stopMusic(){
+        music.stop();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Image image = new Image("resources/image/bg004.jpg",1149,660,false,true);
@@ -237,6 +264,17 @@ public class LobbyController implements Initializable {
                     if(event.getCode() == KeyCode.ENTER)
                         send();
                 } 
+            }
+        });
+
+        volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        music.setVolume(volumeSlider.getValue());
+                    }
+                });
             }
         });
     }
