@@ -17,7 +17,7 @@
          <font>
             <Font size="15.0" />
          </font></Button>
-      <TextField fx:id="inputField" layoutX="25.0" layoutY="590.0" prefHeight="37.0" prefWidth="600.0">
+      <TextField fx:id="inputField" layoutX="25.0" layoutY="590.0" prefHeight="37.0" prefWidth="600.0" opacity="0.75">
          <font>
             <Font size="15.0" />
          </font></TextField>
@@ -30,7 +30,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <fx:include fx:id="chatBox" layoutX="25.0" layoutY="380" prefHeight="210" prefWidth="680.0" source="ChatBox.fxml" />
+      <fx:include fx:id="chatBox" layoutX="25.0" layoutY="380" prefHeight="210" prefWidth="680.0" opacity="0.75" source="ChatBox.fxml" />
       <Button fx:id="autoMatch" layoutX="726.0" layoutY="577.0" mnemonicParsing="false" onMouseClicked="#fastMatch" prefHeight="51.0" prefWidth="128.0" text="快速匹配">
          <font>
             <Font size="15.0" />
