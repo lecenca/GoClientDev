@@ -50,14 +50,13 @@ public class Timer implements Initializable {
                 if(periodTimes ==0){
                     Client.getGameController().overTime();
                 }else{
-                    /*
-                    tempPeriod = period;
-                    displaySecond(tempPeriod);
-                    periodTimeline.playFromStart();
-                    */
-
                     this.pause();
-                    chessBoard.changeTurn();
+                    if(Client.offlineMode){
+                        chessBoard.changeTurn();
+                    }
+                    else {
+                        Client.getGameController().takeTurns();
+                    }
                     otherTimer.start();
                 }
             }

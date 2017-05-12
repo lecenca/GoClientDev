@@ -237,19 +237,21 @@ public class Client extends Application {
             @Override
             public void handle(WindowEvent event) {
                 if (offlineMode) {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("提示");
-                    alert.setHeaderText("您正在游戏中，确认要退出游戏吗？");
-                    alert.initOwner(gameStage);
-                    alert.initModality(Modality.WINDOW_MODAL);
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.get() == ButtonType.CANCEL) {
-                        event.consume();
+                    if(gameController.isBegin()){
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("提示");
+                        alert.setHeaderText("您正在游戏中，确认要退出游戏吗？");
+                        alert.initOwner(gameStage);
+                        alert.initModality(Modality.WINDOW_MODAL);
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.get() == ButtonType.CANCEL) {
+                            event.consume();
+                        }
                     }
                     gameController.clear();
                     return;
                 }
-                if (getUser().getState() == Type.UserState.GAMING) {
+                if (user.getState() == Type.UserState.GAMING) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("提示");
                     alert.setHeaderText("您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分");
@@ -259,23 +261,22 @@ public class Client extends Application {
                     if (result.get() == ButtonType.OK) {
                         gameController.escape();
                         gameController.clear();
-                        Room room = roomsMap.get(user.getRoom());
-                        room.setState(Type.RoomState.READY);
-                        if (room.getPlayer1() == user.getAccount()) {
-                            room.setPlayer1("");
-                            updateRoom(room, Type.UpdateRoom.PLAYER1OUT);
-                        } else {
-                            room.setPlayer2("");
-                            updateRoom(room, Type.UpdateRoom.PLAYER2OUT);
-                        }
-                        user.setState(Type.UserState.IDLE);
-                        user.setRoom(0);
-                        updateUser();
+                        gameController.leaveRoom();
                     } else {
                         event.consume();
                         return;
                     }
                 }
+                else if(roomsMap.get(user.getRoom()).playerNum() == 2){
+                    gameController.leaveRoom();
+                }
+                else{
+                    Room room = roomsMap.get(user.getRoom());
+                    updateRoom(room, Type.UpdateRoom.DESTROY);
+                }
+                user.setState(Type.UserState.IDLE);
+                user.setRoom(0);
+                updateUser();
             }
         });
     }
