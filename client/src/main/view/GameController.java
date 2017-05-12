@@ -2,7 +2,10 @@ package src.main.view;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import src.main.*;
 import src.main.communication.Connect;
@@ -26,6 +29,13 @@ public class GameController implements Initializable {
     private int score;
 
     // Room
+    @FXML
+    private AnchorPane gamePane;
+    @FXML
+    private HBox playerPane;
+    @FXML
+    private AnchorPane scorePane;
+
     @FXML
     private Label player1Name;
     @FXML
@@ -74,6 +84,24 @@ public class GameController implements Initializable {
         begin = false;
         turn = Stone.Black;
         boardController.setTimer(player1TimerController, player2TimerController);
+
+        Image image = new Image("resources/image/bg004.jpg",1161,700,false,true);
+        BackgroundSize backgroundSize = new BackgroundSize(1161, 700, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        gamePane.setBackground(background);
+
+        Image image2 = new Image("resources/image/bg009.jpg",371,200,false,true);
+        BackgroundSize backgroundSize2 = new BackgroundSize(371, 200, true, true, true, false);
+        BackgroundImage backgroundImage2 = new BackgroundImage(image2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize2);
+        Background background2 = new Background(backgroundImage2);
+        playerPane.setBackground(background2);
+
+        Image image3 = new Image("resources/image/bg012.jpg",484,123,false,true);
+        BackgroundSize backgroundSize3 = new BackgroundSize(484, 123, true, true, true, false);
+        BackgroundImage backgroundImage3 = new BackgroundImage(image3, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize3);
+        Background background3 = new Background(backgroundImage3);
+        scorePane.setBackground(background3);
     }
 
     public void setRoom(Room room) {
