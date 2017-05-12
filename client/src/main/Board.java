@@ -1,5 +1,7 @@
 package src.main;
 
+import javafx.scene.control.Label;
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +18,12 @@ public class Board {
     public static Stone[] maybeKo = new Stone[2];
     public static int step = 1;
 
+    /******************/
+    private static int deadNum1 = 0;
+    private static int deadNum2 = 0;
+    private static Label player1Kill;
+    private static Label player2Kill;
+    /******************/
     private static boolean[] used = new boolean[361];
 
     public Board() {
@@ -39,6 +47,10 @@ public class Board {
         libertyMap.clear();
         dead.clear();
         step = 1;
+        /******/
+        deadNum1 = 0;
+        deadNum2 = 0;
+        /********/
     }
 
     // Checks if the stones in color can be placed in the Point p.
@@ -63,6 +75,20 @@ public class Board {
 
     // Removes the stones that were dead.
     public void remove() {
+        /*******************************************/
+
+        if(Client.getGameController().getTurn()==Stone.Black){
+            for(int chain: dead){
+                deadNum2 += stonesMap.get(chain).size();
+            }
+            player1Kill.setText(String.valueOf(deadNum2)+"子");
+        }else {
+            for(int chain: dead){
+                deadNum1 += stonesMap.get(chain).size();
+            }
+            player2Kill.setText(String.valueOf(deadNum1)+"子");
+        }
+        /*******************************************/
         for (int chain : dead) {
             HashSet<Stone> ss = stonesMap.get(chain);
             for (Stone s : ss) {
@@ -177,5 +203,10 @@ public class Board {
 
     private void extendLiberty(int chain, Point point) {
         libertyMap.get(chain).add(point);
+    }
+
+    public static void setPlayerKill(Label player1Kill,Label player2Kill){
+        Board.player1Kill = player1Kill;
+        Board.player2Kill = player2Kill;
     }
 }
