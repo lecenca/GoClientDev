@@ -29,7 +29,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -271,7 +270,7 @@ public class Client extends Application {
                         return;
                     }
                 }
-                else if(roomsMap.get(user.getRoom()).playerNum() == 2){
+                else if(roomsMap.get(user.getRoom()).playerNumber() == 2){
                     gameController.leaveRoom();
                 }
                 else{
