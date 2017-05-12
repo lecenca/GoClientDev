@@ -8,7 +8,10 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import src.main.*;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
@@ -32,6 +35,8 @@ public class GameController implements Initializable {
 
     private double player1Point;
     private double player2Point;
+
+    private MediaPlayer music;
 
     // Room
     @FXML
@@ -86,6 +91,15 @@ public class GameController implements Initializable {
 
     @FXML
     private Label gameResultShow;
+
+    public GameController(){
+        music =new MediaPlayer(new Media(getClass().getResource("/resources/music/testMusic.mp3").toExternalForm()));
+        music.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                music.seek(Duration.ZERO);
+            }
+        });
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -191,10 +205,22 @@ public class GameController implements Initializable {
         chatBoxController.clear();
         player1TimerController.stop();
         player2TimerController.stop();
+
+        /**********/
+        player1Kill.setText("0子");
+        player2Kill.setText("0子");
+        music.stop();
+        /*********/
+
     }
 
     @FXML
     private void ready() {
+
+        /***********/
+        music.play();
+        /***********/
+
         if (Client.offlineMode) {
             /*************** test *************/
             gameResultShow.setVisible(false);
