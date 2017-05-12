@@ -287,4 +287,8 @@ public class LobbyController implements Initializable {
         return chatMessage;
     }
 
+    public ChatBox getChatBoxController() {
+        return chatBoxController;
+    }
+    
 }

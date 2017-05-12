@@ -154,8 +154,10 @@ public class Client extends Application {
                             @Override
                             public void run() {
                                 // TODO Auto-generated method stub
-                                if (!chatMessages.isEmpty())
+                                if (!chatMessages.isEmpty()) {
                                     messageData.add(chatMessages.remove());
+                                    lobbyController.getChatBoxController().getChatBox().scrollTo(messageData.size() - 1);
+                                }
                             }
                         });
 
@@ -168,8 +170,10 @@ public class Client extends Application {
                             @Override
                             public void run() {
                                 // TODO Auto-generated method stub
-                                if (!privateChatMessages.isEmpty())
+                                if (!privateChatMessages.isEmpty()) {
                                     privateMessageData.add(privateChatMessages.remove());
+                                    gameController.getChatBoxController().getChatBox().scrollTo(privateMessageData.size() - 1);
+                                }
                             }
                         });
 
