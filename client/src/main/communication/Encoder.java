@@ -92,7 +92,7 @@ public class Encoder {
 
     public static String actionRequest(int action, int color, int x, int y) {
         Map map = new HashMap();
-        map.put("room_id",Client.getUser().getRoom());
+		map.put("room_id", Client.getUser().getRoom());
         map.put("action", action);
         if (action == Type.Action.PLACE) {
             Map placeMap = new HashMap();

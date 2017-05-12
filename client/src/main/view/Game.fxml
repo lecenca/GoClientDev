@@ -53,12 +53,12 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="45.0" prefWidth="124.0" text="九段" textAlignment="CENTER">
+                  <Label fx:id="player1Level" alignment="CENTER" prefHeight="45.0" prefWidth="124.0" text="九段" textAlignment="CENTER">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="53.0" prefWidth="134.0" text="0胜/0负/0平" textAlignment="CENTER">
+                  <Label fx:id="player1Record" alignment="CENTER" prefHeight="53.0" prefWidth="134.0" text="0胜/0负/0平" textAlignment="CENTER">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -104,12 +104,12 @@
                         <Font size="19.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="47.0" prefWidth="125.0" text="九段">
+                  <Label fx:id="player2Level" alignment="CENTER" prefHeight="47.0" prefWidth="125.0" text="九段">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="49.0" prefWidth="156.0" text="0胜/0负/0平">
+                  <Label fx:id="player2Record" alignment="CENTER" prefHeight="49.0" prefWidth="156.0" text="0胜/0负/0平">
                      <font>
                         <Font size="18.0" />
                      </font>
