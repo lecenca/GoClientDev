@@ -18,6 +18,7 @@ import src.main.Board;
 import src.main.Client;
 import src.main.Stone;
 import src.main.Type;
+import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
 import java.awt.*;
@@ -88,6 +89,7 @@ public class ChessBoard implements Initializable {
             if (action != Type.Action.INVALID) {
                 String msg = Encoder.actionRequest(action, color, index.x, index.y);
                 System.out.println(msg);
+                Connect.send(msg);
                 /**** sound *****/
                 placeChessSound.play();
                 /**** sound *****/
