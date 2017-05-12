@@ -92,8 +92,8 @@ public class GameController implements Initializable {
     @FXML
     private Label gameResultShow;
 
-    public GameController(){
-        music =new MediaPlayer(new Media(getClass().getResource("/resources/music/testMusic.mp3").toExternalForm()));
+    public GameController() {
+        music = new MediaPlayer(new Media(getClass().getResource("/resources/music/testMusic.mp3").toExternalForm()));
         music.setOnEndOfMedia(new Runnable() {
             public void run() {
                 music.seek(Duration.ZERO);
@@ -141,14 +141,13 @@ public class GameController implements Initializable {
             @Override
             public void handle(KeyEvent event) {
                 String text = inputField.getText();
-                if(text == null || "".equals(text) || text.length() == 0) {
+                if (text == null || "".equals(text) || text.length() == 0) {
                     send.setDisable(true);
-                }
-                else {
+                } else {
                     send.setDisable(false);
-                    if(event.getCode() == KeyCode.ENTER)
+                    if (event.getCode() == KeyCode.ENTER)
                         chat();
-                } 
+                }
             }
         });
     }
@@ -165,7 +164,7 @@ public class GameController implements Initializable {
         komi.setText(room.getKomiString());
         mainTime.setText(room.getMainTime() + "分");
         periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
-       resetLabel();
+        resetLabel();
         if (Client.offlineMode) {
             turn = Stone.Black;
             boardController.setColor(Stone.Black);
@@ -186,7 +185,7 @@ public class GameController implements Initializable {
         /********** release ******/
     }
 
-    private void resetLabel(){
+    private void resetLabel() {
         player1OverTimeRemain.setText(room.getPeriodTimes() + "次");
         player2OverTimeRemain.setText(room.getPeriodTimes() + "次");
         player1Kill.setText("0次");
@@ -397,14 +396,13 @@ public class GameController implements Initializable {
     }
 
     public void overTime() {
-        if(Client.offlineMode){
+        if (Client.offlineMode) {
             begin = false;
             ready.setText("开始对局");
             ready.setSelected(false);
-            if(player1TimerController.getPeriodTimes() == 0){
+            if (player1TimerController.getPeriodTimes() == 0) {
                 gameResultShow.setText("白方超时，黑方胜利！");
-            }
-            else{
+            } else {
                 gameResultShow.setText("黑方超时，白方胜利！");
             }
             gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
@@ -472,6 +470,18 @@ public class GameController implements Initializable {
                 roomOwner ? Type.GameResult.PLAYER1_ESCAPE : Type.GameResult.PLAYER2_ESCAPE);
         Connect.send(msg);
         System.out.println("game result msg: " + msg);
+    }
+
+    public void leaveRoom() {
+        Room room = Client.roomsMap.get(Client.getUser().getRoom());
+        room.setState(Type.RoomState.READY);
+        if (room.getPlayer1() == Client.getUser().getAccount()) {
+            room.setPlayer1("");
+            Client.updateRoom(room, Type.UpdateRoom.PLAYER1OUT);
+        } else {
+            room.setPlayer2("");
+            Client.updateRoom(room, Type.UpdateRoom.PLAYER2OUT);
+        }
     }
 
     public void setReady(boolean player1, boolean player2) {
