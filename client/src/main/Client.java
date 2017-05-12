@@ -93,7 +93,6 @@ public class Client extends Application {
                 }
             }
         }
-
         private void reConnect() {
             boolean print = true;
             boolean print2 = true;
@@ -296,6 +295,7 @@ public class Client extends Application {
                     if (result.get() == ButtonType.CANCEL) {
                         event.consume();
                     }
+                    gameController.clear();
                     return;
                 }
                 if (getUser().getState() == Type.UserState.GAMING) {

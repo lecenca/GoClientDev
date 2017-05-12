@@ -61,7 +61,6 @@ public class LoginController implements Initializable {
     private void offline(){
         Client.offlineMode = true;
         User player1 = new User("1","玩家一");
-        User player2 = new User("2","玩家二");
         Client.setUser(player1);
         client.gotoCreateRoom();
     }
