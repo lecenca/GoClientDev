@@ -33,6 +33,8 @@ public class ChatBox implements Initializable {
 
     public void sendMessage(String message) {
         chatBox.getItems().add(message);
+        chatBox.scrollTo(chatBox.getItems().size() - 1);
+        
     }
 
     public void setItems(ObservableList<String> chatMessage) {
@@ -42,4 +44,9 @@ public class ChatBox implements Initializable {
     public void clear() {
         chatBox.getItems().clear();
     }
+
+    public ListView<String> getChatBox() {
+        return chatBox;
+    }
+    
 }
