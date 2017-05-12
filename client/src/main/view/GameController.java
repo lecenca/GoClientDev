@@ -1,9 +1,14 @@
 package src.main.view;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -17,6 +22,7 @@ import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
 import javax.swing.*;
+import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -91,14 +97,19 @@ public class GameController implements Initializable {
 
     @FXML
     private Label gameResultShow;
+    @FXML
+    private Slider volumeSlider;
 
     public GameController() {
+
         music = new MediaPlayer(new Media(getClass().getResource("/resources/music/testMusic.mp3").toExternalForm()));
         music.setOnEndOfMedia(new Runnable() {
             public void run() {
                 music.seek(Duration.ZERO);
             }
         });
+        music.setVolume(1.3);
+
     }
 
     @Override
@@ -148,6 +159,17 @@ public class GameController implements Initializable {
                     if (event.getCode() == KeyCode.ENTER)
                         chat();
                 }
+            }
+        });
+
+        volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        music.setVolume(volumeSlider.getValue());
+                    }
+                });
             }
         });
     }
@@ -219,10 +241,6 @@ public class GameController implements Initializable {
 
     @FXML
     private void ready() {
-
-        /***********/
-        music.play();
-        /***********/
 
         if (Client.offlineMode) {
             /*************** test *************/
@@ -569,6 +587,14 @@ public class GameController implements Initializable {
         Connect.send(msg);
         inputField.clear();
         send.setDisable(true);
+    }
+
+    public void playMusic(){
+        music.play();
+    }
+
+    public void stopMusic(){
+        music.stop();
     }
 
     public ChatBox getChatBoxController() {

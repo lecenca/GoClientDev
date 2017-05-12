@@ -327,6 +327,7 @@ public class Client extends Application {
     public void gotoLobby() {
         lobbyStage.show();
         lobbyController.fetchLobbyInfo();
+        lobbyController.playMusic();
     }
 
     public void backToLobby() {
@@ -356,6 +357,9 @@ public class Client extends Application {
         gameController.getChatBoxController().setItems(privateMessageData);
         gameStage.setTitle("MicroOnlineGo - 房间 " + Integer.toString(room.getId()) + " " + room.getName());
         gameStage.show();
+
+        lobbyController.stopMusic();
+        gameController.playMusic();
     }
 
     private Initializable replaceSceneContent(String fxml) throws Exception {
