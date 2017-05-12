@@ -583,4 +583,14 @@ public class GameController implements Initializable {
     public ChatBox getChatBoxController() {
         return chatBoxController;
     }
+
+    public void updateRoomInfo(Room room){
+        if(!room.getPlayer1().isEmpty()){
+            player1Name.setText(Client.playersMap.get(room.getPlayer1()).getNickname());
+            // TODO
+        }
+        if(!room.getPlayer2().isEmpty()){
+            player2Name.setText(Client.playersMap.get(room.getPlayer2()).getNickname());
+        }
+    }
 }

@@ -439,6 +439,9 @@ public class Client extends Application {
     }
 
     public static void adjustRoom(Room room) {
+        if(room.getId() == user.getRoom()){
+            gameController.updateRoomInfo(room);
+        }
         if (roomData.contains(room)) {
             // TODO: 如何修改现有 room 的属性
             int index = roomData.indexOf(room);
