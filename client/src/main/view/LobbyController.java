@@ -2,8 +2,11 @@ package src.main.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import src.main.Client;
@@ -80,7 +83,7 @@ public class LobbyController implements Initializable {
 
     private boolean canSitDown;
     public LobbyController() {
-
+        
     }
 
     @FXML
@@ -191,7 +194,7 @@ public class LobbyController implements Initializable {
         this.canSitDown = canSitDown;
     }
 
-    @FXML
+    /*@FXML
     private void hasText() {
     	String text = inputField.getText();
     	System.out.println(text);
@@ -202,7 +205,7 @@ public class LobbyController implements Initializable {
     		sendbtn.setDisable(false);
     	}
     	
-    }
+    }*/
 
     public void setClient(Client client) {
         this.client = client;
@@ -221,6 +224,21 @@ public class LobbyController implements Initializable {
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
         lobbyPane.setBackground(background);
+        inputField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                String text = inputField.getText();
+                if(text == null || "".equals(text) || text.length() == 0) {
+                    sendbtn.setDisable(true);
+                }
+                else {
+                    sendbtn.setDisable(false);
+                    if(event.getCode() == KeyCode.ENTER)
+                        send();
+                } 
+            }
+        });
     }
 
     public void setAssociation() {
