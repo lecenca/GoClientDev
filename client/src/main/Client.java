@@ -248,10 +248,6 @@ public class Client extends Application {
 
     public Client() {
         playerData.sort(comparator);
-        /********* 这是要的 ***********/
-        connect = new Connect();
-        receiveThread = connect.getReceiveThread();
-        /*****************************/
         signupStage = new Stage();
         signupStage.setTitle("MicroOnlineGo - 注册");
         signupStage.setResizable(false);
@@ -288,14 +284,16 @@ public class Client extends Application {
             @Override
             public void handle(WindowEvent event) {
                 if (offlineMode) {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("提示");
-                    alert.setHeaderText("您正在游戏中，确认要退出游戏吗？");
-                    alert.initOwner(gameStage);
-                    alert.initModality(Modality.WINDOW_MODAL);
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.get() == ButtonType.CANCEL) {
-                        event.consume();
+                    if(gameController.isBegin()){
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("提示");
+                        alert.setHeaderText("您正在游戏中，确认要退出游戏吗？");
+                        alert.initOwner(gameStage);
+                        alert.initModality(Modality.WINDOW_MODAL);
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.get() == ButtonType.CANCEL) {
+                            event.consume();
+                        }
                     }
                     gameController.clear();
                     return;
@@ -337,6 +335,10 @@ public class Client extends Application {
         primaryStage.setTitle("MicroOnlineGo - 登录");
         primaryStage.setResizable(false);
         gotoLogin();
+        /********* 这是要的 ***********/
+        connect = new Connect();
+        receiveThread = connect.getReceiveThread();
+        /*****************************/
         /*
          * keepAliveThread.setDaemon(true); keepAliveThread.start();
          */

@@ -76,10 +76,10 @@ public class Room {
         return "???";
     }
 
-    public String getKomi(){
+    public String getKomiString(){
         return komi[this.config.komi];
     }
-
+    public int getKomi() {return config.komi;}
     public int getMainTime(){
         return corMainTime[this.config.mainTime];
     }

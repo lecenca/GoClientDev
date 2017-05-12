@@ -81,7 +81,7 @@ public class CreateRoomController implements Initializable {
                 this.komi.getSelectionModel().getSelectedIndex(),
                 this.mainTime.getSelectionModel().getSelectedIndex(),
                 this.period.getSelectionModel().getSelectedIndex(),
-                this.period.getSelectionModel().getSelectedIndex()
+                this.periodTimes.getSelectionModel().getSelectedIndex()
                 );
         client.backToLobby();
         client.gotoGame(room);
