@@ -41,22 +41,22 @@ public class Core {
         return hasLiberty ? Type.Action.PLACE : Type.Action.INVALID;
     }
 
-    public static ArrayList<Number> scoring(Board board) {
+    public static ArrayList<Number> scoring() {
         double blackEyes = 0;
         double whiteEyes = 0;
         Set<Point> blackLiberty = new HashSet<>();
         Set<Point> whiteLiberty = new HashSet<>();
-        for (int chain : board.stonesMap.keySet()) {
-            if (board.stonesMap.get(chain).size() != 0) {
-                for (Stone stone : board.stonesMap.get(chain)) {
+        for (int chain : Board.stonesMap.keySet()) {
+            if (Board.stonesMap.get(chain).size() != 0) {
+                for (Stone stone : Board.stonesMap.get(chain)) {
                     if (stone.color == Stone.Black) {
-                        blackEyes += (double) board.stonesMap.get(chain).size();
-                        for (Point p : board.libertyMap.get(chain)) {
+                        blackEyes += (double) Board.stonesMap.get(chain).size();
+                        for (Point p : Board.libertyMap.get(chain)) {
                             blackLiberty.add(p);
                         }
                     } else if (stone.color == Stone.White) {
-                        whiteEyes += (double) board.stonesMap.get(chain).size();
-                        for (Point p : board.libertyMap.get(chain)) {
+                        whiteEyes += (double) Board.stonesMap.get(chain).size();
+                        for (Point p : Board.libertyMap.get(chain)) {
                             whiteLiberty.add(p);
                         }
                     }
@@ -71,8 +71,8 @@ public class Core {
             }
         }
         ArrayList<Number> result = new ArrayList<>();
-        result.add(blackEyes + (double) blackLiberty.size() - common);
         result.add(whiteEyes + (double) whiteLiberty.size() - common);
+        result.add(blackEyes + (double) blackLiberty.size() - common);
         return result;
     }
 
