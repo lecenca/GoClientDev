@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -43,14 +44,23 @@ public class ChessBoard implements Initializable {
     private Point pixel = new Point();
     private Point index = new Point();
 
+    private AudioClip placeChessSound;
+
+    public ChessBoard(){
+        placeChessSound = new AudioClip(getClass().getResource("/resources/music/placeChess.mp3").toExternalForm());
+    }
+
     @FXML
     private void onClick(MouseEvent event) {
         if (Client.offlineMode) {
-            /****************************  test ****************************/
+            /**************************** test ****************************/
             if (Client.getGameController().isBegin()) {
                 getPixelPos(event);
                 int action = action();
                 if (action != Type.Action.INVALID) {
+                    /**** sound *****/
+                    placeChessSound.play();
+                    /**** sound *****/
                     place(index.x, index.y, color);
                     if (action == Type.Action.KILL) {
                         remove();
@@ -67,7 +77,7 @@ public class ChessBoard implements Initializable {
                 }
             }
             return;
-            /****************************  test ****************************/
+            /**************************** test ****************************/
         }
         /****************************  release ****************************/
         if (Client.getGameController().isBegin() && Client.getGameController().getTurn() == this.color) {
@@ -76,6 +86,9 @@ public class ChessBoard implements Initializable {
             if (action != Type.Action.INVALID) {
                 String msg = Encoder.actionRequest(action, color, index.x, index.y);
                 System.out.println(msg);
+                /**** sound *****/
+                placeChessSound.play();
+                /**** sound *****/
                 place(index.x, index.y, color);
                 if (action == Type.Action.KILL) {
                     remove();
