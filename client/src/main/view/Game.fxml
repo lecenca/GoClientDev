@@ -19,7 +19,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <TextField fx:id="inputField" layoutX="642.0" layoutY="651.0" onKeyPressed="#hasText" opacity="0.75" prefHeight="30.0" prefWidth="433.0">
+      <TextField fx:id="inputField" layoutX="642.0" layoutY="651.0"  opacity="0.75" prefHeight="30.0" prefWidth="433.0">
          <font>
             <Font size="15.0" />
          </font>
