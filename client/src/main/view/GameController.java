@@ -1,5 +1,6 @@
 package src.main.view;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -326,53 +327,61 @@ public class GameController implements Initializable {
     }
 
     public void showGameResult() {
-        player1TimerController.pause();
-        player2TimerController.pause();
-        ready.setDisable(false);
-        if ((gameResult & 0x40) != 0) {
-            // escape
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
-                // self
-                Client.getUser().setRoom(0);
-                Client.getUser().setState(Type.UserState.IDLE);
+        Platform.runLater(new Runnable() {
+            
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                
+                player1TimerController.pause();
+                player2TimerController.pause();
+                ready.setDisable(false);
+                if ((gameResult & 0x40) != 0) {
+                    // escape
+                    if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
+                        // self
+                        Client.getUser().setRoom(0);
+                        Client.getUser().setState(Type.UserState.IDLE);
+                        Client.getUser().updateGameDate(score);
+                        Client.updateUser();
+                        return;
+                    } else {
+                        gameResultShow.setText("对方逃跑，你赢了！");
+                    }
+                } else if ((gameResult & 0x20) != 0) {
+                    // surrender
+                    if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_SURRENDER) {
+                        // self
+                        gameResultShow.setText("你投降了，对方赢了！");
+                    } else {
+                        gameResultShow.setText("对方投降，你赢了！");
+                    }
+                } else if ((gameResult & 0x10) != 0) {
+                    if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_OVERTIME) {
+                        gameResultShow.setText("你超时了，对方赢了！");
+                    } else {
+                        gameResultShow.setText("对方超时，你赢了！");
+                    }
+                } else if (gameResult == Type.GameResult.WIN) {
+                    gameResultShow.setText("你赢了！");
+                } else if (gameResult == Type.GameResult.LOSE) {
+                    gameResultShow.setText("你输了！");
+                } else {
+                    gameResultShow.setText("双方打平，平局！");
+                }
+                if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)) {
+                    gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
+                } else {
+                    gameResultShow.setTextFill(Color.color(0.2, 0.9, 0.2));
+                }
+                gameResultShow.setVisible(true);
                 Client.getUser().updateGameDate(score);
+                Client.getUser().setState(Type.UserState.READY);
                 Client.updateUser();
-                return;
-            } else {
-                gameResultShow.setText("对方逃跑，你赢了！");
+                room.setState(Type.RoomState.READY);
+                Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
             }
-        } else if ((gameResult & 0x20) != 0) {
-            // surrender
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_SURRENDER) {
-                // self
-                gameResultShow.setText("你投降了，对方赢了！");
-            } else {
-                gameResultShow.setText("对方投降，你赢了！");
-            }
-        } else if ((gameResult & 0x10) != 0) {
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_OVERTIME) {
-                gameResultShow.setText("你超时了，对方赢了！");
-            } else {
-                gameResultShow.setText("对方超时，你赢了！");
-            }
-        } else if (gameResult == Type.GameResult.WIN) {
-            gameResultShow.setText("你赢了！");
-        } else if (gameResult == Type.GameResult.LOSE) {
-            gameResultShow.setText("你输了！");
-        } else {
-            gameResultShow.setText("双方打平，平局！");
-        }
-        if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)) {
-            gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
-        } else {
-            gameResultShow.setTextFill(Color.color(0.2, 0.9, 0.2));
-        }
-        gameResultShow.setVisible(true);
-        Client.getUser().updateGameDate(score);
-        Client.getUser().setState(Type.UserState.READY);
-        Client.updateUser();
-        room.setState(Type.RoomState.READY);
-        Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+        });
     }
 
     public void getPlayerPoint() {
