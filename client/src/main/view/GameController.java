@@ -1,7 +1,11 @@
 package src.main.view;
 
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+
+import javafx.application.Platform;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -283,25 +287,30 @@ public class GameController implements Initializable {
 
     @FXML
     public void gameStart() {
-        if (Client.offlineMode) {
-            ready.setText("结束对局");
-            begin = true;
-            step.setSelected(false);
-            player2TimerController.start();
-            return;
-        }
-        ready.setText("游戏中");
-        ready.setDisable(true);
-        player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-        player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-        begin = true;
-        surrender.setDisable(false);
-        step.setSelected(false);
-        player2TimerController.start();
-        Client.getUser().setState(Type.UserState.GAMING);
-        Client.updateUser();
-        room.setState(Type.RoomState.GAMING);
-        Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (Client.offlineMode) {
+                    ready.setText("结束对局");
+                    begin = true;
+                    step.setSelected(false);
+                    player2TimerController.start();
+                    return;
+                }
+                ready.setText("游戏中");
+                ready.setDisable(true);
+                player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+                player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+                begin = true;
+                surrender.setDisable(false);
+                step.setSelected(false);
+                player2TimerController.start();
+                Client.getUser().setState(Type.UserState.GAMING);
+                Client.updateUser();
+                room.setState(Type.RoomState.GAMING);
+                Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+            }
+        });
     }
 
     @FXML
@@ -344,53 +353,59 @@ public class GameController implements Initializable {
     }
 
     public void showGameResult() {
-        player1TimerController.pause();
-        player2TimerController.pause();
-        ready.setDisable(false);
-        if ((gameResult & 0x40) != 0) {
-            // escape
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
-                // self
-                Client.getUser().setRoom(0);
-                Client.getUser().setState(Type.UserState.IDLE);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                player1TimerController.pause();
+                player2TimerController.pause();
+                ready.setDisable(false);
+                if ((gameResult & 0x40) != 0) {
+                    // escape
+                    if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
+                        // self
+                        Client.getUser().setRoom(0);
+                        Client.getUser().setState(Type.UserState.IDLE);
+                        Client.getUser().updateGameDate(score);
+                        Client.updateUser();
+                        return;
+                    } else {
+                        gameResultShow.setText("对方逃跑，你赢了！");
+                    }
+                } else if ((gameResult & 0x20) != 0) {
+                    // surrender
+                    if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_SURRENDER) {
+                        // self
+                        gameResultShow.setText("你投降了，对方赢了！");
+                    } else {
+                        gameResultShow.setText("对方投降，你赢了！");
+                    }
+                } else if ((gameResult & 0x10) != 0) {
+                    if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_OVERTIME) {
+                        gameResultShow.setText("你超时了，对方赢了！");
+                    } else {
+                        gameResultShow.setText("对方超时，你赢了！");
+                    }
+                } else if (gameResult == Type.GameResult.WIN) {
+                    gameResultShow.setText("你赢了！");
+                } else if (gameResult == Type.GameResult.LOSE) {
+                    gameResultShow.setText("你输了！");
+                } else {
+                    gameResultShow.setText("双方打平，平局！");
+                }
+                if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)) {
+                    gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
+                } else {
+                    gameResultShow.setTextFill(Color.color(0.2, 0.9, 0.2));
+                }
+                gameResultShow.setVisible(true);
                 Client.getUser().updateGameDate(score);
+                Client.getUser().setState(Type.UserState.READY);
                 Client.updateUser();
-                return;
-            } else {
-                gameResultShow.setText("对方逃跑，你赢了！");
+                room.setState(Type.RoomState.READY);
+                Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
             }
-        } else if ((gameResult & 0x20) != 0) {
-            // surrender
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_SURRENDER) {
-                // self
-                gameResultShow.setText("你投降了，对方赢了！");
-            } else {
-                gameResultShow.setText("对方投降，你赢了！");
-            }
-        } else if ((gameResult & 0x10) != 0) {
-            if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_OVERTIME) {
-                gameResultShow.setText("你超时了，对方赢了！");
-            } else {
-                gameResultShow.setText("对方超时，你赢了！");
-            }
-        } else if (gameResult == Type.GameResult.WIN) {
-            gameResultShow.setText("你赢了！");
-        } else if (gameResult == Type.GameResult.LOSE) {
-            gameResultShow.setText("你输了！");
-        } else {
-            gameResultShow.setText("双方打平，平局！");
-        }
-        if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)) {
-            gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
-        } else {
-            gameResultShow.setTextFill(Color.color(0.2, 0.9, 0.2));
-        }
-        gameResultShow.setVisible(true);
-        Client.getUser().updateGameDate(score);
-        Client.getUser().setState(Type.UserState.READY);
-        Client.updateUser();
-        room.setState(Type.RoomState.READY);
-        Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+        });
     }
 
     public void getPlayerPoint() {
@@ -405,12 +420,22 @@ public class GameController implements Initializable {
     }
 
     public void place(int x, int y, int color) {
-        boardController.place(x, y, color);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                boardController.place(x, y, color);
+            }
+        });
     }
 
     public void kill(ArrayList<Stone> deadList) {
-        Board.addDead(deadList);
-        boardController.remove();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Board.addDead(deadList);
+                boardController.remove();
+            }
+        });
     }
 
     public void overTime() {
@@ -503,11 +528,16 @@ public class GameController implements Initializable {
     }
 
     public void setReady(boolean player1, boolean player2) {
-        player1Ready = player1;
-        player2Ready = player2;
-        if (player1Ready && player2Ready) {
-            gameStart();
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                player1Ready = player1;
+                player2Ready = player2;
+                if (player1Ready && player2Ready) {
+                    gameStart();
+                }
+            }
+        });
     }
 
     public boolean isBegin() {
@@ -553,18 +583,33 @@ public class GameController implements Initializable {
     }
 
     public void judgeFromOpponent() {
-        int res = JOptionPane.showConfirmDialog(null, "对方请求提前判子\n请问您是否同意？", "请求", JOptionPane.YES_NO_OPTION);
-        if (res == JOptionPane.YES_OPTION) {
-            gameOver();
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                int res = JOptionPane.showConfirmDialog(null, "对方请求提前判子\n请问您是否同意？", "请求", JOptionPane.YES_NO_OPTION);
+                if (res == JOptionPane.YES_OPTION) {
+                    gameOver();
+                }
+            }
+        });
     }
 
     public void setGameResult(int result) {
-        this.gameResult = result;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                gameResult = result;
+            }
+        });
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setScore(int point) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                score = point;
+            }
+        });
     }
 
     // chat windows
@@ -599,5 +644,20 @@ public class GameController implements Initializable {
 
     public ChatBox getChatBoxController() {
         return chatBoxController;
+    }
+
+    public void updateRoomInfo(Room room) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (!room.getPlayer1().isEmpty()) {
+                    player1Name.setText(Client.playersMap.get(room.getPlayer1()).getNickname());
+                    // TODO
+                }
+                if (!room.getPlayer2().isEmpty()) {
+                    player2Name.setText(Client.playersMap.get(room.getPlayer2()).getNickname());
+                }
+            }
+        });
     }
 }
