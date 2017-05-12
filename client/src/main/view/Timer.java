@@ -23,6 +23,8 @@ public class Timer implements Initializable {
     private int period;
     private int periodTimes;
     private Label playerOverTimeRemain;
+    private Timer otherTimer;
+    private ChessBoard chessBoard;
 
     private int tempPeriod;
 
@@ -48,9 +50,15 @@ public class Timer implements Initializable {
                 if(periodTimes ==0){
                     Client.getGameController().overTime();
                 }else{
+                    /*
                     tempPeriod = period;
                     displaySecond(tempPeriod);
                     periodTimeline.playFromStart();
+                    */
+
+                    this.pause();
+                    chessBoard.changeTurn();
+                    otherTimer.start();
                 }
             }
         }));
@@ -118,7 +126,13 @@ public class Timer implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources) {}
 
+    public void setOtherTimer(Timer otherTimer) {
+        this.otherTimer = otherTimer;
+    }
+
+    public void setChessBoard(ChessBoard chessBoard) {
+        this.chessBoard = chessBoard;
     }
 }
