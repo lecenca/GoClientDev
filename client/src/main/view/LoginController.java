@@ -89,8 +89,6 @@ public class LoginController implements Initializable {
         /********** release **********/
         if (checkValid()) {
             Client.offlineMode = false;
-            Client.getLobbyController().addPlayer(Client.getUser());
-            Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
             client.getPrimaryStage().close();
             client.gotoLobby();
         }
