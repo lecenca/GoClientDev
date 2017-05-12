@@ -95,7 +95,7 @@ public class GameController implements Initializable {
         turn = Stone.Black;
         player1TimerController.setPlayerOverTimeRemain(player1OverTimeRemain);
         player2TimerController.setPlayerOverTimeRemain(player2OverTimeRemain);
-        boardController.setPlayerKill(player1Kill,player2Kill);
+        boardController.setPlayerKill(player1Kill, player2Kill);
         boardController.setTimer(player1TimerController, player2TimerController);
 
         Image image = new Image("resources/image/bg004.jpg", 1161, 700, false, true);
@@ -129,10 +129,7 @@ public class GameController implements Initializable {
         komi.setText(room.getKomiString());
         mainTime.setText(room.getMainTime() + "分");
         periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
-        player1OverTimeRemain.setText(room.getPeriodTimes() + "次");
-        player2OverTimeRemain.setText(room.getPeriodTimes() + "次");
-        player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-        player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+       resetLabel();
         if (Client.offlineMode) {
             turn = Stone.Black;
             boardController.setColor(Stone.Black);
@@ -153,6 +150,15 @@ public class GameController implements Initializable {
         /********** release ******/
     }
 
+    private void resetLabel(){
+        player1OverTimeRemain.setText(room.getPeriodTimes() + "次");
+        player2OverTimeRemain.setText(room.getPeriodTimes() + "次");
+        player1Kill.setText("0次");
+        player2Kill.setText("0次");
+        player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+        player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+    }
+
     public void clear() {
         ready.setSelected(false);
         surrender.setDisable(true);
@@ -167,10 +173,6 @@ public class GameController implements Initializable {
         chatBoxController.clear();
         player1TimerController.stop();
         player2TimerController.stop();
-        /**********/
-        player1Kill.setText("0子");
-        player2Kill.setText("0子");
-        /*********/
     }
 
     @FXML
@@ -180,12 +182,9 @@ public class GameController implements Initializable {
             gameResultShow.setVisible(false);
             if (ready.isSelected()) {
                 boardController.clear();
-                player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-                player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+                resetLabel();
                 gameStart();
             } else {
-                ready.setText("开始对局");
-                step.setSelected(false);
                 gameOver();
             }
             return;
@@ -194,13 +193,21 @@ public class GameController implements Initializable {
         /***************** release **************/
         gameResultShow.setVisible(false);
         if (ready.isSelected()) {
-            player1Ready = true;
+            if (roomOwner) {
+                player1Ready = true;
+            } else {
+                player2Ready = true;
+            }
             String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
             System.out.println("ready request msg: " + msg);
             Connect.send(msg);
             ready.setText("取消准备");
         } else {
-            player1Ready = false;
+            if (roomOwner) {
+                player1Ready = false;
+            } else {
+                player2Ready = false;
+            }
             String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
             System.out.println("ready request msg: " + msg);
             Connect.send(msg);
@@ -238,6 +245,8 @@ public class GameController implements Initializable {
         getPlayerPoint();
         double diff = Math.abs(player1Point - player2Point);
         if (Client.offlineMode) {
+            ready.setText("开始对局");
+            ready.setSelected(false);
             if (diff < 0.01) {
                 gameResultShow.setText("对局结束，双方打平！");
             } else {
@@ -340,6 +349,23 @@ public class GameController implements Initializable {
     }
 
     public void overTime() {
+        if(Client.offlineMode){
+            begin = false;
+            ready.setText("开始对局");
+            ready.setSelected(false);
+            if(player1TimerController.getPeriodTimes() == 0){
+                gameResultShow.setText("白方超时，黑方胜利！");
+            }
+            else{
+                gameResultShow.setText("黑方超时，白方胜利！");
+            }
+            gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
+            gameResultShow.setVisible(true);
+            player1TimerController.pause();
+            player2TimerController.pause();
+            step.setSelected(false);
+            return;
+        }
         if (roomOwner) {
             getPlayerPoint();
             double diff = Math.abs(player1Point - player2Point);

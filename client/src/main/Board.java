@@ -2,7 +2,7 @@ package src.main;
 
 import javafx.scene.control.Label;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,34 +65,29 @@ public class Board {
     public void add(int x, int y, int color) {
         stones[x][y].color = color;
         stones[x][y].step = step;
-        System.out.println("stone step: " + step);
         ++step;
         initStone(stones[x][y]);
         update(stones[x][y]);
-        System.out.println("Board add stone(" + x + "," + y + ") in chain " + chainMap.get(stones[x][y])
-                + " has libertyMap " + Core.liberty(stones[x][y]));
     }
 
     // Removes the stones that were dead.
     public void remove() {
         /*******************************************/
-
-        if(Client.getGameController().getTurn()==Stone.Black){
-            for(int chain: dead){
+        if (Client.getGameController().getTurn() == Stone.Black) {
+            for (int chain : dead) {
                 deadNum2 += stonesMap.get(chain).size();
             }
-            player1Kill.setText(String.valueOf(deadNum2)+"子");
-        }else {
-            for(int chain: dead){
+            player1Kill.setText(deadNum2 + "子");
+        } else {
+            for (int chain : dead) {
                 deadNum1 += stonesMap.get(chain).size();
             }
-            player2Kill.setText(String.valueOf(deadNum1)+"子");
+            player2Kill.setText(deadNum1 + "子");
         }
         /*******************************************/
         for (int chain : dead) {
             HashSet<Stone> ss = stonesMap.get(chain);
             for (Stone s : ss) {
-                System.out.println("Board remove stone(" + s.x + "," + s.y + ") in chain " + chainMap.get(s));
                 if (s.up() != null && s.up().color == -s.color) {
                     extendLiberty(chainMap.get(s.up()), new Point(s.x, s.y));
                 }
@@ -205,7 +200,7 @@ public class Board {
         libertyMap.get(chain).add(point);
     }
 
-    public static void setPlayerKill(Label player1Kill,Label player2Kill){
+    public static void setPlayerKill(Label player1Kill, Label player2Kill) {
         Board.player1Kill = player1Kill;
         Board.player2Kill = player2Kill;
     }
