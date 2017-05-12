@@ -91,7 +91,7 @@ public class Connect {
 			 */
         try {
             socket = new Socket();
-            socket.connect(new InetSocketAddress(IP, PORT), 2000);
+            socket.connect(new InetSocketAddress(IP, PORT),2000);
             os = socket.getOutputStream();
             is = socket.getInputStream();
             connect = true;
@@ -248,15 +248,19 @@ public class Connect {
     }
 
     private void handlePrivateChatMessage(JSONObject jsonObject) {
+        String account = jsonObject.getString("account");
+        String nickname = Client.playersMap.get(account).getNickname();
         String msg = jsonObject.getString("message");
         MessageQueue<String> messages = Client.getPrivateChatMessages();
-        messages.add(msg);
+        messages.add(nickname + ":" + msg);
     }
 
     private void handleChatMessage(JSONObject jsonObject) {
-        String string = jsonObject.getString("message");
+        String account = jsonObject.getString("account");
+        String nickname = Client.playersMap.get(account).getNickname();
+        String message = jsonObject.getString("message");
         MessageQueue<String> messages = Client.getChatMessages();
-        messages.add(string);
+        messages.add(nickname + ":" + message);
     }
 
     private void handleSitDown(boolean state){
@@ -298,6 +302,7 @@ public class Connect {
         if (playerList.size() != 0) {
             MessageQueue<User> players = Client.getPlayers();
             for (User user : playerList) {
+                user.setPriority(0);
                 players.add(user);
             }
         }

@@ -69,7 +69,7 @@ public class User {
         }
 
     }
-
+    private int priority;
     private String account = new String();
     private String nickname = new String();
     private String password = new String();
@@ -237,9 +237,14 @@ public class User {
         if(!(obj instanceof User))
             throw new ClassCastException();
         User user = (User)obj;
-        return this.account == user.account;
+        //System.out.println("this.accout:" + this.account + " " + "user.account: " + user.account + " " + this.account.equals(user.account));
+        return this.account.equals(user.account);
     }
-    
-    
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+    public int getPriority() {
+        return priority;
+    }
 }
 
