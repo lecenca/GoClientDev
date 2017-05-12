@@ -317,4 +317,8 @@ public class ChessBoard implements Initializable {
     public void setPlayerKill(Label player1Kill, Label player2Kill) {
         board.setPlayerKill(player1Kill, player2Kill);
     }
+
+    public void changeTurn(){
+        color = -color;
+    }
 }

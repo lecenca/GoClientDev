@@ -112,6 +112,10 @@ public class GameController implements Initializable {
         turn = Stone.Black;
         player1TimerController.setPlayerOverTimeRemain(player1OverTimeRemain);
         player2TimerController.setPlayerOverTimeRemain(player2OverTimeRemain);
+        player1TimerController.setOtherTimer(player2TimerController);
+        player2TimerController.setOtherTimer(player1TimerController);
+        player1TimerController.setChessBoard(boardController);
+        player2TimerController.setChessBoard(boardController);
         boardController.setPlayerKill(player1Kill, player2Kill);
         boardController.setTimer(player1TimerController, player2TimerController);
 
