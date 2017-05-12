@@ -14,12 +14,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import src.main.*;
+import src.main.Board;
+import src.main.Client;
+import src.main.Stone;
+import src.main.Type;
 import src.main.communication.Encoder;
 
 import java.awt.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
@@ -102,7 +104,6 @@ public class ChessBoard implements Initializable {
     public void place(int x, int y, int color) {
         Circle stone = stonesCircle[x][y];
         Label step = steps[x][y];
-        //System.out.println("ChessBoard Place: (" + x + "," + y + ")");
         if (color == Stone.Black) {
             stone.setFill(Color.color(0.1, 0.1, 0.1));
             step.setTextFill(Color.WHITE);
@@ -133,7 +134,7 @@ public class ChessBoard implements Initializable {
             player2TimerController.start();
         }
         Client.getGameController().takeTurns();
-        if(Client.offlineMode){
+        if (Client.offlineMode) {
             if (Board.step >= 360) {
                 Client.getGameController().gameOver();
             }
@@ -313,7 +314,7 @@ public class ChessBoard implements Initializable {
         }
     }
 
-    public void setPlayerKill(Label player1Kill,Label player2Kill) {
-        board.setPlayerKill(player1Kill,player2Kill);
+    public void setPlayerKill(Label player1Kill, Label player2Kill) {
+        board.setPlayerKill(player1Kill, player2Kill);
     }
 }

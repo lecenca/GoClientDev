@@ -17,7 +17,7 @@
          <font>
             <Font size="15.0" />
          </font></Button>
-      <TextField fx:id="inputField" layoutX="25.0" layoutY="590.0" onKeyReleased="#hasText" prefHeight="37.0" prefWidth="600.0">
+      <TextField fx:id="inputField" layoutX="25.0" layoutY="590.0" prefHeight="37.0" prefWidth="600.0">
          <font>
             <Font size="15.0" />
          </font></TextField>
@@ -36,7 +36,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <TableView fx:id="roomList" layoutX="25.0" layoutY="20.0" opacity="0.75" onMouseClicked="#clickRoom" prefHeight="340.0" prefWidth="680.0">
+      <TableView fx:id="roomList" layoutX="25.0" layoutY="20.0" onMouseClicked="#clickRoom" opacity="0.75" prefHeight="340.0" prefWidth="680.0">
         <columns>
           <TableColumn fx:id="roomIdCol" prefWidth="60.0" text="房间ID" />
           <TableColumn fx:id="roomNameCol" prefWidth="130.0" text="房间名称" />

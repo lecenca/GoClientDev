@@ -2,8 +2,11 @@ package src.main.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import src.main.Client;
@@ -79,9 +82,8 @@ public class LobbyController implements Initializable {
     public static MessageQueue<String> chatMessage = new MessageQueue<>();
 
     private boolean canSitDown;
-
     public LobbyController() {
-
+        
     }
 
     @FXML
@@ -90,6 +92,10 @@ public class LobbyController implements Initializable {
         Connect.send(Encoder.logoutRequest());
         client.getLobbyStage().close();
         client.gotoLogin();
+        client.getPlayerData().clear();
+        client.getRoomData().clear();
+        client.playersMap.clear();
+        client.roomsMap.clear();
         /************* release *****************/
     }
 
@@ -188,14 +194,18 @@ public class LobbyController implements Initializable {
         this.canSitDown = canSitDown;
     }
 
-    @FXML
+    /*@FXML
     private void hasText() {
     	String text = inputField.getText();
-    	if(text == null || "".equals(text) || text.length() == 0)
+    	System.out.println(text);
+    	if(text == null || "".equals(text) || text.length() == 0) {
     		sendbtn.setDisable(true);
-    	else
+    	}
+    	else {
     		sendbtn.setDisable(false);
-    }
+    	}
+    	
+    }*/
 
     public void setClient(Client client) {
         this.client = client;
@@ -214,6 +224,21 @@ public class LobbyController implements Initializable {
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
         lobbyPane.setBackground(background);
+        inputField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                String text = inputField.getText();
+                if(text == null || "".equals(text) || text.length() == 0) {
+                    sendbtn.setDisable(true);
+                }
+                else {
+                    sendbtn.setDisable(false);
+                    if(event.getCode() == KeyCode.ENTER)
+                        send();
+                } 
+            }
+        });
     }
 
     public void setAssociation() {
@@ -234,6 +259,7 @@ public class LobbyController implements Initializable {
     }
 
     public void addPlayer(User user){
+        user.setPriority(1);
         this.playerList.getItems().add(user);
     }
 
