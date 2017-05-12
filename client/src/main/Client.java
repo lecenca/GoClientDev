@@ -93,7 +93,6 @@ public class Client extends Application {
                 }
             }
         }
-
         private void reConnect() {
             boolean print = true;
             boolean print2 = true;
