@@ -266,25 +266,30 @@ public class GameController implements Initializable {
 
     @FXML
     public void gameStart() {
-        if (Client.offlineMode) {
-            ready.setText("结束对局");
-            begin = true;
-            step.setSelected(false);
-            player2TimerController.start();
-            return;
-        }
-        ready.setText("游戏中");
-        ready.setDisable(true);
-        player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-        player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-        begin = true;
-        surrender.setDisable(false);
-        step.setSelected(false);
-        player2TimerController.start();
-        Client.getUser().setState(Type.UserState.GAMING);
-        Client.updateUser();
-        room.setState(Type.RoomState.GAMING);
-        Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (Client.offlineMode) {
+                    ready.setText("结束对局");
+                    begin = true;
+                    step.setSelected(false);
+                    player2TimerController.start();
+                    return;
+                }
+                ready.setText("游戏中");
+                ready.setDisable(true);
+                player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+                player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+                begin = true;
+                surrender.setDisable(false);
+                step.setSelected(false);
+                player2TimerController.start();
+                Client.getUser().setState(Type.UserState.GAMING);
+                Client.updateUser();
+                room.setState(Type.RoomState.GAMING);
+                Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+            }
+        });
     }
 
     @FXML
@@ -328,11 +333,9 @@ public class GameController implements Initializable {
 
     public void showGameResult() {
         Platform.runLater(new Runnable() {
-            
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                
                 player1TimerController.pause();
                 player2TimerController.pause();
                 ready.setDisable(false);
@@ -396,12 +399,22 @@ public class GameController implements Initializable {
     }
 
     public void place(int x, int y, int color) {
-        boardController.place(x, y, color);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                boardController.place(x, y, color);
+            }
+        });
     }
 
     public void kill(ArrayList<Stone> deadList) {
-        Board.addDead(deadList);
-        boardController.remove();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Board.addDead(deadList);
+                boardController.remove();
+            }
+        });
     }
 
     public void overTime() {
@@ -494,11 +507,16 @@ public class GameController implements Initializable {
     }
 
     public void setReady(boolean player1, boolean player2) {
-        player1Ready = player1;
-        player2Ready = player2;
-        if (player1Ready && player2Ready) {
-            gameStart();
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                player1Ready = player1;
+                player2Ready = player2;
+                if (player1Ready && player2Ready) {
+                    gameStart();
+                }
+            }
+        });
     }
 
     public boolean isBegin() {
@@ -544,18 +562,33 @@ public class GameController implements Initializable {
     }
 
     public void judgeFromOpponent() {
-        int res = JOptionPane.showConfirmDialog(null, "对方请求提前判子\n请问您是否同意？", "请求", JOptionPane.YES_NO_OPTION);
-        if (res == JOptionPane.YES_OPTION) {
-            gameOver();
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                int res = JOptionPane.showConfirmDialog(null, "对方请求提前判子\n请问您是否同意？", "请求", JOptionPane.YES_NO_OPTION);
+                if (res == JOptionPane.YES_OPTION) {
+                    gameOver();
+                }
+            }
+        });
     }
 
     public void setGameResult(int result) {
-        this.gameResult = result;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                gameResult = result;
+            }
+        });
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setScore(int point) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                score = point;
+            }
+        });
     }
 
     // chat windows
@@ -584,13 +617,18 @@ public class GameController implements Initializable {
         return chatBoxController;
     }
 
-    public void updateRoomInfo(Room room){
-        if(!room.getPlayer1().isEmpty()){
-            player1Name.setText(Client.playersMap.get(room.getPlayer1()).getNickname());
-            // TODO
-        }
-        if(!room.getPlayer2().isEmpty()){
-            player2Name.setText(Client.playersMap.get(room.getPlayer2()).getNickname());
-        }
+    public void updateRoomInfo(Room room) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (!room.getPlayer1().isEmpty()) {
+                    player1Name.setText(Client.playersMap.get(room.getPlayer1()).getNickname());
+                    // TODO
+                }
+                if (!room.getPlayer2().isEmpty()) {
+                    player2Name.setText(Client.playersMap.get(room.getPlayer2()).getNickname());
+                }
+            }
+        });
     }
 }
