@@ -497,8 +497,10 @@ public class GameController implements Initializable {
         String text = inputField.getText();
         if (text == null || "".equals(text) || text.isEmpty()) {
             send.setDisable(true);
+            
         } else {
             send.setDisable(false);
+            
         }
     }
 

@@ -79,7 +79,6 @@ public class LobbyController implements Initializable {
     public static MessageQueue<String> chatMessage = new MessageQueue<>();
 
     private boolean canSitDown;
-
     public LobbyController() {
 
     }
@@ -90,6 +89,10 @@ public class LobbyController implements Initializable {
         Connect.send(Encoder.logoutRequest());
         client.getLobbyStage().close();
         client.gotoLogin();
+        client.getPlayerData().clear();
+        client.getRoomData().clear();
+        client.playersMap.clear();
+        client.roomsMap.clear();
         /************* release *****************/
     }
 
@@ -191,10 +194,14 @@ public class LobbyController implements Initializable {
     @FXML
     private void hasText() {
     	String text = inputField.getText();
-    	if(text == null || "".equals(text) || text.length() == 0)
+    	System.out.println(text);
+    	if(text == null || "".equals(text) || text.length() == 0) {
     		sendbtn.setDisable(true);
-    	else
+    	}
+    	else {
     		sendbtn.setDisable(false);
+    	}
+    	
     }
 
     public void setClient(Client client) {
@@ -234,6 +241,7 @@ public class LobbyController implements Initializable {
     }
 
     public void addPlayer(User user){
+        user.setPriority(1);
         this.playerList.getItems().add(user);
     }
 
