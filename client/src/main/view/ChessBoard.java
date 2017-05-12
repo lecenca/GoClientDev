@@ -1,5 +1,6 @@
 package src.main.view;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -49,7 +50,7 @@ public class ChessBoard implements Initializable {
 
     private AudioClip placeChessSound;
 
-    public ChessBoard(){
+    public ChessBoard() {
         placeChessSound = new AudioClip(getClass().getResource("/resources/music/placeChess.mp3").toExternalForm());
     }
 
@@ -104,63 +105,75 @@ public class ChessBoard implements Initializable {
     }
 
     public void place(int x, int y, int color) {
-        Circle stone = stonesCircle[x][y];
-        Label step = steps[x][y];
-        if (color == Stone.Black) {
-            stone.setFill(Color.color(0.1, 0.1, 0.1));
-            step.setTextFill(Color.WHITE);
-        } else {
-            stone.setFill(Color.color(0.97, 0.98, 0.98));
-            step.setTextFill(Color.BLACK);
-        }
-        stone.setLayoutX(pixel.x);
-        stone.setLayoutY(pixel.y);
-        stone.setRadius(stoneRadius);
-        stone.setEffect(new Lighting());
-        chessPane.getChildren().add(stone);
-        board.add(x, y, color);
-        step.setText(Integer.toString(Board.stones[x][y].step));
-        step.setPrefSize(24, 12);
-        step.setLayoutX(pixel.x - 12);
-        step.setLayoutY(pixel.y - 8);
-        step.setAlignment(Pos.BASELINE_CENTER);
-        if (Client.getGameController().isShowStep()) {
-            chessPane.getChildren().add(step);
-        }
-        // reverse turns
-        if (Client.getGameController().getTurn() == Stone.Black) {
-            player2TimerController.pause();
-            player1TimerController.start();
-        } else {
-            player1TimerController.pause();
-            player2TimerController.start();
-        }
-        Client.getGameController().takeTurns();
-        if (Client.offlineMode) {
-            if (Board.step >= 360) {
-                Client.getGameController().gameOver();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Circle stone = stonesCircle[x][y];
+                Label step = steps[x][y];
+                if (color == Stone.Black) {
+                    stone.setFill(Color.color(0.1, 0.1, 0.1));
+                    step.setTextFill(Color.WHITE);
+                } else {
+                    stone.setFill(Color.color(0.97, 0.98, 0.98));
+                    step.setTextFill(Color.BLACK);
+                }
+                int px = borderGap + stoneGap * x;
+                int py = borderGap + stoneGap * y;
+                stone.setLayoutX(px);
+                stone.setLayoutY(py);
+                stone.setRadius(stoneRadius);
+                stone.setEffect(new Lighting());
+                chessPane.getChildren().add(stone);
+                board.add(x, y, color);
+                step.setText(Integer.toString(Board.stones[x][y].step));
+                step.setPrefSize(24, 12);
+                step.setLayoutX(px - 12);
+                step.setLayoutY(py - 8);
+                step.setAlignment(Pos.BASELINE_CENTER);
+                if (Client.getGameController().isShowStep()) {
+                    chessPane.getChildren().add(step);
+                }
+                // reverse turns
+                if (Client.getGameController().getTurn() == Stone.Black) {
+                    player2TimerController.pause();
+                    player1TimerController.start();
+                } else {
+                    player1TimerController.pause();
+                    player2TimerController.start();
+                }
+                Client.getGameController().takeTurns();
+                if (Client.offlineMode) {
+                    if (Board.step >= 360) {
+                        Client.getGameController().gameOver();
+                    }
+                    return;
+                }
+                // judge enable
+                if (Board.step >= 100) {
+                    Client.getGameController().judgeEnable();
+                    if (Board.step >= 360) {
+                        Client.getGameController().gameOver();
+                    }
+                }
             }
-            return;
-        }
-        // judge enable
-        if (Board.step >= 100) {
-            Client.getGameController().judgeEnable();
-            if (Board.step >= 360) {
-                Client.getGameController().gameOver();
-            }
-        }
+        });
     }
 
     public void remove() {
-        for (int chain : Board.dead) {
-            HashSet<Stone> stones = Board.stonesMap.get(chain);
-            for (Stone s : stones) {
-                chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
-                if (Client.getGameController().isShowStep()) {
-                    chessPane.getChildren().remove(steps[s.x][s.y]);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                for (int chain : Board.dead) {
+                    HashSet<Stone> stones = Board.stonesMap.get(chain);
+                    for (Stone s : stones) {
+                        chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
+                        if (Client.getGameController().isShowStep()) {
+                            chessPane.getChildren().remove(steps[s.x][s.y]);
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     public void showStep() {
@@ -320,7 +333,7 @@ public class ChessBoard implements Initializable {
         board.setPlayerKill(player1Kill, player2Kill);
     }
 
-    public void changeTurn(){
+    public void changeTurn() {
         color = -color;
     }
 }
