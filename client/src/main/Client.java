@@ -250,8 +250,6 @@ public class Client extends Application {
     public Client() {
         playerData.sort(comparator);
         /********* 这是要的 ***********/
-        connect = new Connect();
-        receiveThread = connect.getReceiveThread();
         /*****************************/
         signupStage = new Stage();
         signupStage.setTitle("MicroOnlineGo - 注册");
@@ -337,9 +335,13 @@ public class Client extends Application {
         primaryStage.setTitle("MicroOnlineGo - 登录");
         primaryStage.setResizable(false);
         gotoLogin();
+        connect = new Connect();
+        receiveThread = connect.getReceiveThread();
         /*
-         * keepAliveThread.setDaemon(true); keepAliveThread.start();
+         * keepAliveThread.setDaemon(true); 
+         * keepAliveThread.start();
          */
+        
         if (Connect.hasConnect()) {
             receiveThread.setDaemon(true);
             receiveThread.start();
@@ -453,10 +455,11 @@ public class Client extends Application {
         if (playerData.contains(player)) {
             // TODO: 如何修改现有player的属性
             int index = playerData.indexOf(player);
-            User user = playerData.get(index);
+            /*User user = playerData.get(index);
             user.setData(player.getData());
             user.setRoom(player.getRoom());
-            user.setState(player.getState());
+            user.setState(player.getState());*/
+            playerData.set(index, player);
 
         } else {
             playerData.add(player);
@@ -466,6 +469,7 @@ public class Client extends Application {
             subList.sort(new UserComparator());
             subList.add(0, playerData.get(0));
             playerData.setAll(subList);
+            
         }
         playersMap.put(player.getAccount(), player);
     }
@@ -479,12 +483,13 @@ public class Client extends Application {
         if (roomData.contains(room)) {
             // TODO: 如何修改现有 room 的属性
             int index = roomData.indexOf(room);
-            Room room2 = roomData.get(index);
+            /*Room room2 = roomData.get(index);
             room2.setId(room.getId());
             room2.setName(room.getName());
             room2.setPlayer1(room.getPlayer1());
             room2.setPlayer2(room.getPlayer2());
-            room2.setState(room.getState());
+            room2.setState(room.getState());*/
+            roomData.set(index, room);
         } else {
             roomData.add(room);
         }

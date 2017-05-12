@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -89,7 +90,8 @@ public class Connect {
 			 * Integer.parseInt(pro.getProperty("PORT"));
 			 */
         try {
-            socket = new Socket(IP, PORT);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(IP, PORT), 2000);
             os = socket.getOutputStream();
             is = socket.getInputStream();
             connect = true;
