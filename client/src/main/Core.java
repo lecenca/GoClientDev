@@ -119,7 +119,6 @@ public class Core {
 
     public static int liberty(Stone stone) {
         int chain = Board.chainMap.get(stone);
-        System.out.println("Point (" + stone.x + "," + stone.y + ") in chain " + chain + " has libertyMap " + Board.libertyMap.get(chain).size());
         return Board.libertyMap.get(Board.chainMap.get(stone)).size();
     }
 

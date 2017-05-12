@@ -36,7 +36,6 @@ public class Timer implements Initializable {
     }
 
     private void countintSecond(){
-        System.out.println("countingSecond start");
         periodTimeline = new Timeline();
         periodTimeline.setCycleCount(period);
         tempPeriod = period;
@@ -57,7 +56,7 @@ public class Timer implements Initializable {
         }));
     }
 
-    private void displayMainTime(int t){
+    private void displayMainTime(){
         int minute = mainTime/60;
         int second = mainTime%60;
         timeLabel.setText(String.format("%02d 分 %02d 秒",minute,second));
@@ -108,14 +107,14 @@ public class Timer implements Initializable {
         mainTimeTimeline.setCycleCount(mainTime);
         mainTimeTimeline.getKeyFrames().addAll(new KeyFrame(Duration.seconds(1), (ActionEvent ae) -> {
             --mainTime;
-            displayMainTime(mainTime);
+            displayMainTime();
             if (mainTime == 0) {
                 countintSecond();
                 displaySecond(period);
                 periodTimeline.play();
             }
         }));
-        displayMainTime(mainTime);
+        displayMainTime();
     }
 
     @Override
