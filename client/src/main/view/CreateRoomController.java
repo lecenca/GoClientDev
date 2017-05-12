@@ -62,7 +62,12 @@ public class CreateRoomController implements Initializable {
     private void createRoom() {
         /************* release *****************/
         Room room = new Room();
-        room.setId(getRoomId());
+        if(Client.offlineMode){
+            room.setId(88888);
+        }
+        else{
+            room.setId(getRoomId());
+        }
         String name = roomNameField.getText();
         if(name == null || name.isEmpty()){
             JOptionPane.showMessageDialog(null,"房间名称不能为空");
@@ -80,6 +85,9 @@ public class CreateRoomController implements Initializable {
                 );
         client.backToLobby();
         client.gotoGame(room);
+        if(Client.offlineMode){
+            return;
+        }
         Client.getLobbyController().addRoom(room);
         String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
         System.out.println("update room msg: " + msg);

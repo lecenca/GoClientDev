@@ -298,6 +298,7 @@ public class Client extends Application {
                     if (result.get() == ButtonType.CANCEL) {
                         event.consume();
                     }
+                    gameController.clear();
                     return;
                 }
                 if (getUser().getState() == Type.UserState.GAMING) {
