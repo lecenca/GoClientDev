@@ -29,7 +29,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -271,7 +270,7 @@ public class Client extends Application {
                         return;
                     }
                 }
-                else if(roomsMap.get(user.getRoom()).playerNum() == 2){
+                else if(roomsMap.get(user.getRoom()).playerNumber() == 2){
                     gameController.leaveRoom();
                 }
                 else{
@@ -440,6 +439,9 @@ public class Client extends Application {
     }
 
     public static void adjustRoom(Room room) {
+        if(room.getId() == user.getRoom()){
+            gameController.updateRoomInfo(room);
+        }
         if (roomData.contains(room)) {
             // TODO: 如何修改现有 room 的属性
             int index = roomData.indexOf(room);

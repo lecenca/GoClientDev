@@ -10,6 +10,7 @@ public class Room {
         public int mainTime;    // 主时间 [1,5,10,15,20,30,40,60,90](单位：分)
         public int period;      // 读秒时间 [15,20,30,40,50,60]（单位：秒）
         public int periodTimes; // 读秒次数 [1,3,5,7,10]
+
         public Config() {
             this.komi = 0;
             this.mainTime = 0;
@@ -30,65 +31,65 @@ public class Room {
     private static String[] period = {"15秒", "20秒", "30秒", "40秒", "50秒", "60秒"};
     private static String[] periodTimes = {"1次", "3次", "5次", "7次", "10次"};
     private static String[] roomState = {"等待中", "准备中", "对战中"};
-    private static int[] corMainTime = {1,5,10,15,20,30,40,60,90};
-    private static int[] corPeriodTime = {15,20,30,40,50,60};
-    private static int[] corTimes = {1,3,5,7,10};
+    private static int[] corMainTime = {1, 5, 10, 15, 20, 30, 40, 60, 90};
+    private static int[] corPeriodTime = {15, 20, 30, 40, 50, 60};
+    private static int[] corTimes = {1, 3, 5, 7, 10};
 
     public Room() {
     }
 
-    public boolean hasSeat(){
-        return player1 == null || player2 == null || player1.isEmpty() || player2.isEmpty();
+    public boolean hasSeat() {
+        return player1.isEmpty() || player2.isEmpty();
     }
 
-    public boolean nobody(){
-        return player1 == null && player2 == null;
-    }
-
-    public int playerNum(){
+    public int playerNumber() {
         int num = 0;
-        if(player1 != null){
+        if (!player1.isEmpty()) {
             num++;
         }
-        if(player2 != null){
+        if (!player2.isEmpty()) {
             num++;
         }
         return num;
     }
 
-    public String getPlayer1Name(){
-        if(player1 != null && !player1.isEmpty()){
+    public String getPlayer1Name() {
+        if (!player1.isEmpty()) {
             // TODO: 讲道理是可以把这个 if 去掉
-            if(Client.playersMap.get(this.player1) != null) {
+            if (Client.playersMap.get(this.player1) != null) {
                 return Client.playersMap.get(this.player1).getNickname();
             }
         }
         return "???";
     }
 
-    public String getPlayer2Name(){
-        if(player2 != null && !player2.isEmpty()){
+    public String getPlayer2Name() {
+        if (!player2.isEmpty()) {
             // TODO: 讲道理是可以把这个 if 去掉
-            if(Client.playersMap.get(this.player2) != null) {
+            if (Client.playersMap.get(this.player2) != null) {
                 return Client.playersMap.get(this.player2).getNickname();
             }
         }
         return "???";
     }
 
-    public String getKomiString(){
+    public String getKomiString() {
         return komi[this.config.komi];
     }
-    public int getKomi() {return config.komi;}
-    public int getMainTime(){
+
+    public int getKomi() {
+        return config.komi;
+    }
+
+    public int getMainTime() {
         return corMainTime[this.config.mainTime];
     }
 
-    public int getPeriodTime(){
+    public int getPeriodTime() {
         return corPeriodTime[this.config.period];
     }
 
-    public int getPeriodTimes(){
+    public int getPeriodTimes() {
         return corTimes[this.config.periodTimes];
     }
 
@@ -173,18 +174,18 @@ public class Room {
 
     @Override
     public int hashCode() {
-        final int number =24;
+        final int number = 24;
         return name.hashCode() + id * number;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj)
+        if (this == obj)
             return true;
-        if(!(obj instanceof Room))
+        if (!(obj instanceof Room))
             throw new ClassCastException();
-        Room room = (Room)obj;
+        Room room = (Room) obj;
         return this.id == room.id;
     }
-    
+
 }
