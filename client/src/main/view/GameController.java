@@ -52,6 +52,14 @@ public class GameController implements Initializable {
     @FXML
     private Label player2Name;
     @FXML
+    private Label player1Level;
+    @FXML
+    private Label player2Level;
+    @FXML
+    private Label player1Record;
+    @FXML
+    private Label player2Record;
+    @FXML
     private Label komi;
     @FXML
     private Label mainTime;
