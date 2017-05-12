@@ -2,7 +2,6 @@ package src.main.view;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -26,7 +25,10 @@ public class GameController implements Initializable {
     private int turn = Stone.Black;
 
     private int gameResult;
-    private int score;
+    private double score;
+
+    private double player1Point;
+    private double player2Point;
 
     // Room
     @FXML
@@ -46,6 +48,14 @@ public class GameController implements Initializable {
     private Label mainTime;
     @FXML
     private Label periodTime;
+    @FXML
+    private Label player1OverTimeRemain;
+    @FXML
+    private Label player2OverTimeRemain;
+    @FXML
+    private Label player1Kill;
+    @FXML
+    private Label player2Kill;
 
     @FXML
     private ChessBoard boardController;
@@ -85,19 +95,19 @@ public class GameController implements Initializable {
         turn = Stone.Black;
         boardController.setTimer(player1TimerController, player2TimerController);
 
-        Image image = new Image("resources/image/bg004.jpg",1161,700,false,true);
+        Image image = new Image("resources/image/bg004.jpg", 1161, 700, false, true);
         BackgroundSize backgroundSize = new BackgroundSize(1161, 700, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
         gamePane.setBackground(background);
 
-        Image image2 = new Image("resources/image/bg009.jpg",371,200,false,true);
+        Image image2 = new Image("resources/image/bg009.jpg", 371, 200, false, true);
         BackgroundSize backgroundSize2 = new BackgroundSize(371, 200, true, true, true, false);
         BackgroundImage backgroundImage2 = new BackgroundImage(image2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize2);
         Background background2 = new Background(backgroundImage2);
         playerPane.setBackground(background2);
 
-        Image image3 = new Image("resources/image/bg012.jpg",484,123,false,true);
+        Image image3 = new Image("resources/image/bg012.jpg", 484, 123, false, true);
         BackgroundSize backgroundSize3 = new BackgroundSize(484, 123, true, true, true, false);
         BackgroundImage backgroundImage3 = new BackgroundImage(image3, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize3);
         Background background3 = new Background(backgroundImage3);
@@ -106,19 +116,30 @@ public class GameController implements Initializable {
 
     public void setRoom(Room room) {
         this.room = room;
-        player1Name.setText(room.getPlayer1Name());
-        player2Name.setText(room.getPlayer2Name());
-        komi.setText(room.getKomi());
+        if (Client.offlineMode) {
+            player1Name.setText("玩家一");
+            player2Name.setText("玩家二");
+        } else {
+            player1Name.setText(room.getPlayer1Name());
+            player2Name.setText(room.getPlayer2Name());
+        }
+        komi.setText(room.getKomiString());
         mainTime.setText(room.getMainTime() + "分");
         periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
+        player1OverTimeRemain.setText(room.getPeriodTimes() + "次");
+        player2OverTimeRemain.setText(room.getPeriodTimes() + "次");
         player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
         player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-        if(Client.offlineMode){
+        if (Client.offlineMode) {
             turn = Stone.Black;
             boardController.setColor(Stone.Black);
+            ready.setText("开始对局");
+            surrender.setDisable(true);
+            judge.setDisable(true);
             return;
         }
         /********** release ******/
+        ready.setText("准备");
         if ((room.getPlayer1() != null || room.getPlayer1().isEmpty()) && room.getPlayer1() == Client.getUser().getAccount()) {
             roomOwner = true;
             boardController.setColor(Stone.White);
@@ -130,8 +151,7 @@ public class GameController implements Initializable {
     }
 
     public void clear() {
-        ready.setText("准备");
-        ready.setDisable(false);
+        ready.setSelected(false);
         surrender.setDisable(true);
         judge.setDisable(true);
         player1Ready = false;
@@ -148,22 +168,18 @@ public class GameController implements Initializable {
 
     @FXML
     private void ready() {
-        if(Client.offlineMode){
+        if (Client.offlineMode) {
             /*************** test *************/
             gameResultShow.setVisible(false);
             if (ready.isSelected()) {
-                player1Ready = true;
-                String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
-                System.out.println("ready request msg: " + msg);
-                Connect.send(msg);
-                ready.setText("取消准备");
+                boardController.clear();
+                player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+                player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
                 gameStart();
             } else {
-                player1Ready = false;
-                String msg = Encoder.readyRequest(room.getId(), player1Ready, player2Ready);
-                System.out.println("ready request msg: " + msg);
-                Connect.send(msg);
-                ready.setText("准备");
+                ready.setText("开始对局");
+                step.setSelected(false);
+                gameOver();
             }
             return;
             /*************** test *************/
@@ -188,10 +204,20 @@ public class GameController implements Initializable {
 
     @FXML
     public void gameStart() {
+        if (Client.offlineMode) {
+            ready.setText("结束对局");
+            begin = true;
+            step.setSelected(false);
+            player2TimerController.start();
+            return;
+        }
         ready.setText("游戏中");
         ready.setDisable(true);
+        player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+        player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
         begin = true;
         surrender.setDisable(false);
+        step.setSelected(false);
         player2TimerController.start();
         Client.getUser().setState(Type.UserState.GAMING);
         Client.updateUser();
@@ -202,16 +228,29 @@ public class GameController implements Initializable {
     @FXML
     public void gameOver() {
         begin = false;
+        getPlayerPoint();
+        double diff = Math.abs(player1Point - player2Point);
+        if (Client.offlineMode) {
+            if (diff < 0.01) {
+                gameResultShow.setText("对局结束，双方打平！");
+            } else {
+                int p = (int) diff;
+                diff -= (double) p;
+                gameResultShow.setText("对局结束，" + (player1Point > player2Point ? "白" : "黑") + "胜"
+                        + p + "目" + (Math.abs(diff - 0.5) < 0.01 ? "半" : ""));
+            }
+            gameResultShow.setTextFill(Color.color(0.2, 0.9, 0.2));
+            gameResultShow.setVisible(true);
+            player1TimerController.pause();
+            player2TimerController.pause();
+            return;
+        }
         if (roomOwner) {
-            ArrayList<Number> point = boardController.getPlayerPoint();
-            double p1 = (double) point.get(0);
-            double p2 = (double) point.get(1);
-            double diff = p1 - p2;
-            if (diff < 0.001) {
+            if (diff < 0.01) {
                 String msg = Encoder.gameOverRequest(room.getId(), 0.0, 0.0, Type.GameResult.DRAW);
                 Connect.send(msg);
                 System.out.println("game result msg: " + msg);
-            } else if (diff > 0) {
+            } else if (player1Point > player2Point) {
                 String msg = Encoder.gameOverRequest(room.getId(), diff, -diff, Type.GameResult.WIN);
                 Connect.send(msg);
                 System.out.println("game result msg: " + msg);
@@ -263,7 +302,7 @@ public class GameController implements Initializable {
         if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)) {
             gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
         } else {
-            gameResultShow.setTextFill(Color.color(0.3, 0.75, 0.3));
+            gameResultShow.setTextFill(Color.color(0.2, 0.9, 0.2));
         }
         gameResultShow.setVisible(true);
         Client.getUser().updateGameDate(score);
@@ -271,6 +310,17 @@ public class GameController implements Initializable {
         Client.updateUser();
         room.setState(Type.RoomState.READY);
         Client.updateRoom(room, Type.UpdateRoom.STATE_CHANGE);
+    }
+
+    public void getPlayerPoint() {
+        ArrayList<Number> point = Core.scoring();
+        player1Point = (double) point.get(0);
+        player2Point = (double) point.get(1);
+        if (room.getKomi() == Type.KOMI.THREE_FIVE) {
+            player1Point += 3.5;
+        } else if (room.getKomi() == Type.KOMI.SIX_FIVE) {
+            player1Point += 6.5;
+        }
     }
 
     public void place(int x, int y, int color) {
@@ -284,22 +334,21 @@ public class GameController implements Initializable {
 
     public void overTime() {
         if (roomOwner) {
-            ArrayList<Number> point = boardController.getPlayerPoint();
-            double p1 = (double) point.get(0);
-            double p2 = (double) point.get(1);
-            double diff = p1 - p2;
+            getPlayerPoint();
+            double diff = Math.abs(player1Point - player2Point);
             boolean lose = player1TimerController.getPeriodTimes() == 0;
             if (diff < 0.001) {
-                p1 = lose ? -6.0 : 6.0;
-                p2 = lose ? 6.0 : -6.0;
-            } else if (diff > 0) {
-                p1 = lose ? -3.0 : 6.0;
-                p2 = lose ? 6.0 : -3.0;
+                player1Point = lose ? -6.0 : 6.0;
+                player2Point = lose ? 6.0 : -6.0;
+            } else if (player1Point > player2Point) {
+                player1Point = lose ? -3.0 : 6.0;
+                player2Point = lose ? 6.0 : -3.0;
             } else {
-                p1 = lose ? diff - 6.0 : -diff;
-                p2 = lose ? -diff : diff - 6.0;
+                player1Point = lose ? diff - 6.0 : -diff;
+                player2Point = lose ? -diff : diff - 6.0;
             }
-            String msg = Encoder.gameOverRequest(room.getId(), p1, p2, lose ? Type.GameResult.PLAYER1_OVERTIME : Type.GameResult.PLAYER2_OVERTIME);
+            String msg = Encoder.gameOverRequest(room.getId(), player1Point, player2Point,
+                    lose ? Type.GameResult.PLAYER1_OVERTIME : Type.GameResult.PLAYER2_OVERTIME);
             Connect.send(msg);
             System.out.println("game result msg: " + msg);
         }
@@ -307,41 +356,39 @@ public class GameController implements Initializable {
 
     @FXML
     private void surrender() {
-        ArrayList<Number> point = boardController.getPlayerPoint();
-        double p1 = (double) point.get(0);
-        double p2 = (double) point.get(1);
-        double diff = p1 - p2;
+        getPlayerPoint();
+        double diff = Math.abs(player1Point - player2Point);
         if (diff < 0.001) {
-            p1 = roomOwner ? -9.0 : 6.0;
-            p2 = roomOwner ? 6.0 : -9.0;
+            player1Point = roomOwner ? -9.0 : 6.0;
+            player2Point = roomOwner ? 6.0 : -9.0;
         } else if (diff > 0) {
-            p1 = roomOwner ? -6.0 : 6.0;
-            p2 = roomOwner ? 6.0 : -6.0;
+            player1Point = roomOwner ? -6.0 : 6.0;
+            player2Point = roomOwner ? 6.0 : -6.0;
         } else {
-            p1 = roomOwner ? diff - 9.0 : -diff;
-            p2 = roomOwner ? -diff : diff - 9.0;
+            player1Point = roomOwner ? diff - 9.0 : -diff;
+            player2Point = roomOwner ? -diff : diff - 9.0;
         }
-        String msg = Encoder.gameOverRequest(room.getId(), p1, p2, roomOwner ? Type.GameResult.PLAYER1_SURRENDER : Type.GameResult.PLAYER2_SURRENDER);
+        String msg = Encoder.gameOverRequest(room.getId(), player1Point, player2Point,
+                roomOwner ? Type.GameResult.PLAYER1_SURRENDER : Type.GameResult.PLAYER2_SURRENDER);
         Connect.send(msg);
         System.out.println("game result msg: " + msg);
     }
 
     public void escape() {
-        ArrayList<Number> point = boardController.getPlayerPoint();
-        double p1 = (double) point.get(0);
-        double p2 = (double) point.get(1);
-        double diff = p1 - p2;
+        getPlayerPoint();
+        double diff = Math.abs(player1Point - player2Point);
         if (diff < 0.001) {
-            p1 = roomOwner ? -15.0 : 6.0;
-            p2 = roomOwner ? 6.0 : -15.0;
+            player1Point = roomOwner ? -15.0 : 6.0;
+            player2Point = roomOwner ? 6.0 : -15.0;
         } else if (diff > 0) {
-            p1 = roomOwner ? -12.0 : 6.0;
-            p2 = roomOwner ? 6.0 : -12.0;
+            player1Point = roomOwner ? -12.0 : 6.0;
+            player2Point = roomOwner ? 6.0 : -12.0;
         } else {
-            p1 = roomOwner ? diff - 15.0 : -diff;
-            p2 = roomOwner ? -diff : diff - 15.0;
+            player1Point = roomOwner ? diff - 15.0 : -diff;
+            player2Point = roomOwner ? -diff : diff - 15.0;
         }
-        String msg = Encoder.gameOverRequest(room.getId(), p1, p2, roomOwner ? Type.GameResult.PLAYER1_ESCAPE : Type.GameResult.PLAYER2_ESCAPE);
+        String msg = Encoder.gameOverRequest(room.getId(), player1Point, player2Point,
+                roomOwner ? Type.GameResult.PLAYER1_ESCAPE : Type.GameResult.PLAYER2_ESCAPE);
         Connect.send(msg);
         System.out.println("game result msg: " + msg);
     }

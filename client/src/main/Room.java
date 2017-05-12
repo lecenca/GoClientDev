@@ -76,10 +76,10 @@ public class Room {
         return "???";
     }
 
-    public String getKomi(){
+    public String getKomiString(){
         return komi[this.config.komi];
     }
-
+    public int getKomi() {return config.komi;}
     public int getMainTime(){
         return corMainTime[this.config.mainTime];
     }
@@ -170,4 +170,21 @@ public class Room {
                         period[this.config.period] +
                         periodTimes[this.config.periodTimes]);
     }
+
+    @Override
+    public int hashCode() {
+        final int number =24;
+        return name.hashCode() + id * number;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        if(!(obj instanceof Room))
+            throw new ClassCastException();
+        Room room = (Room)obj;
+        return this.id == room.id;
+    }
+    
 }

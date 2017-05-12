@@ -29,6 +29,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -107,10 +108,11 @@ public class Client extends Application {
                         receiveThread.start();
                     if (!messageThread.isAlive())
                         messageThread.start();
-                    /*if(!SignupController.hasCheckedAccount) {
-                       signupController.checkAccountValid();
-                       SignupController.hasCheckedAccount = true;
-                    }*/
+                    /*
+                     * if(!SignupController.hasCheckedAccount) {
+                     * signupController.checkAccountValid();
+                     * SignupController.hasCheckedAccount = true; }
+                     */
                     JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
                 } catch (UnknownHostException e) {
                     if (print2)
@@ -139,89 +141,64 @@ public class Client extends Application {
             return false;
         }
     });
-    /*private Thread listenPlayerList = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println("监听玩家列表线程启动！");
-            while (true) {
-                if (!players.isEmpty()) {
-                    User player = players.remove();
-                    playerData.add(player);
-                    playersMap.put(player.getAccount(), player);
-                }
-                
-                 * try { Thread.currentThread().sleep(1000); playerData.add(new
-                 * User("tom", 10, 100, 60, 1)); playerData.sorted(comparator);
-                 * } catch (InterruptedException e) { // TODO Auto-generated
-                 * catch block e.printStackTrace(); }
-                 
-            }
-        }
-    });
-    private Thread listenRoomList = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println("监听房间列表线程启动！");
-            while (true) {
-                if (!rooms.isEmpty()) {
-                    Room room = rooms.remove();
-                    roomData.add(room);
-                    roomsMap.put(room.getId(), room);
-                }
-                
-                 * roomData.add(new Room(2, "room..", "player1", "player2", 1));
-                 * try { Thread.currentThread().sleep(2000); } catch
-                 * (InterruptedException e) { // TODO Auto-generated catch block
-                 * e.printStackTrace(); }
-                 
-            }
-        }
-    });
-
-    private Thread chatThread = new Thread(new Runnable() {
-
-        @Override
-        public void run() {
-            System.out.println("聊天线程启动！");
-            while (true) {
-                if (!chatMessages.isEmpty())
-                    try {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                // TODO Auto-generated method stub
-                                if (!chatMessages.isEmpty())
-                                    messageData.add(chatMessages.remove());
-                            }
-                        });
-
-                    } catch (Exception e) {
-
-                    }
-                
-                 * messageData.add("hello"); try {
-                 * Thread.currentThread().sleep(2000); } catch
-                 * (InterruptedException e) { // TODO Auto-generated catch block
-                 * e.printStackTrace(); }
-                 
-            }
-
-        }
-
-        
-         * @Override public void run() { System.out.println("聊天线程启动"); // TODO
-         * Auto-generated method stub while (true) {
-         * 
-         * if(!chatMessage.isEmpty()) {
-         * chatBoxController.sendMessage(chatMessage.remove()); }
-         * 
-         * // chatBoxController.sendMessage("hello"); if
-         * (!chatMessages.isEmpty()) messageData.add(chatMessages.remove()); try
-         * { messageData.add("hello"); Thread.currentThread().sleep(2000); }
-         * catch (InterruptedException e) { catch block e.printStackTrace(); } }
-         * }
-         
-    });*/
+    /*
+     * private Thread listenPlayerList = new Thread(new Runnable() {
+     * 
+     * @Override public void run() { System.out.println("监听玩家列表线程启动！"); while
+     * (true) { if (!players.isEmpty()) { User player = players.remove();
+     * playerData.add(player); playersMap.put(player.getAccount(), player); }
+     * 
+     * try { Thread.currentThread().sleep(1000); playerData.add(new User("tom",
+     * 10, 100, 60, 1)); playerData.sorted(comparator); } catch
+     * (InterruptedException e) { // TODO Auto-generated catch block
+     * e.printStackTrace(); }
+     * 
+     * } } }); private Thread listenRoomList = new Thread(new Runnable() {
+     * 
+     * @Override public void run() { System.out.println("监听房间列表线程启动！"); while
+     * (true) { if (!rooms.isEmpty()) { Room room = rooms.remove();
+     * roomData.add(room); roomsMap.put(room.getId(), room); }
+     * 
+     * roomData.add(new Room(2, "room..", "player1", "player2", 1)); try {
+     * Thread.currentThread().sleep(2000); } catch (InterruptedException e) { //
+     * TODO Auto-generated catch block e.printStackTrace(); }
+     * 
+     * } } });
+     * 
+     * private Thread chatThread = new Thread(new Runnable() {
+     * 
+     * @Override public void run() { System.out.println("聊天线程启动！"); while (true)
+     * { if (!chatMessages.isEmpty()) try { Platform.runLater(new Runnable() {
+     * 
+     * @Override public void run() { // TODO Auto-generated method stub if
+     * (!chatMessages.isEmpty()) messageData.add(chatMessages.remove()); } });
+     * 
+     * } catch (Exception e) {
+     * 
+     * }
+     * 
+     * messageData.add("hello"); try { Thread.currentThread().sleep(2000); }
+     * catch (InterruptedException e) { // TODO Auto-generated catch block
+     * e.printStackTrace(); }
+     * 
+     * }
+     * 
+     * }
+     * 
+     * 
+     * @Override public void run() { System.out.println("聊天线程启动"); // TODO
+     * Auto-generated method stub while (true) {
+     * 
+     * if(!chatMessage.isEmpty()) {
+     * chatBoxController.sendMessage(chatMessage.remove()); }
+     * 
+     * // chatBoxController.sendMessage("hello"); if (!chatMessages.isEmpty())
+     * messageData.add(chatMessages.remove()); try { messageData.add("hello");
+     * Thread.currentThread().sleep(2000); } catch (InterruptedException e) {
+     * catch block e.printStackTrace(); } } }
+     * 
+     * });
+     */
     private Thread messageThread = new Thread(new Runnable() {
 
         @Override
@@ -271,10 +248,6 @@ public class Client extends Application {
 
     public Client() {
         playerData.sort(comparator);
-        /********* 这是要的 ***********/
-        connect = new Connect();
-        receiveThread = connect.getReceiveThread();
-        /*****************************/
         signupStage = new Stage();
         signupStage.setTitle("MicroOnlineGo - 注册");
         signupStage.setResizable(false);
@@ -311,15 +284,18 @@ public class Client extends Application {
             @Override
             public void handle(WindowEvent event) {
                 if (offlineMode) {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("提示");
-                    alert.setHeaderText("您正在游戏中，确认要退出游戏吗？");
-                    alert.initOwner(gameStage);
-                    alert.initModality(Modality.WINDOW_MODAL);
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.get() == ButtonType.CANCEL) {
-                        event.consume();
+                    if(gameController.isBegin()){
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setTitle("提示");
+                        alert.setHeaderText("您正在游戏中，确认要退出游戏吗？");
+                        alert.initOwner(gameStage);
+                        alert.initModality(Modality.WINDOW_MODAL);
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.get() == ButtonType.CANCEL) {
+                            event.consume();
+                        }
                     }
+                    gameController.clear();
                     return;
                 }
                 if (getUser().getState() == Type.UserState.GAMING) {
@@ -359,19 +335,23 @@ public class Client extends Application {
         primaryStage.setTitle("MicroOnlineGo - 登录");
         primaryStage.setResizable(false);
         gotoLogin();
-        /*keepAliveThread.setDaemon(true);
-        keepAliveThread.start();*/
+        /********* 这是要的 ***********/
+        connect = new Connect();
+        receiveThread = connect.getReceiveThread();
+        /*****************************/
+        /*
+         * keepAliveThread.setDaemon(true); keepAliveThread.start();
+         */
         if (Connect.hasConnect()) {
             receiveThread.setDaemon(true);
             receiveThread.start();
             messageThread.setDaemon(true);
             messageThread.start();
-            /*listenPlayerList.setDaemon(true);
-            listenPlayerList.start();
-            listenRoomList.setDaemon(true);
-            listenRoomList.start();
-            chatThread.setDaemon(true);
-            chatThread.start();*/
+            /*
+             * listenPlayerList.setDaemon(true); listenPlayerList.start();
+             * listenRoomList.setDaemon(true); listenRoomList.start();
+             * chatThread.setDaemon(true); chatThread.start();
+             */
         }
     }
 
@@ -474,8 +454,20 @@ public class Client extends Application {
     public static void adjustPlayer(User player) {
         if (playerData.contains(player)) {
             // TODO: 如何修改现有player的属性
+            int index = playerData.indexOf(player);
+            User user = playerData.get(index);
+            user.setData(player.getData());
+            user.setRoom(player.getRoom());
+            user.setState(player.getState());
+
         } else {
             playerData.add(player);
+        }
+        if (playerData.size() > 1) {
+            List<User> subList = playerData.subList(1, playerData.size() - 1);
+            subList.sort(new UserComparator());
+            subList.add(0, playerData.get(0));
+            playerData.setAll(subList);
         }
         playersMap.put(player.getAccount(), player);
     }
@@ -488,6 +480,13 @@ public class Client extends Application {
     public static void adjustRoom(Room room) {
         if (roomData.contains(room)) {
             // TODO: 如何修改现有 room 的属性
+            int index = roomData.indexOf(room);
+            Room room2 = roomData.get(index);
+            room2.setId(room.getId());
+            room2.setName(room.getName());
+            room2.setPlayer1(room.getPlayer1());
+            room2.setPlayer2(room.getPlayer2());
+            room2.setState(room.getState());
         } else {
             roomData.add(room);
         }

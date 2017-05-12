@@ -51,14 +51,12 @@ public class ChessBoard implements Initializable {
                 getPixelPos(event);
                 int action = action();
                 if (action != Type.Action.INVALID) {
-                    String jsonmsg = Encoder.actionRequest(action, color, index.x, index.y);
-                    System.out.println(jsonmsg);
                     place(index.x, index.y, color);
                     if (action == Type.Action.KILL) {
                         remove();
                         board.remove();
                     }
-                    if (color == -1) {
+                    if (color == Stone.Black) {
                         player2TimerController.pause();
                         player1TimerController.start();
                     } else {
@@ -91,7 +89,7 @@ public class ChessBoard implements Initializable {
     public void place(int x, int y, int color) {
         Circle stone = stonesCircle[x][y];
         Label step = steps[x][y];
-        System.out.println("ChessBoard Place: (" + x + "," + y + ")");
+        //System.out.println("ChessBoard Place: (" + x + "," + y + ")");
         if (color == Stone.Black) {
             stone.setFill(Color.color(0.1, 0.1, 0.1));
             step.setTextFill(Color.WHITE);
@@ -122,10 +120,16 @@ public class ChessBoard implements Initializable {
             player2TimerController.start();
         }
         Client.getGameController().takeTurns();
+        if(Client.offlineMode){
+            if (Board.step >= 360) {
+                Client.getGameController().gameOver();
+            }
+            return;
+        }
         // judge enable
-        if (getStep() >= 100) {
+        if (Board.step >= 100) {
             Client.getGameController().judgeEnable();
-            if (getStep() >= 360) {
+            if (Board.step >= 360) {
                 Client.getGameController().gameOver();
             }
         }
@@ -134,15 +138,12 @@ public class ChessBoard implements Initializable {
     public void remove() {
         for (int chain : Board.dead) {
             HashSet<Stone> stones = Board.stonesMap.get(chain);
-            System.out.print("ChessBoard remove chain " + chain + " : ");
             for (Stone s : stones) {
-                System.out.print("Stone(" + s.x + "," + s.y + ") ");
                 chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
                 if (Client.getGameController().isShowStep()) {
                     chessPane.getChildren().remove(steps[s.x][s.y]);
                 }
             }
-            System.out.println();
         }
     }
 
@@ -164,14 +165,6 @@ public class ChessBoard implements Initializable {
                 }
             }
         }
-    }
-
-    public int getStep() {
-        return Board.step;
-    }
-
-    public ArrayList<Number> getPlayerPoint() {
-        return Core.scoring(board);
     }
 
     public void setTimer(Timer timer01, Timer timer02) {
