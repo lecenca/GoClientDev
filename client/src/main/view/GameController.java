@@ -93,6 +93,9 @@ public class GameController implements Initializable {
         player2Ready = false;
         begin = false;
         turn = Stone.Black;
+        player1TimerController.setPlayerOverTimeRemain(player1OverTimeRemain);
+        player2TimerController.setPlayerOverTimeRemain(player2OverTimeRemain);
+        boardController.setPlayerKill(player1Kill,player2Kill);
         boardController.setTimer(player1TimerController, player2TimerController);
 
         Image image = new Image("resources/image/bg004.jpg", 1161, 700, false, true);
@@ -101,13 +104,13 @@ public class GameController implements Initializable {
         Background background = new Background(backgroundImage);
         gamePane.setBackground(background);
 
-        Image image2 = new Image("resources/image/bg009.jpg", 371, 200, false, true);
+        Image image2 = new Image("resources/image/bg014.jpg", 371, 200, false, true);
         BackgroundSize backgroundSize2 = new BackgroundSize(371, 200, true, true, true, false);
         BackgroundImage backgroundImage2 = new BackgroundImage(image2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize2);
         Background background2 = new Background(backgroundImage2);
         playerPane.setBackground(background2);
 
-        Image image3 = new Image("resources/image/bg012.jpg", 484, 123, false, true);
+        Image image3 = new Image("resources/image/bg013.jpg", 484, 123, false, true);
         BackgroundSize backgroundSize3 = new BackgroundSize(484, 123, true, true, true, false);
         BackgroundImage backgroundImage3 = new BackgroundImage(image3, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize3);
         Background background3 = new Background(backgroundImage3);
@@ -164,6 +167,10 @@ public class GameController implements Initializable {
         chatBoxController.clear();
         player1TimerController.stop();
         player2TimerController.stop();
+        /**********/
+        player1Kill.setText("0子");
+        player2Kill.setText("0子");
+        /*********/
     }
 
     @FXML

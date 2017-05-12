@@ -22,6 +22,7 @@ public class Timer implements Initializable {
     private int mainTime; //以秒的方式计算，如2分钟，mainTime存有120
     private int period;
     private int periodTimes;
+    private Label playerOverTimeRemain;
 
     private int tempPeriod;
 
@@ -29,6 +30,10 @@ public class Timer implements Initializable {
     private Label timeLabel = new Label();
 
     public Timer(){}
+
+    public void setPlayerOverTimeRemain(Label playerOverTimeRemain) {
+        this.playerOverTimeRemain = playerOverTimeRemain;
+    }
 
     private void countintSecond(){
         System.out.println("countingSecond start");
@@ -40,6 +45,7 @@ public class Timer implements Initializable {
             displaySecond(tempPeriod);
             if (tempPeriod == 0) {
                 --periodTimes;
+                playerOverTimeRemain.setText(String.valueOf(periodTimes)+"次");
                 if(periodTimes ==0){
                     Client.getGameController().overTime();
                 }else{
@@ -105,6 +111,7 @@ public class Timer implements Initializable {
             displayMainTime(mainTime);
             if (mainTime == 0) {
                 countintSecond();
+                displaySecond(period);
                 periodTimeline.play();
             }
         }));
