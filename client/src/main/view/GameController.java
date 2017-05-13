@@ -359,7 +359,10 @@ public class GameController implements Initializable {
                 // TODO Auto-generated method stub
                 player1TimerController.pause();
                 player2TimerController.pause();
+                ready.setText("准备");
                 ready.setDisable(false);
+                surrender.setDisable(true);
+                judge.setDisable(true);
                 if ((gameResult & 0x40) != 0) {
                     // escape
                     if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
