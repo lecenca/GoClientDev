@@ -1,51 +1,29 @@
 package src.main.view;
 
 import javafx.fxml.FXML;
-
 import javafx.fxml.Initializable;
-
 import javafx.geometry.Pos;
-
 import javafx.scene.control.Label;
-
 import javafx.scene.effect.Lighting;
-
 import javafx.scene.image.Image;
-
 import javafx.scene.image.ImageView;
-
 import javafx.scene.input.MouseEvent;
-
 import javafx.scene.layout.Pane;
-
 import javafx.scene.media.AudioClip;
-
 import javafx.scene.paint.Color;
-
 import javafx.scene.shape.Circle;
-
 import javafx.scene.shape.Line;
-
 import javafx.scene.shape.Rectangle;
-
 import src.main.Board;
-
 import src.main.Client;
-
 import src.main.Stone;
-
 import src.main.Type;
-
 import src.main.communication.Connect;
-
 import src.main.communication.Encoder;
 
 import java.awt.*;
-
 import java.net.URL;
-
 import java.util.HashSet;
-
 import java.util.ResourceBundle;
 
 public class ChessBoard implements Initializable {
@@ -62,7 +40,7 @@ public class ChessBoard implements Initializable {
 
     private Pane chessPane;
 
-    private static final int borderGap = 20;
+    private static final int borderGap = 25;
 
     private static final int stoneGap = 30;
 
@@ -423,9 +401,9 @@ public class ChessBoard implements Initializable {
 
         ImageView boardView = new ImageView(boardPicture);
 
-        boardView.setFitWidth(580);
+        boardView.setFitWidth(590);
 
-        boardView.setFitHeight(580);
+        boardView.setFitHeight(590);
 
         chessPane.getChildren().add(boardView);
 

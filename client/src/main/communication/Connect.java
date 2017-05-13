@@ -355,6 +355,7 @@ public class Connect {
                     place.getIntValue("color"));
         } else {
             Board.addDead(Decoder.parseKillList(jsonObject));
+            Core.SetPossibleKo(place.getIntValue("x"), place.getIntValue("y"));
             Client.getGameController().playAction(
                     Type.Action.KILL,
                     place.getIntValue("x"),
