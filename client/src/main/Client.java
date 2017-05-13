@@ -291,6 +291,9 @@ public class Client extends Application {
                     user.setRoom(0);
                     updateUser();
                     gameController.stopMusic();
+                    /*********/
+                    lobbyController.playMusic();
+                    /*********/
                     return;
                 }
                 if (user.getState() == Type.UserState.GAMING) {
@@ -318,7 +321,9 @@ public class Client extends Application {
                 user.setRoom(0);
                 updateUser();
                 gameController.clear();
-                gameController.stopMusic();
+                /*********/
+                lobbyController.playMusic();
+                /*********/
             }
         });
     }
