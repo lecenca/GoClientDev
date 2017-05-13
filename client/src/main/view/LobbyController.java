@@ -98,7 +98,7 @@ public class LobbyController implements Initializable {
     private boolean canSitDown;
 
     public LobbyController() {
-        music = new MediaPlayer(new Media(getClass().getResource("/resources/music/testMusic.mp3").toExternalForm()));
+        music = new MediaPlayer(new Media(getClass().getResource("/resources/music/bgm1.mp3").toExternalForm()));
         music.setOnEndOfMedia(new Runnable() {
             public void run() {
                 music.seek(Duration.ZERO);
@@ -179,6 +179,7 @@ public class LobbyController implements Initializable {
     private void clickRoom(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
             Room room = roomList.getSelectionModel().getSelectedItem();
+            System.out.println("click room id: "+room.getId()+" empty? "+room.hasSeat());
             if (!room.hasSeat()) {
                 JOptionPane.showMessageDialog(null, "房间已经满人");
                 return;
