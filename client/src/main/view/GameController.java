@@ -35,28 +35,31 @@ import java.util.ResourceBundle;
 public class GameController implements Initializable {
 
     private Room room;
-    private boolean player1Ready = false;
-    private boolean player2Ready = false;
-    private boolean roomOwner = false;
-    private boolean begin = false;
-    private int turn = Stone.Black;
+
+    private boolean roomOwner;
+    private boolean player1Ready;
+    private boolean player2Ready;
+    private boolean begin;
+    private int turn;
 
     private int gameResult;
     private double score;
-
     private double player1Point;
     private double player2Point;
 
     private MediaPlayer music;
 
-    // Room
+    // Pane
     @FXML
     private AnchorPane gamePane;
     @FXML
     private HBox playerPane;
     @FXML
     private AnchorPane scorePane;
+    @FXML
+    private ChessBoard boardController;
 
+    // Player information label
     @FXML
     private Label player1Name;
     @FXML
@@ -69,6 +72,8 @@ public class GameController implements Initializable {
     private Label player1Record;
     @FXML
     private Label player2Record;
+
+    // Game rule label
     @FXML
     private Label komi;
     @FXML
@@ -76,6 +81,8 @@ public class GameController implements Initializable {
     @FXML
     private Label periodTime;
     @FXML
+
+    // Game process label
     private Label player1OverTimeRemain;
     @FXML
     private Label player2OverTimeRemain;
@@ -83,9 +90,12 @@ public class GameController implements Initializable {
     private Label player1Kill;
     @FXML
     private Label player2Kill;
-
     @FXML
-    private ChessBoard boardController;
+    private Timer player1TimerController;
+    @FXML
+    private Timer player2TimerController;
+
+    // Control button
     @FXML
     private ToggleButton ready;
     @FXML
@@ -97,6 +107,7 @@ public class GameController implements Initializable {
     @FXML
     private ToggleButton axis;
 
+    // Chat windows
     @FXML
     private ChatBox chatBoxController;
     @FXML
@@ -105,10 +116,7 @@ public class GameController implements Initializable {
     private TextField inputField;
     @FXML
     private Button send;
-    @FXML
-    private Timer player1TimerController;
-    @FXML
-    private Timer player2TimerController;
+
 
     @FXML
     private Label gameResultShow;
@@ -130,7 +138,6 @@ public class GameController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initAxis();
         hideAxis();
-        gameResultShow.setVisible(false);
         surrender.setDisable(true);
         judge.setDisable(true);
         player1Ready = false;
@@ -220,20 +227,17 @@ public class GameController implements Initializable {
 
     public void setRoom(Room room) {
         this.room = room;
-        if (Client.offlineMode) {
-            player1Name.setText("玩家一");
-            player2Name.setText("玩家二");
-        } else {
-            player1Name.setText(room.getPlayer1Name());
-            player2Name.setText(room.getPlayer2Name());
+        initState();
+        initRuleLable();
+        if (!Client.offlineMode) {
+            updatePlayerInfo(room);
         }
-        komi.setText(room.getKomiString());
-        mainTime.setText(room.getMainTime() + "分");
-        periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
+        resetGameProcessLabel();
         step.setSelected(false);
         axis.setSelected(false);
+        surrender.setDisable(true);
+        judge.setDisable(true);
         volumeSlider.setValue(1.0);
-        resetLabel();
         turn = Stone.Black;
         if (Client.offlineMode) {
             ready.setText("开始对局");
@@ -254,7 +258,20 @@ public class GameController implements Initializable {
         /********** release ******/
     }
 
-    private void resetLabel() {
+    private void initState(){
+        player1Ready = false;
+        player2Ready = false;
+        begin = false;
+        turn = Stone.Black;
+    }
+
+    private void initRuleLable(){
+        komi.setText(room.getKomiString());
+        mainTime.setText(room.getMainTime() + "分");
+        periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
+    }
+
+    private void resetGameProcessLabel() {
         player1OverTimeRemain.setText(room.getPeriodTimes() + "次");
         player2OverTimeRemain.setText(room.getPeriodTimes() + "次");
         player1Kill.setText("0次");
@@ -285,7 +302,7 @@ public class GameController implements Initializable {
         surrender.setDisable(true);
         judge.setDisable(true);
         gameResultShow.setVisible(false);
-        resetLabel();
+        resetGameProcessLabel();
     }
 
     @FXML
@@ -692,17 +709,25 @@ public class GameController implements Initializable {
         return chatBoxController;
     }
 
-    public void updateRoomInfo(Room room) {
+    public void updatePlayerInfo(Room room) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if (!room.getPlayer1().isEmpty()) {
+                if (room.getPlayer1().isEmpty()) {
+                    player1Name.setText("???");
+                    player1Level.setText("?级");
+                    player1Record.setText("?胜?负?平");
+                }else{
                     User player1 = Client.playersMap.get(room.getPlayer1());
                     player1Name.setText(player1.getNickname());
                     player1Level.setText(player1.getLevelString());
                     player1Record.setText(player1.getWin() + "胜" + player1.getLose() + "负" + player1.getDraw() + "平");
                 }
-                if (!room.getPlayer2().isEmpty()) {
+                if (room.getPlayer2().isEmpty()) {
+                    player2Name.setText("???");
+                    player2Level.setText("?级");
+                    player2Record.setText("?胜?负?平");
+                }else{
                     User player2 = Client.playersMap.get(room.getPlayer2());
                     player2Name.setText(player2.getNickname());
                     player2Level.setText(player2.getLevelString());
@@ -711,4 +736,5 @@ public class GameController implements Initializable {
             }
         });
     }
+
 }

@@ -21,7 +21,6 @@ import src.main.view.*;
 import src.util.MessageQueue;
 import src.util.UserComparator;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -490,7 +489,7 @@ public class Client extends Application {
         System.out.println("adjust room: id:"+room.getId()+" komi:"+room.getKomi()+" mainTime:"+room.getMainTime()
         +" period:"+room.getPeriodTime()+"times:"+room.getPeriodTimes());
         if (room.getId() == user.getRoom()) {
-            gameController.updateRoomInfo(room);
+            gameController.updatePlayerInfo(room);
         }
         if (roomData.contains(room)) {
             // TODO: 如何修改现有 room 的属性
