@@ -138,21 +138,17 @@ public class GameController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initAxis();
         hideAxis();
-        surrender.setDisable(true);
-        judge.setDisable(true);
-        player1Ready = false;
-        player2Ready = false;
-        begin = false;
-        turn = Stone.Black;
+        gameResultShow.setVisible(false);
         player1TimerController.setPlayerOverTimeRemain(player1OverTimeRemain);
         player2TimerController.setPlayerOverTimeRemain(player2OverTimeRemain);
+
         Image image = new Image("resources/image/bg004.jpg", 1160, 700, false, true);
         BackgroundSize backgroundSize = new BackgroundSize(1161, 700, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
         gamePane.setBackground(background);
 
-        Image image2 = new Image("resources/image/bg014.jpg", 380, 200, false, true);
+        Image image2 = new Image("resources/image/bg014.jpg", 420, 200, false, true);
         BackgroundSize backgroundSize2 = new BackgroundSize(371, 200, true, true, true, false);
         BackgroundImage backgroundImage2 = new BackgroundImage(image2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize2);
         Background background2 = new Background(backgroundImage2);
@@ -164,7 +160,6 @@ public class GameController implements Initializable {
         Background background3 = new Background(backgroundImage3);
         scorePane.setBackground(background3);
         inputField.setOnKeyReleased(new EventHandler<KeyEvent>() {
-
             @Override
             public void handle(KeyEvent event) {
                 String text = inputField.getText();
@@ -227,7 +222,7 @@ public class GameController implements Initializable {
 
     public void setRoom(Room room) {
         this.room = room;
-        initState();
+        resetState();
         initRuleLable();
         if (!Client.offlineMode) {
             updatePlayerInfo(room);
@@ -235,34 +230,31 @@ public class GameController implements Initializable {
         resetGameProcessLabel();
         step.setSelected(false);
         axis.setSelected(false);
-        surrender.setDisable(true);
-        judge.setDisable(true);
         volumeSlider.setValue(1.0);
-        turn = Stone.Black;
         if (Client.offlineMode) {
             ready.setText("开始对局");
-            surrender.setDisable(true);
-            judge.setDisable(true);
-            return;
         }
-        /********** release ******/
-        ready.setText("准备");
-        ready.setSelected(false);
-        if (!room.getPlayer1().isEmpty() && room.getPlayer1() == Client.getUser().getAccount()) {
-            roomOwner = true;
-            boardController.setColor(Stone.White);
-        } else {
-            roomOwner = false;
-            boardController.setColor(Stone.Black);
+        else{
+            ready.setText("准备");
+            if (!room.getPlayer1().isEmpty() && room.getPlayer1() == Client.getUser().getAccount()) {
+                roomOwner = true;
+                boardController.setColor(Stone.White);
+            } else {
+                roomOwner = false;
+                boardController.setColor(Stone.Black);
+            }
         }
-        /********** release ******/
     }
 
-    private void initState(){
+    private void resetState(){
         player1Ready = false;
         player2Ready = false;
         begin = false;
         turn = Stone.Black;
+        ready.setDisable(false);
+        ready.setSelected(false);
+        judge.setDisable(true);
+        surrender.setDisable(true);
     }
 
     private void initRuleLable(){
@@ -284,7 +276,7 @@ public class GameController implements Initializable {
 
     @FXML
     public void clear() {
-        resetGame();
+        resetGameData();
         ready.setSelected(false);
         player1Ready = false;
         player2Ready = false;
@@ -297,10 +289,8 @@ public class GameController implements Initializable {
         music.stop();
     }
 
-    private void resetGame() {
+    private void resetGameData() {
         boardController.clear();
-        surrender.setDisable(true);
-        judge.setDisable(true);
         gameResultShow.setVisible(false);
         resetGameProcessLabel();
     }
@@ -310,7 +300,7 @@ public class GameController implements Initializable {
         if (Client.offlineMode) {
             gameResultShow.setVisible(false);
             if (ready.isSelected()) {
-                resetGame();
+                resetGameData();
                 gameStart();
             } else {
                 gameOver();
@@ -320,6 +310,7 @@ public class GameController implements Initializable {
         /***************** online **************/
         gameResultShow.setVisible(false);
         if (ready.isSelected()) {
+            resetGameData();
             if (roomOwner) {
                 player1Ready = true;
             } else {
@@ -349,7 +340,6 @@ public class GameController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                resetGame();
                 begin = true;
                 player2TimerController.start();
                 if (Client.offlineMode) {
@@ -369,9 +359,7 @@ public class GameController implements Initializable {
 
     @FXML
     public void gameOver() {
-        player1Ready = false;
-        player2Ready = false;
-        begin = false;
+        resetState();
         getPlayerPoint();
         double diff = Math.abs(player1Point - player2Point);
         if (Client.offlineMode) {
@@ -412,13 +400,10 @@ public class GameController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                // TODO Auto-generated method stub
-                player1TimerController.pause();
-                player2TimerController.pause();
+                player1TimerController.stop();
+                player2TimerController.stop();
                 ready.setText("准备");
-                ready.setDisable(false);
-                surrender.setDisable(true);
-                judge.setDisable(true);
+                resetState();
                 if ((gameResult & 0x40) != 0) {
                     // escape
                     if (roomOwner ^ gameResult == Type.GameResult.PLAYER2_ESCAPE) {
