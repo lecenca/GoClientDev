@@ -26,6 +26,7 @@ public class Decoder {
     public static Room parseRoom(JSONObject jsonObject){
         return JSON.parseObject(jsonObject.toJSONString(), Room.class);
     }
+
     public static ArrayList<Room> parseRoomList(JSONObject object) {
         JSONArray rooms = object.getJSONArray("rooms_list");
         return new ArrayList<>(JSON.parseArray(rooms.toJSONString(), Room.class));
