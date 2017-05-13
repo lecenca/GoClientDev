@@ -14,7 +14,9 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -30,7 +32,7 @@ public class Connect {
      * private ChatBox chatBox;
      */
     //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "192.168.191.3";
+    private static String IP = "221.172.211.138";
     private static int PORT = 60000;
     public static Socket socket;
     private static OutputStream os;
@@ -45,6 +47,7 @@ public class Connect {
     public static boolean recv = false;
     private static boolean connect = false;
     public static boolean timeout = false;
+
     public static Thread waitThrea = new Thread(new Runnable() {
 
         @Override
@@ -251,16 +254,22 @@ public class Connect {
         String account = jsonObject.getString("account");
         String nickname = Client.playersMap.get(account).getNickname();
         String msg = jsonObject.getString("message");
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String time = String.format(" (" + format.format(date) + "):");
         MessageQueue<String> messages = Client.getPrivateChatMessages();
-        messages.add(nickname + ":" + msg);
+        messages.add(nickname + time + msg);
     }
 
     private void handleChatMessage(JSONObject jsonObject) {
         String account = jsonObject.getString("account");
         String nickname = Client.playersMap.get(account).getNickname();
         String message = jsonObject.getString("message");
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String time = String.format(" (" + format.format(date) + "):");
         MessageQueue<String> messages = Client.getChatMessages();
-        messages.add(nickname + ":" + message);
+        messages.add(nickname + time + message);
     }
 
     private void handleSitDown(boolean state) {
@@ -354,7 +363,7 @@ public class Connect {
                 jsonObject.getIntValue("result")
         );
         Client.getGameController().setScore(
-                jsonObject.getIntValue("score")
+                jsonObject.getDoubleValue("score")
         );
         Client.getGameController().showGameResult();
     }

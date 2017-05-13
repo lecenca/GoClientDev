@@ -5,8 +5,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.control.*;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -17,8 +19,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import src.main.Client;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import src.main.Room;
 import src.main.Type;
 import src.main.User;
@@ -29,7 +29,9 @@ import src.util.MessageQueue;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.ResourceBundle;
 
 /**
  * Created by touhoudoge on 2017/3/20.
@@ -94,6 +96,7 @@ public class LobbyController implements Initializable {
     public static MessageQueue<String> chatMessage = new MessageQueue<>();
 
     private boolean canSitDown;
+
     public LobbyController() {
         music = new MediaPlayer(new Media(getClass().getResource("/resources/music/testMusic.mp3").toExternalForm()));
         music.setOnEndOfMedia(new Runnable() {
@@ -113,54 +116,52 @@ public class LobbyController implements Initializable {
         client.getRoomData().clear();
         client.playersMap.clear();
         client.roomsMap.clear();
-
         music.stop();
         /************* release *****************/
     }
 
     @FXML
-    private void send() {
-        /************* test ********************/
-        chatBoxController.sendMessage(Client.getUser().getNickname()+":"+ inputField.getText());
+    private void chat() {
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String time = String.format(" (" + format.format(date) + "):");
+        chatBoxController.sendMessage(Client.getUser().getNickname() + time + inputField.getText());
         String msg = Encoder.lobbyMessageRequest(inputField.getText());
         Connect.send(msg);
         inputField.clear();
         sendbtn.setDisable(true);
-        /************* test ********************/
     }
 
     @FXML
     private void fastMatch() {
         // TODO: find a room that is most match
-        if (Client.getUser().getState() != Type.UserState.IDLE){
-            JOptionPane.showMessageDialog(null,"您已经在房间中");
+        if (Client.getUser().getState() != Type.UserState.IDLE) {
+            JOptionPane.showMessageDialog(null, "您已经在房间中");
             return;
         }
         Room match = null;
-        for(Room room : Client.roomsMap.values()){
-            if(room.hasSeat()){
+        for (Room room : Client.roomsMap.values()) {
+            if (room.hasSeat()) {
                 match = room;
+                Client.getUser().setRoom(match.getId());
+                Client.getUser().setState(Type.UserState.READY);
+                Client.updateUser();
                 match.setState(Type.RoomState.READY);
-                if(match.getPlayer1() == null || match.getPlayer1().isEmpty()){
+                if (match.getPlayer1() == null || match.getPlayer1().isEmpty()) {
                     match.setPlayer1(Client.getUser().getAccount());
                     Client.updateRoom(room, Type.UpdateRoom.PLAYER1IN);
-                }
-                else{
+                } else {
                     match.setPlayer2(Client.getUser().getAccount());
                     Client.updateRoom(room, Type.UpdateRoom.PLAYER2IN);
                 }
-                Client.getUser().setRoom(room.getId());
-                Client.getUser().setState(Type.UserState.READY);
-                Client.updateUser();
                 break;
             }
         }
-        if(match != null){
+        if (match != null) {
             client.gotoGame(match);
-        }
-        else{
-            int res = JOptionPane.showConfirmDialog(null , "暂时找不到匹配的房间哦，是否要自己创建一个呢？","未找到匹配的房间",JOptionPane.YES_NO_OPTION) ;
-            if(res == JOptionPane.YES_OPTION){
+        } else {
+            int res = JOptionPane.showConfirmDialog(null, "暂时找不到匹配的房间哦，是否要自己创建一个呢？", "未找到匹配的房间", JOptionPane.YES_NO_OPTION);
+            if (res == JOptionPane.YES_OPTION) {
                 client.gotoCreateRoom();
             }
         }
@@ -168,8 +169,8 @@ public class LobbyController implements Initializable {
 
     @FXML
     private void gotoCreateRoom() {
-        if (Client.getUser().getState() != Type.UserState.IDLE){
-            JOptionPane.showMessageDialog(null,"您已经在房间中");
+        if (Client.getUser().getState() != Type.UserState.IDLE) {
+            JOptionPane.showMessageDialog(null, "您已经在房间中");
             return;
         }
         client.gotoCreateRoom();
@@ -179,17 +180,20 @@ public class LobbyController implements Initializable {
     private void clickRoom(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
             Room room = roomList.getSelectionModel().getSelectedItem();
-            if(!room.hasSeat()){
-                JOptionPane.showMessageDialog(null,"房间已经满人");
+            if (!room.hasSeat()) {
+                JOptionPane.showMessageDialog(null, "房间已经满人");
                 return;
             }
-            if (Client.getUser().getState() != Type.UserState.IDLE){
-                JOptionPane.showMessageDialog(null,"您已经在房间中");
+            if (Client.getUser().getState() != Type.UserState.IDLE) {
+                JOptionPane.showMessageDialog(null, "您已经在房间中");
                 return;
             }
             Connect.send(Encoder.sitdownRequest(room.getId()));
             Connect.waitForRec(Type.Response.SITDOWN_SUCCESS, Type.Response.SITDOWN_FAILED);
-            if(canSitDown){
+            if (canSitDown) {
+                Client.getUser().setRoom(room.getId());
+                Client.getUser().setState(Type.UserState.READY);
+                Client.updateUser();
                 room.setState(Type.RoomState.READY);
                 if (room.getPlayer1() == null || room.getPlayer1().isEmpty()) {
                     room.setPlayer1(Client.getUser().getAccount());
@@ -198,55 +202,37 @@ public class LobbyController implements Initializable {
                     room.setPlayer2(Client.getUser().getAccount());
                     Client.updateRoom(room, Type.UpdateRoom.PLAYER2IN);
                 }
-                Client.getUser().setRoom(room.getId());
-                Client.getUser().setState(Type.UserState.READY);
-                Client.updateUser();
                 client.gotoGame(room);
-            }
-            else{
-                JOptionPane.showMessageDialog(null,"房间已经满人");
+            } else {
+                JOptionPane.showMessageDialog(null, "房间已经满人");
             }
         }
     }
 
-    public void setSitDown(boolean canSitDown){
+    public void setSitDown(boolean canSitDown) {
         this.canSitDown = canSitDown;
     }
-
-    /*@FXML
-    private void hasText() {
-    	String text = inputField.getText();
-    	System.out.println(text);
-    	if(text == null || "".equals(text) || text.length() == 0) {
-    		sendbtn.setDisable(true);
-    	}
-    	else {
-    		sendbtn.setDisable(false);
-    	}
-    	
-    }*/
 
     public void setClient(Client client) {
         this.client = client;
     }
 
-
     public void fetchLobbyInfo() {
-        Connect.send(Encoder.fetchRoomsRequest());
         Connect.send(Encoder.fetchPlayersRequest());
+        Connect.send(Encoder.fetchRoomsRequest());
     }
 
-    public void playMusic(){
+    public void playMusic() {
         music.play();
     }
 
-    public void stopMusic(){
+    public void stopMusic() {
         music.stop();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Image image = new Image("resources/image/bg004.jpg",1149,660,false,true);
+        Image image = new Image("resources/image/bg004.jpg", 1149, 660, false, true);
         BackgroundSize backgroundSize = new BackgroundSize(1149, 660, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
@@ -256,14 +242,13 @@ public class LobbyController implements Initializable {
             @Override
             public void handle(KeyEvent event) {
                 String text = inputField.getText();
-                if(text == null || "".equals(text) || text.length() == 0) {
+                if (text == null || "".equals(text) || text.length() == 0) {
                     sendbtn.setDisable(true);
-                }
-                else {
+                } else {
                     sendbtn.setDisable(false);
-                    if(event.getCode() == KeyCode.ENTER)
-                        send();
-                } 
+                    if (event.getCode() == KeyCode.ENTER)
+                        chat();
+                }
             }
         });
 
@@ -280,14 +265,14 @@ public class LobbyController implements Initializable {
     }
 
     public void setAssociation() {
-    	chatBoxController.setItems(client.getMessageData());
+        chatBoxController.setItems(client.getMessageData());
         roomList.setItems(client.getRoomData());
         roomIdCol.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
         roomNameCol.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         player1Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer1Property());
         player2Col.setCellValueFactory(cellData -> cellData.getValue().getPlayer2Property());
         roomStateCol.setCellValueFactory(cellData -> cellData.getValue().getStatesProperty());
-        configCol.setCellValueFactory(cellDate->cellDate.getValue().getConfigProperty());
+        configCol.setCellValueFactory(cellDate -> cellDate.getValue().getConfigProperty());
         playerList.setItems(client.getPlayerData());
         nicknameCol.setCellValueFactory(cellData -> cellData.getValue().getNicknameProperty());
         levelCol.setCellValueFactory(cellData -> cellData.getValue().getLevelProperty());
@@ -296,12 +281,12 @@ public class LobbyController implements Initializable {
         playerStateCol.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
     }
 
-    public void addPlayer(User user){
+    public void addPlayer(User user) {
         user.setPriority(1);
         this.playerList.getItems().add(user);
     }
 
-    public void addRoom(Room room){
+    public void addRoom(Room room) {
         this.roomList.getItems().add(room);
     }
 
@@ -328,5 +313,5 @@ public class LobbyController implements Initializable {
     public ChatBox getChatBoxController() {
         return chatBoxController;
     }
-    
+
 }
