@@ -77,6 +77,9 @@ public class Timer implements Initializable {
 
     public void stop() {
         mainTimeTimeline.stop();
+        if(periodTimeline!=null){
+            periodTimeline.stop();
+        }
     }
 
     public void pause() {
