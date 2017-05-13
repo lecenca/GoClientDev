@@ -278,10 +278,11 @@ public class Client extends Application {
                         Optional<ButtonType> result = alert.showAndWait();
                         if (result.get() == ButtonType.CANCEL) {
                             event.consume();
-                        }else{
-                            gameController.clear();
+                            return;
                         }
                     }
+                    gameController.clear();
+                    gameController.stopMusic();
                     return;
                 }
                 Room room = roomsMap.get(user.getRoom());
@@ -289,6 +290,7 @@ public class Client extends Application {
                     user.setState(Type.UserState.IDLE);
                     user.setRoom(0);
                     updateUser();
+                    gameController.stopMusic();
                     return;
                 }
                 if (user.getState() == Type.UserState.GAMING) {
@@ -315,6 +317,8 @@ public class Client extends Application {
                 user.setState(Type.UserState.IDLE);
                 user.setRoom(0);
                 updateUser();
+                gameController.clear();
+                gameController.stopMusic();
             }
         });
     }
