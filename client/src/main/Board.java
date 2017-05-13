@@ -204,4 +204,9 @@ public class Board {
         Board.player1Kill = player1Kill;
         Board.player2Kill = player2Kill;
     }
+
+    public static HashSet<Integer> getDead() {
+        return dead;
+    }
+    
 }

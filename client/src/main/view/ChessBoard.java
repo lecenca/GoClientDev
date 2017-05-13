@@ -24,6 +24,7 @@ import src.main.communication.Encoder;
 
 import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 
@@ -83,7 +84,7 @@ public class ChessBoard implements Initializable {
             return;
             /**************************** test ****************************/
         }
-        /****************************  release ****************************/
+        /**************************** release ****************************/
         if (Client.getGameController().isBegin() && Client.getGameController().getTurn() == this.color) {
             getPixelPos(event);
             int action = action();
@@ -101,7 +102,7 @@ public class ChessBoard implements Initializable {
                 }
             }
         }
-        /****************************  release ****************************/
+        /**************************** release ****************************/
     }
 
     public void place(int x, int y, int color) {
@@ -123,7 +124,12 @@ public class ChessBoard implements Initializable {
                 stone.setLayoutY(py);
                 stone.setRadius(stoneRadius);
                 stone.setEffect(new Lighting());
-                chessPane.getChildren().add(stone);
+                if (!chessPane.getChildren().contains(stone))
+                    chessPane.getChildren().add(stone);
+                else {
+                    int index = chessPane.getChildren().indexOf(stone);
+                    chessPane.getChildren().set(index, stone);
+                }
                 board.add(x, y, color);
                 step.setText(Integer.toString(Board.stones[x][y].step));
                 step.setPrefSize(24, 12);
@@ -163,8 +169,12 @@ public class ChessBoard implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                // TODO Auto-generated method stub
+
+                System.out.println("看里面hashset是空的" + Board.getDead());
                 for (int chain : Board.dead) {
                     HashSet<Stone> stones = Board.stonesMap.get(chain);
+                    System.out.println(stones.size());
                     for (Stone s : stones) {
                         chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
                         if (Client.getGameController().isShowStep()) {
@@ -174,6 +184,7 @@ public class ChessBoard implements Initializable {
                 }
             }
         });
+
     }
 
     public void showStep() {
@@ -257,10 +268,8 @@ public class ChessBoard implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         /****** 要的 ******/
         /*
-        drawBoard();
-        drawLine();
-        drawStar();
-        */
+         * drawBoard(); drawLine(); drawStar();
+         */
         /******* 要的 ******/
         /*******************/
         Image boardPicture = new Image("resources/image/chessBoard.png");
