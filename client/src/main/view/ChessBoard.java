@@ -1,6 +1,5 @@
 package src.main.view;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -29,8 +28,6 @@ import java.util.ResourceBundle;
 
 public class ChessBoard implements Initializable {
 
-    private Timer player1TimerController;
-    private Timer player2TimerController;
     private Board board = new Board();
     private Circle[][] stonesCircle = new Circle[19][19];
     private Label[][] steps = new Label[19][19];
@@ -62,22 +59,7 @@ public class ChessBoard implements Initializable {
                 getPixelPos(event);
                 int action = action();
                 if (action != Type.Action.INVALID) {
-                    /**** sound *****/
-                    placeChessSound.play();
-                    /**** sound *****/
-                    place(index.x, index.y, color);
-                    if (action == Type.Action.KILL) {
-                        remove();
-                        board.remove();
-                    }
-                    if (color == Stone.Black) {
-                        player2TimerController.pause();
-                        player1TimerController.start();
-                    } else {
-                        player1TimerController.pause();
-                        player2TimerController.start();
-                    }
-                    color = -color;
+                    playAction(action, index.x, index.y, Client.getGameController().getTurn());
                 }
             }
             return;
@@ -88,92 +70,81 @@ public class ChessBoard implements Initializable {
             getPixelPos(event);
             int action = action();
             if (action != Type.Action.INVALID) {
-                String msg = Encoder.actionRequest(action, color, index.x, index.y);
-                System.out.println(msg);
+                String msg = Encoder.gameActionRequest(action, index.x, index.y);
                 Connect.send(msg);
-                /**** sound *****/
-                placeChessSound.play();
-                /**** sound *****/
-                place(index.x, index.y, color);
-                if (action == Type.Action.KILL) {
-                    remove();
-                    board.remove();
-                }
+                System.out.println(msg);
+                playAction(action, index.x, index.y, color);
             }
         }
         /****************************  release ****************************/
     }
 
+    public void playAction(int action, int x, int y, int color) {
+        /**** sound *****/
+        placeChessSound.play();
+        /**** sound *****/
+        place(x, y, color);
+        if (action == Type.Action.KILL) {
+            remove();
+            board.remove();
+        }
+        Client.getGameController().reverseTurn();
+    }
+
     public void place(int x, int y, int color) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Circle stone = stonesCircle[x][y];
-                Label step = steps[x][y];
-                if (color == Stone.Black) {
-                    stone.setFill(Color.color(0.1, 0.1, 0.1));
-                    step.setTextFill(Color.WHITE);
-                } else {
-                    stone.setFill(Color.color(0.97, 0.98, 0.98));
-                    step.setTextFill(Color.BLACK);
-                }
-                int px = borderGap + stoneGap * x;
-                int py = borderGap + stoneGap * y;
-                stone.setLayoutX(px);
-                stone.setLayoutY(py);
-                stone.setRadius(stoneRadius);
-                stone.setEffect(new Lighting());
-                chessPane.getChildren().add(stone);
-                board.add(x, y, color);
-                step.setText(Integer.toString(Board.stones[x][y].step));
-                step.setPrefSize(24, 12);
-                step.setLayoutX(px - 12);
-                step.setLayoutY(py - 8);
-                step.setAlignment(Pos.BASELINE_CENTER);
-                if (Client.getGameController().isShowStep()) {
-                    chessPane.getChildren().add(step);
-                }
-                // reverse turns
-                if (Client.getGameController().getTurn() == Stone.Black) {
-                    player2TimerController.pause();
-                    player1TimerController.start();
-                } else {
-                    player1TimerController.pause();
-                    player2TimerController.start();
-                }
-                Client.getGameController().takeTurns();
-                if (Client.offlineMode) {
-                    if (Board.step >= 360) {
-                        Client.getGameController().gameOver();
-                    }
-                    return;
-                }
-                // judge enable
-                if (Board.step >= 100) {
-                    Client.getGameController().judgeEnable();
-                    if (Board.step >= 360) {
-                        Client.getGameController().gameOver();
-                    }
-                }
+        System.out.println("place " + (color == Stone.Black ? "black" : "white") + " in (" + x + "," + y + ")");
+        Circle stone = stonesCircle[x][y];
+        Label step = steps[x][y];
+        if (color == Stone.Black) {
+            stone.setFill(Color.color(0.1, 0.1, 0.1));
+            step.setTextFill(Color.WHITE);
+        } else {
+            stone.setFill(Color.color(0.97, 0.98, 0.98));
+            step.setTextFill(Color.BLACK);
+        }
+        int px = borderGap + stoneGap * x;
+        int py = borderGap + stoneGap * y;
+        stone.setLayoutX(px);
+        stone.setLayoutY(py);
+        stone.setRadius(stoneRadius);
+        stone.setEffect(new Lighting());
+        chessPane.getChildren().add(stone);
+        board.add(x, y, color);
+        step.setText(Integer.toString(Board.stones[x][y].step));
+        step.setPrefSize(24, 12);
+        step.setLayoutX(px - 12);
+        step.setLayoutY(py - 8);
+        step.setAlignment(Pos.BASELINE_CENTER);
+        if (Client.getGameController().isShowStep()) {
+            chessPane.getChildren().add(step);
+        }
+        if (Client.offlineMode) {
+            if (Board.step >= 360) {
+                Client.getGameController().gameOver();
             }
-        });
+            return;
+        }
+        // judge enable
+        if (Board.step >= 100) {
+            Client.getGameController().judgeEnable();
+            if (Board.step >= 360) {
+                Client.getGameController().gameOver();
+            }
+        }
     }
 
     public void remove() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                for (int chain : Board.dead) {
-                    HashSet<Stone> stones = Board.stonesMap.get(chain);
-                    for (Stone s : stones) {
-                        chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
-                        if (Client.getGameController().isShowStep()) {
-                            chessPane.getChildren().remove(steps[s.x][s.y]);
-                        }
-                    }
+        System.out.println("执行remove");
+        for (int chain : Board.dead) {
+            HashSet<Stone> stones = Board.stonesMap.get(chain);
+            for (Stone s : stones) {
+                System.out.println("kill " + (s.color == Stone.Black ? "black" : "white") + " in (" + s.x + "," + s.y + ")");
+                chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
+                if (Client.getGameController().isShowStep()) {
+                    chessPane.getChildren().remove(steps[s.x][s.y]);
                 }
             }
-        });
+        }
     }
 
     public void showStep() {
@@ -194,11 +165,6 @@ public class ChessBoard implements Initializable {
                 }
             }
         }
-    }
-
-    public void setTimer(Timer timer01, Timer timer02) {
-        this.player1TimerController = timer01;
-        this.player2TimerController = timer02;
     }
 
     public void setColor(int color) {
@@ -250,7 +216,7 @@ public class ChessBoard implements Initializable {
             return Type.Action.INVALID;
         }
         getIndexPos();
-        return board.action(index.x, index.y, color);
+        return board.action(index.x, index.y, Client.getGameController().getTurn());
     }
 
     @Override
@@ -329,11 +295,4 @@ public class ChessBoard implements Initializable {
         }
     }
 
-    public void setPlayerKill(Label player1Kill, Label player2Kill) {
-        board.setPlayerKill(player1Kill, player2Kill);
-    }
-
-    public void changeTurn() {
-        color = -color;
-    }
 }

@@ -35,7 +35,7 @@ public class Core {
             return Type.Action.INVALID;
         }
         if (hasKilled) {
-            checkKo(x, y);
+            SetPossibleKo(x, y);
             return Type.Action.KILL;
         }
         return hasLiberty ? Type.Action.PLACE : Type.Action.INVALID;
@@ -83,11 +83,28 @@ public class Core {
             if (!isKo(x, y, stone)) {
                 hasKilled = true;
                 Board.dead.add(Board.chainMap.get(stone));
+                System.out.println("Board.dead.add ("+stone.x+","+stone.y+")");
             }
         }
     }
 
-    private static void checkKo(int x, int y) {
+    private static int liberty(Stone stone) {
+        return Board.libertyMap.get(Board.chainMap.get(stone)).size();
+    }
+
+    private static boolean isKo(int x, int y, Stone stone) {
+        if (x == Board.maybeKo[1].x && y == Board.maybeKo[1].y
+                && stone.x == Board.maybeKo[0].x && stone.y == Board.maybeKo[0].y
+                && stone.color == Board.maybeKo[0].color
+                && stone.step == Board.step - 1
+                && Board.stonesMap.get(Board.chainMap.get(stone)).size() == 1) {
+            hasKo = true;
+            return true;
+        }
+        return false;
+    }
+
+    private static void SetPossibleKo(int x, int y) {
         if (Board.dead.size() == 1) {
             for (int chain : Board.dead) {
                 if (Board.stonesMap.get(chain).size() == 1) {
@@ -103,23 +120,6 @@ public class Core {
                 break;
             }
         }
-    }
-
-    private static boolean isKo(int x, int y, Stone stone) {
-        if (x == Board.maybeKo[1].x && y == Board.maybeKo[1].y
-                && stone.x == Board.maybeKo[0].x && stone.y == Board.maybeKo[0].y
-                && stone.color == Board.maybeKo[0].color
-                && stone.step == Board.step - 1
-                && Board.stonesMap.get(Board.chainMap.get(stone)).size() == 1) {
-            hasKo = true;
-            return true;
-        }
-        return false;
-    }
-
-    public static int liberty(Stone stone) {
-        int chain = Board.chainMap.get(stone);
-        return Board.libertyMap.get(Board.chainMap.get(stone)).size();
     }
 
 }
