@@ -262,6 +262,7 @@ public class LobbyController implements Initializable {
                 });
             }
         });
+        
     }
 
     public void setAssociation() {
