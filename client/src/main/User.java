@@ -1,7 +1,5 @@
 package src.main;
 
-import java.util.Random;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -69,6 +67,7 @@ public class User {
         }
 
     }
+
     private int priority;
     private String account = new String();
     private String nickname = new String();
@@ -91,8 +90,9 @@ public class User {
         state = Type.UserState.IDLE;
         room = 0;
     }
+
     /********** test **********/
-    public User(String account, String nickname){
+    public User(String account, String nickname) {
         this.account = account;
         this.nickname = nickname;
     }
@@ -155,26 +155,23 @@ public class User {
         this.room = room;
     }
 
-    public void updateGameDate(double point){
-        if(Math.abs(point) < 0.001){
+    public void updateGameDate(double point) {
+        if (Math.abs(point) < 0.001) {
             ++data.draw;
-        }
-        else if(point > 0){
+        } else if (point > 0) {
             ++data.win;
-        }
-        else{
+        } else {
             ++data.lose;
         }
-        data.rank += (int)(point / 3.0);
+        data.rank += (int) (point / 3.0);
         adjustLevel();
     }
 
-    private void adjustLevel(){
+    private void adjustLevel() {
         int level = (this.data.rank - 1000) / 50;
-        if(level < 0){
+        if (level < 0) {
             level = 0;
-        }
-        else if(level > 26){
+        } else if (level > 26) {
             level = 26;
         }
         this.data.level = level;
@@ -198,6 +195,10 @@ public class User {
 
     public int getDraw() {
         return this.data.draw;
+    }
+
+    public String getLevelString() {
+        return level[this.data.level];
     }
 
     public StringProperty getLevelProperty() {
@@ -229,27 +230,31 @@ public class User {
     public StringProperty getLoseProperty() {
         return new SimpleStringProperty(Integer.toString(this.data.lose));
     }
+
     @Override
     public int hashCode() {
         // TODO Auto-generated method stub
         return account.hashCode();
     }
+
     @Override
     public boolean equals(Object obj) {
-        if(this == obj)
+        if (this == obj)
             return true;
-        if(!(obj instanceof User))
+        if (!(obj instanceof User))
             throw new ClassCastException();
-        User user = (User)obj;
+        User user = (User) obj;
         //System.out.println("this.accout:" + this.account + " " + "user.account: " + user.account + " " + this.account.equals(user.account));
         return this.account.equals(user.account);
     }
+
     public void setPriority(int priority) {
         this.priority = priority;
     }
+
     public int getPriority() {
         return priority;
     }
-    
+
 }
 
