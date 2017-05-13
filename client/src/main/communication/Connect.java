@@ -287,7 +287,11 @@ public class Connect {
     private void handleLogin(boolean state, JSONObject jsonObject) {
         LoginController.correct = state;
         if (state) {
-            Client.setUser(Decoder.parseUser(jsonObject.getJSONObject("user")));
+            User user = Decoder.parseUser(jsonObject.getJSONObject("user"));
+            user.setPriority(1);
+            Client.setUser(user);
+            MessageQueue<User> players = Client.getPlayers();
+            players.add(user);
         }
     }
 
@@ -319,7 +323,10 @@ public class Connect {
 
     private void handleUpdatePlayer(JSONObject jsonObject) {
         MessageQueue<User> players = Client.getPlayers();
-        players.add(Decoder.parseUser(jsonObject.getJSONObject("user")));
+        User user = Decoder.parseUser(jsonObject.getJSONObject("user"));
+        if(!user.equals(Client.getUser()))
+            user.setPriority(0);
+        players.add(user);
     }
 
     private void handleUpdateRoom(JSONObject jsonObject) {
