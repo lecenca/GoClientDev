@@ -292,11 +292,10 @@ public class Client extends Application {
                     user.setRoom(0);
                     updateUser();
                     gameController.stopMusic();
-                    /*********/
                     lobbyController.playMusic();
-                    /*********/
                     return;
                 }
+                System.out.println("room playernum: "+room.playerNumber());
                 if (user.getState() == Type.UserState.GAMING) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("提示");
