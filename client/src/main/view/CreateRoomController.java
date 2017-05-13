@@ -47,11 +47,11 @@ public class CreateRoomController implements Initializable {
     private Random random = new Random();
 
     private static String[] defaultName = {
-            "我爱MicroOnlineGo",
+            "我爱下围棋",
             "大家一起来下棋",
-            "最怕棋不逢对手",
+            "棋逢对手",
             "快来挑战我",
-            "输一盘500"
+            "孤独求败"
     };
 
     public void setClient(Client client) {
@@ -88,13 +88,12 @@ public class CreateRoomController implements Initializable {
         if(Client.offlineMode){
             return;
         }
-        Client.getLobbyController().addRoom(room);
-        String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
-        System.out.println("update room msg: " + msg);
-        Connect.send(msg);
         Client.getUser().setRoom(room.getId());
         Client.getUser().setState(Type.UserState.READY);
         Client.updateUser();
+        String msg = Encoder.updateRoomRequest(room, Type.UpdateRoom.PLAYER1IN);
+        System.out.println("update room msg: " + msg);
+        Connect.send(msg);
         /************* release ********************/
     }
 
