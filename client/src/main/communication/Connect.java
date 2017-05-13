@@ -1,6 +1,8 @@
 package src.main.communication;
 
 import com.alibaba.fastjson.JSONObject;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import src.main.*;
 import src.main.view.LoginController;
 import src.main.view.SignupController;
@@ -72,8 +74,9 @@ public class Connect {
                     }
                 i++;
                 if (i == 100) {
-                    JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
-
+                    //JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                    Alert error = new Alert(Alert.AlertType.ERROR,"连接超时，请重试");
+                    error.show();
                     break;
                 }
             }
@@ -156,7 +159,9 @@ public class Connect {
                 }
             i++;
             if (i == 100) {
-                JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                //JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                Alert error = new Alert(Alert.AlertType.ERROR,"连接超时，请重试");
+                error.show();
                 timeout = true;
                 break;
             }
@@ -441,7 +446,9 @@ public class Connect {
 
     public static boolean interrupted() {
         if (!connect) {
-            JOptionPane.showMessageDialog(null, "请检查您的网络连接", "连接失败", JOptionPane.ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(null, "请检查您的网络连接", "连接失败", JOptionPane.ERROR_MESSAGE);
+            Alert error = new Alert(Alert.AlertType.ERROR,"请检查您的网络连接");
+            error.show();
             return true;
         }
         return false;

@@ -1,7 +1,5 @@
 package src.main.view;
 
-import javax.swing.JOptionPane;
-
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,12 +7,13 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import src.main.User;
 import src.main.Client;
 import src.main.Type;
+import src.main.User;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -63,7 +62,7 @@ public class SignupController implements Initializable {
 
     @FXML
     private AnchorPane signupPane;
-    
+
     private boolean validAccount = false;
     private boolean validName = false;
     private boolean validPassword = false;
@@ -75,7 +74,7 @@ public class SignupController implements Initializable {
 
     @FXML
     private void signup() {
-        if(!hasCheckedAccount) {
+        if (!hasCheckedAccount) {
             checkAccountValid();
         }
         signUpCall = true;
@@ -128,15 +127,9 @@ public class SignupController implements Initializable {
         }
     }
 
-    // TODO: 限制账号长度
     @FXML
     public boolean checkAccountValid() {
         String text = this.account.getText();
-        String regex = "[\u4E00-\u9FA5\\w]+";
-        int length = text.length();
-        for(int i = 0; i < text.length(); i++)
-               if(text.substring(i,i+1).getBytes().length >1)
-                   length++;
         if (signUpCall) {
             if (text.isEmpty() || text == null || "".equals(text)) {
                 setTipsError(accountFormatTips, "账号不能为空");
@@ -148,19 +141,11 @@ public class SignupController implements Initializable {
                 accountFormatTips.setVisible(false);
                 return false;
             }
-            
-            if(!(text.matches(regex))) {
-                setTipsError(accountFormatTips, "账号含有非法字符！");
-                validAccount = false;
-                return false;
-            }
-            if(!(length >= 6 && length <= 16)) {
-                setTipsError(accountFormatTips, "账号长度要求6-16个字符！");
-                validAccount = false;
+            if (!keyPressCheckValid()) {
                 return false;
             }
             if (!accountNotExist()) {
-                if(Connect.timeout) {
+                if (Connect.timeout) {
                     Connect.timeout = false;
                     hasCheckedAccount = false;
                     return false;
@@ -172,6 +157,25 @@ public class SignupController implements Initializable {
         }
         setTipsOk(accountFormatTips);
         validAccount = true;
+        return true;
+    }
+
+    @FXML
+    private boolean keyPressCheckValid() {
+        String text = this.account.getText();
+        String regex = "[\\w]+";
+        int length = text.length();
+        if (!(text.matches(regex))) {
+            setTipsError(accountFormatTips, "含有非法字符");
+            validAccount = false;
+            return false;
+        }
+        if (!(length >= 6 && length <= 16)) {
+            setTipsError(accountFormatTips, "长度为6-16个字符");
+            validAccount = false;
+            return false;
+        }
+        setTipsOk(accountFormatTips);
         return true;
     }
 
@@ -187,15 +191,15 @@ public class SignupController implements Initializable {
         return accountCheckSuccess;
     }
 
-    // TODO: 限制昵称长度和字符
     @FXML
     private boolean checkNameValid() {
         String text = this.nickname.getText();
         String regex = "[\u4E00-\u9FA5\\w]+";
         int length = text.length();
-        for(int i = 0; i < text.length(); i++)
-               if(text.substring(i,i+1).getBytes().length >1)
-                   length++;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.substring(i, i + 1).getBytes().length > 1)
+                length++;
+        }
         if (signUpCall) {
             if (this.nickname.getText().isEmpty() || this.nickname.getText() == null || "".equals(this.nickname.getText())) {
                 setTipsError(nameFormatTips, "昵称不能为空");
@@ -207,13 +211,13 @@ public class SignupController implements Initializable {
                 nameFormatTips.setVisible(false);
                 return false;
             }
-            if(!(text.matches(regex))) {
-                setTipsError(nameFormatTips, "昵称含有非法字符！");
+            if (!(text.matches(regex))) {
+                setTipsError(nameFormatTips, "含有非法字符");
                 validName = false;
                 return false;
             }
-            if(!(length >= 6 && length <= 16)) {
-                setTipsError(nameFormatTips, "昵称长度要求6-16个字符！");
+            if (length > 16) {
+                setTipsError(nameFormatTips, "昵称过长");
                 validName = false;
                 return false;
             }
@@ -261,7 +265,7 @@ public class SignupController implements Initializable {
                 validPassword = false;
                 return false;
             } else if (!password.getText().matches("\\w+")) {
-                setTipsError(passwordFormatTips, "只能由数字，字母或'_'组成");
+                setTipsError(passwordFormatTips, "含有非法字符");
                 validPassword = false;
                 repeatPassword.setText("");
                 repeatPassword.setDisable(true);
@@ -382,14 +386,17 @@ public class SignupController implements Initializable {
         month.setVisibleRowCount(8);
         day.setVisibleRowCount(8);
     }
+
     @FXML
     public void clearAcountTip() {
         accountFormatTips.setText("");
     }
+
     @FXML
     public void clearNicknameTip() {
         nameFormatTips.setText("");
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ToggleGroup tg = new ToggleGroup();
@@ -467,7 +474,7 @@ public class SignupController implements Initializable {
         repeatPasswordFormatTips.setVisible(false);
         dateFormatTips.setVisible(false);
 
-        Image image = new Image("resources/image/bg002.jpg",524,420,false,true);
+        Image image = new Image("resources/image/bg002.jpg", 524, 420, false, true);
         BackgroundSize backgroundSize = new BackgroundSize(524, 420, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
