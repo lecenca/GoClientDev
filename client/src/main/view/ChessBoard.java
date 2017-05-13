@@ -193,7 +193,7 @@ public class ChessBoard implements Initializable {
         stone.setRadius(stoneRadius);
 
         stone.setEffect(new Lighting());
-        if(!chessPane.getChildren().contains(stone))
+        if (!chessPane.getChildren().contains(stone))
             chessPane.getChildren().add(stone);
         else {
             int index = chessPane.getChildren().indexOf(stone);
