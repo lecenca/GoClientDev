@@ -73,13 +73,13 @@ public class Client extends Application {
                         // e.printStackTrace();
                         System.out.println("与服务器连接失败!");
                         //JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
-                        Alert error = new Alert(Alert.AlertType.ERROR,"与服务器连接失败!\\n正在尝试重新连接...");
+                        Alert error = new Alert(Alert.AlertType.ERROR, "与服务器连接失败!\\n正在尝试重新连接...");
                         error.show();
                         reConnect();
                     } catch (NullPointerException e) {
                         System.out.println("与服务器连接失败！");
                         //JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
-                        Alert error = new Alert(Alert.AlertType.ERROR,"与服务器连接失败!\\n正在尝试重新连接...");
+                        Alert error = new Alert(Alert.AlertType.ERROR, "与服务器连接失败!\\n正在尝试重新连接...");
                         error.show();
                         reConnect();
                     }
@@ -115,7 +115,7 @@ public class Client extends Application {
                      * SignupController.hasCheckedAccount = true; }
                      */
                     //JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
-                    Alert alert = new Alert(Alert.AlertType.ERROR,"重新连接服务器成功！");
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "重新连接服务器成功！");
                     alert.show();
                 } catch (UnknownHostException e) {
                     if (print2)
@@ -213,6 +213,7 @@ public class Client extends Application {
 
         lobbyStage = new Stage();
         lobbyStage.setTitle("MicroOnlineGo - 大厅");
+        lobbyStage.setResizable(false);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/Lobby.fxml"));
         Pane lobbyPane = null;
@@ -252,6 +253,7 @@ public class Client extends Application {
         });
 
         gameStage = new Stage();
+        gameStage.setResizable(false);
         FXMLLoader loader2 = new FXMLLoader();
         loader2.setLocation(getClass().getResource("view/Game.fxml"));
         Pane gamePane = null;
@@ -285,7 +287,7 @@ public class Client extends Application {
                     return;
                 }
                 Room room = roomsMap.get(user.getRoom());
-                if(room == null){
+                if (room == null) {
                     user.setState(Type.UserState.IDLE);
                     user.setRoom(0);
                     updateUser();
@@ -320,9 +322,7 @@ public class Client extends Application {
                 user.setRoom(0);
                 updateUser();
                 gameController.clear();
-                /*********/
                 lobbyController.playMusic();
-                /*********/
             }
         });
     }
@@ -338,7 +338,6 @@ public class Client extends Application {
         /*
          * keepAliveThread.setDaemon(true); keepAliveThread.start();
          */
-
         if (Connect.hasConnect()) {
             receiveThread.setDaemon(true);
             receiveThread.start();
@@ -346,11 +345,6 @@ public class Client extends Application {
             messageThread.start();
             chatThread.setDaemon(true);
             chatThread.start();
-            /*
-             * listenPlayerList.setDaemon(true); listenPlayerList.start();
-             * listenRoomList.setDaemon(true); listenRoomList.start();
-             * chatThread.setDaemon(true); chatThread.start();
-             */
         }
     }
 
@@ -372,14 +366,12 @@ public class Client extends Application {
         lobbyController.playMusic();
     }
 
-    public void backToLobby() {
-        createRoomStage.close();
-    }
-
     public void gotoCreateRoom() {
         createRoomStage = new Stage();
         createRoomStage.initModality(Modality.APPLICATION_MODAL);
         createRoomStage.initOwner(primaryStage);
+        createRoomStage.setTitle("MicroOnlineGo - 创建房间");
+        createRoomStage.setResizable(false);
         FXMLLoader loader = new FXMLLoader();
         loader.setBuilderFactory(new JavaFXBuilderFactory());
         loader.setLocation(getClass().getResource("view/CreateRoom.fxml"));
@@ -394,12 +386,15 @@ public class Client extends Application {
         createRoomController.setClient(this);
     }
 
+    public void backToLobby() {
+        createRoomStage.close();
+    }
+
     public void gotoGame(Room room) {
         gameController.setRoom(room);
         gameController.getChatBoxController().setItems(privateMessageData);
         gameStage.setTitle("MicroOnlineGo - 房间 " + Integer.toString(room.getId()) + " " + room.getName());
         gameStage.show();
-
         lobbyController.stopMusic();
         gameController.playMusic();
     }
@@ -417,25 +412,14 @@ public class Client extends Application {
     }
 
     private Initializable changeStage(String fxml, Stage stage) {
-        // create a new stage
-        /*
-         * if(stage == null) stage = new Stage();
-         */
-        // create the fxml loader
         FXMLLoader loader = new FXMLLoader();
-        // set the location of the fxml
         loader.setLocation(getClass().getResource(fxml));
-        // get the pane
         try {
             Pane pane = loader.load();
-            // create a new scene with the pane
             Scene scene = new Scene(pane);
-            // set the scene
             stage.setScene(scene);
-            // show the stage
             stage.show();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             return (Initializable) loader.getController();
@@ -445,37 +429,22 @@ public class Client extends Application {
     static public void updateUser() {
         String msg = Encoder.updatePlayerRequest();
         Connect.send(msg);
-        System.out.println("update player msg: " + msg);
+        //System.out.println("update player msg: " + msg);
     }
 
     static public void updateRoom(Room room, int type) {
         String msg = Encoder.updateRoomRequest(room, type);
         Connect.send(msg);
-        System.out.println("update room msg: " + msg);
+        //System.out.println("update room msg: " + msg);
     }
 
     public static void adjustPlayer(User player) {
         if (playerData.contains(player)) {
-            // TODO: 如何修改现有player的属性
             int index = playerData.indexOf(player);
-            /*
-             * User user = playerData.get(index);
-             * user.setData(player.getData()); user.setRoom(player.getRoom());
-             * user.setState(player.getState());
-             */
             playerData.set(index, player);
-
         } else {
             playerData.add(player);
         }
-        /*
-         * if (playerData.size() > 1) { List<User> subList =
-         * playerData.subList(1, playerData.size() - 1); subList.sort(new
-         * UserComparator()); subList.add(0, playerData.get(0));
-         * playerData.setAll(subList);
-         * 
-         * }
-         */
         playerData.sort(new UserComparator());
         playersMap.put(player.getAccount(), player);
     }
@@ -486,21 +455,11 @@ public class Client extends Application {
     }
 
     public static void adjustRoom(Room room) {
-        System.out.println("adjust room: id:"+room.getId()+" komi:"+room.getKomi()+" mainTime:"+room.getMainTime()
-        +" period:"+room.getPeriodTime()+"times:"+room.getPeriodTimes());
         if (room.getId() == user.getRoom()) {
             gameController.updatePlayerInfo(room);
         }
         if (roomData.contains(room)) {
-            // TODO: 如何修改现有 room 的属性
             int index = roomData.indexOf(room);
-            /*
-             * Room room2 = roomData.get(index); room2.setId(room.getId());
-             * room2.setName(room.getName());
-             * room2.setPlayer1(room.getPlayer1());
-             * room2.setPlayer2(room.getPlayer2());
-             * room2.setState(room.getState());
-             */
             roomData.set(index, room);
         } else {
             roomData.add(room);

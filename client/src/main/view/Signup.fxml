@@ -63,12 +63,12 @@
             <Font size="18.0" />
          </font>
       </RadioButton>
-      <Button layoutX="87.0" layoutY="354.0" mnemonicParsing="false" onAction="#signup" prefHeight="36.0" prefWidth="176.0" style="-fx-background-color: #2acc5d;" text="立即注册" textAlignment="CENTER">
+      <Button layoutX="87.0" layoutY="354.0" mnemonicParsing="false" onAction="#signup" opacity="0.7" prefHeight="36.0" prefWidth="176.0" style="-fx-background-color: #2acc5d;" text="立即注册" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button layoutX="310.0" layoutY="354.0" mnemonicParsing="false" onAction="#backToLogin" prefHeight="0.0" prefWidth="100.0" style="-fx-background-color: #dd4f4f;" text="取消" textAlignment="CENTER">
+      <Button layoutX="310.0" layoutY="354.0" mnemonicParsing="false" onAction="#backToLogin" opacity="0.7" prefHeight="0.0" prefWidth="100.0" style="-fx-background-color: #dd4f4f;" text="取消" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
