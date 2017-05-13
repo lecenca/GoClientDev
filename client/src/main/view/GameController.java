@@ -673,11 +673,16 @@ public class GameController implements Initializable {
             @Override
             public void run() {
                 if (!room.getPlayer1().isEmpty()) {
-                    player1Name.setText(Client.playersMap.get(room.getPlayer1()).getNickname());
-                    // TODO
+                    User player1 = Client.playersMap.get(room.getPlayer1());
+                    player1Name.setText(player1.getNickname());
+                    player1Level.setText(player1.getLevelProperty().toString());
+                    player1Record.setText(player1.getWin()+"胜"+player1.getLose()+"负"+player1.getDraw()+"平");
                 }
                 if (!room.getPlayer2().isEmpty()) {
-                    player2Name.setText(Client.playersMap.get(room.getPlayer2()).getNickname());
+                    User player2 = Client.playersMap.get(room.getPlayer2());
+                    player2Name.setText(player2.getNickname());
+                    player2Level.setText(player2.getLevelProperty().toString());
+                    player2Record.setText(player2.getWin()+"胜"+player2.getLose()+"负"+player2.getDraw()+"平");
                 }
             }
         });

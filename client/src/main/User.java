@@ -188,12 +188,16 @@ public class User {
         return this.data.rank;
     }
 
-    public int getWins() {
+    public int getWin() {
         return this.data.win;
     }
 
-    public int getLoses() {
+    public int getLose() {
         return this.data.lose;
+    }
+
+    public int getDraw() {
+        return this.data.draw;
     }
 
     public StringProperty getLevelProperty() {
