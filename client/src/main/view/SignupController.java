@@ -131,15 +131,32 @@ public class SignupController implements Initializable {
     // TODO: 限制账号长度
     @FXML
     public boolean checkAccountValid() {
+        String text = this.account.getText();
+        String regex = "[\u4E00-\u9FA5\\w]+";
+        int length = text.length();
+        for(int i = 0; i < text.length(); i++)
+               if(text.substring(i,i+1).getBytes().length >1)
+                   length++;
         if (signUpCall) {
-            if (this.account.getText().isEmpty() || this.account.getText() == null || "".equals(this.account.getText())) {
+            if (text.isEmpty() || text == null || "".equals(text)) {
                 setTipsError(accountFormatTips, "账号不能为空");
                 return false;
             }
             return validAccount;
         } else {
-            if (this.account.getText().isEmpty() || this.account.getText() == null || "".equals(this.account.getText())) {
+            if (text.isEmpty() || text == null || "".equals(text)) {
                 accountFormatTips.setVisible(false);
+                return false;
+            }
+            
+            if(!(text.matches(regex))) {
+                setTipsError(accountFormatTips, "账号含有非法字符！");
+                validAccount = false;
+                return false;
+            }
+            if(!(length >= 6 && length <= 16)) {
+                setTipsError(accountFormatTips, "账号长度要求6-16个字符！");
+                validAccount = false;
                 return false;
             }
             if (!accountNotExist()) {
@@ -173,6 +190,12 @@ public class SignupController implements Initializable {
     // TODO: 限制昵称长度和字符
     @FXML
     private boolean checkNameValid() {
+        String text = this.nickname.getText();
+        String regex = "[\u4E00-\u9FA5\\w]+";
+        int length = text.length();
+        for(int i = 0; i < text.length(); i++)
+               if(text.substring(i,i+1).getBytes().length >1)
+                   length++;
         if (signUpCall) {
             if (this.nickname.getText().isEmpty() || this.nickname.getText() == null || "".equals(this.nickname.getText())) {
                 setTipsError(nameFormatTips, "昵称不能为空");
@@ -182,6 +205,16 @@ public class SignupController implements Initializable {
         } else {
             if (this.nickname.getText().isEmpty() || this.nickname.getText() == null || "".equals(this.nickname.getText())) {
                 nameFormatTips.setVisible(false);
+                return false;
+            }
+            if(!(text.matches(regex))) {
+                setTipsError(nameFormatTips, "昵称含有非法字符！");
+                validName = false;
+                return false;
+            }
+            if(!(length >= 6 && length <= 16)) {
+                setTipsError(nameFormatTips, "昵称长度要求6-16个字符！");
+                validName = false;
                 return false;
             }
         }
@@ -349,7 +382,14 @@ public class SignupController implements Initializable {
         month.setVisibleRowCount(8);
         day.setVisibleRowCount(8);
     }
-
+    @FXML
+    public void clearAcountTip() {
+        accountFormatTips.setText("");
+    }
+    @FXML
+    public void clearNicknameTip() {
+        nameFormatTips.setText("");
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ToggleGroup tg = new ToggleGroup();
