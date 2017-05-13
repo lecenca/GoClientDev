@@ -17,6 +17,39 @@ public class Room {
             this.period = 0;
             this.periodTimes = 0;
         }
+
+        public int getKomi() {
+            return komi;
+        }
+
+        public void setKomi(int komi) {
+            this.komi = komi;
+        }
+
+        public int getMainTime() {
+            return mainTime;
+        }
+
+        public void setMainTime(int mainTime) {
+            this.mainTime = mainTime;
+        }
+
+        public int getPeriod() {
+            return period;
+        }
+
+        public void setPeriod(int period) {
+            this.period = period;
+        }
+
+        public int getPeriodTimes() {
+            return periodTimes;
+        }
+
+        public void setPeriodTimes(int periodTimes) {
+            this.periodTimes = periodTimes;
+        }
+        
     }
 
     private int id = 0;
@@ -188,4 +221,12 @@ public class Room {
         return this.id == room.id;
     }
 
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+    
 }
