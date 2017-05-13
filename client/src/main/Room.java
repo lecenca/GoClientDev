@@ -88,7 +88,6 @@ public class Room {
 
     public String getPlayer1Name() {
         if (!player1.isEmpty()) {
-            // TODO: 讲道理是可以把这个 if 去掉
             if (Client.playersMap.get(this.player1) != null) {
                 return Client.playersMap.get(this.player1).getNickname();
             }
@@ -98,7 +97,6 @@ public class Room {
 
     public String getPlayer2Name() {
         if (!player2.isEmpty()) {
-            // TODO: 讲道理是可以把这个 if 去掉
             if (Client.playersMap.get(this.player2) != null) {
                 return Client.playersMap.get(this.player2).getNickname();
             }
