@@ -48,8 +48,6 @@ public class Encoder {
     }
 
     public static String updatePlayerRequest() {
-        /*JSONObject jsonObject = JSONObject.parseObject(gson.toJson(user).toString());
-        jsonObject.put("action", type);*/
         return requestJson(gson.toJson(Client.getUser()), Type.Request.UPDATE_PLAYER);
     }
 
@@ -119,7 +117,7 @@ public class Encoder {
     }
 
     private static String requestJson(String json, int type) {
-        return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
+        return "{\"request_type\":" + type + "," + json.substring(1);
     }
 
     public static String roomMessageRequest(int roomId, String message) {
