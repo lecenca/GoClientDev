@@ -1,51 +1,29 @@
 package src.main.view;
 
 import javafx.fxml.FXML;
-
 import javafx.fxml.Initializable;
-
 import javafx.geometry.Pos;
-
 import javafx.scene.control.Label;
-
 import javafx.scene.effect.Lighting;
-
 import javafx.scene.image.Image;
-
 import javafx.scene.image.ImageView;
-
 import javafx.scene.input.MouseEvent;
-
 import javafx.scene.layout.Pane;
-
 import javafx.scene.media.AudioClip;
-
 import javafx.scene.paint.Color;
-
 import javafx.scene.shape.Circle;
-
 import javafx.scene.shape.Line;
-
 import javafx.scene.shape.Rectangle;
-
 import src.main.Board;
-
 import src.main.Client;
-
 import src.main.Stone;
-
 import src.main.Type;
-
 import src.main.communication.Connect;
-
 import src.main.communication.Encoder;
 
 import java.awt.*;
-
 import java.net.URL;
-
 import java.util.HashSet;
-
 import java.util.ResourceBundle;
 
 public class ChessBoard implements Initializable {
@@ -62,7 +40,7 @@ public class ChessBoard implements Initializable {
 
     private Pane chessPane;
 
-    private static final int borderGap = 20;
+    private static final int borderGap = 25;
 
     private static final int stoneGap = 30;
 
@@ -193,7 +171,7 @@ public class ChessBoard implements Initializable {
         stone.setRadius(stoneRadius);
 
         stone.setEffect(new Lighting());
-        if (!chessPane.getChildren().contains(stone))
+        if(!chessPane.getChildren().contains(stone))
             chessPane.getChildren().add(stone);
         else {
             int index = chessPane.getChildren().indexOf(stone);
@@ -326,47 +304,87 @@ public class ChessBoard implements Initializable {
                     chessPane.getChildren().remove(stonesCircle[i][j]);
 
                     chessPane.getChildren().remove(steps[i][j]);
+
                 }
+
             }
+
         }
+
         board.clear();
+
     }
+
     private void getPixelPos(MouseEvent event) {
+
         pixel.setLocation(event.getX(), event.getY());
+
     }
+
     private void getIndexPos() {
+
         index.setLocation((pixel.x - borderGap) / stoneGap, (pixel.y - borderGap) / stoneGap);
+
     }
+
     private int action() {
+
         if (pixel.x < borderGap - stoneRadius || pixel.x > xLen - borderGap + stoneRadius
+
                 || pixel.y < borderGap - stoneRadius || pixel.y > yLen - borderGap + stoneRadius) {
+
             return Type.Action.INVALID;
+
         }
+
         int gridX = (pixel.x - borderGap) % stoneGap;
+
         int gridY = (pixel.y - borderGap) % stoneGap;
+
         int indexX = (pixel.x - borderGap) / stoneGap;
+
         int indexY = (pixel.y - borderGap) / stoneGap;
+
         if (gridX < stoneRadius && gridY < stoneRadius) {
+
             pixel.x = indexX * stoneGap + borderGap;
+
             pixel.y = indexY * stoneGap + borderGap;
+
         } else if (gridX < stoneRadius && gridY > stoneGap - stoneRadius) {
+
             pixel.x = indexX * stoneGap + borderGap;
+
             pixel.y = (indexY + 1) * stoneGap + borderGap;
+
         } else if (gridX > stoneGap - stoneRadius && gridY < stoneRadius) {
+
             pixel.x = (indexX + 1) * stoneGap + borderGap;
+
             pixel.y = indexY * stoneGap + borderGap;
+
         } else if (gridX > stoneGap - stoneRadius && gridY > stoneGap - stoneRadius) {
+
             pixel.x = (indexX + 1) * stoneGap + borderGap;
+
             pixel.y = (indexY + 1) * stoneGap + borderGap;
+
         } else {
+
             return Type.Action.INVALID;
+
         }
+
         getIndexPos();
+
         return board.action(index.x, index.y, Client.getGameController().getTurn());
+
     }
 
     @Override
+
     public void initialize(URL location, ResourceBundle resources) {
+
         /****** 要的 ******/
 
         /*
@@ -378,70 +396,129 @@ public class ChessBoard implements Initializable {
          * drawStar();
          * 
          */
+
         /******* 要的 ******/
+
         /*******************/
+
         Image boardPicture = new Image("resources/image/chessBoard.png");
+
         ImageView boardView = new ImageView(boardPicture);
-        boardView.setFitWidth(580);
-        boardView.setFitHeight(580);
+
+        boardView.setFitWidth(590);
+
+        boardView.setFitHeight(590);
+
         chessPane.getChildren().add(boardView);
+
         drawLine();
+
         drawStar();
+
         /*******************/
+
         initStonesCircle();
+
         initStepsLable();
+
     }
 
     private void drawBoard() {
+
         Rectangle rec = new Rectangle(0, 0, xLen, yLen);
+
         rec.setFill(Color.rgb(249, 214, 91));
+
         chessPane.getChildren().add(rec);
+
     }
+
     private void drawLine() {
+
         Line line;
+
         for (int i = 0; i < 19; ++i) {
+
             line = new Line(borderGap, i * stoneGap + borderGap, xLen - borderGap, i * stoneGap + borderGap);
+
             chessPane.getChildren().add(line);
+
         }
+
         for (int i = 0; i < 19; ++i) {
+
             line = new Line(i * stoneGap + borderGap, borderGap, i * stoneGap + borderGap, yLen - borderGap);
+
             line.setStroke(Color.BLACK);
+
             chessPane.getChildren().add(line);
+
         }
+
     }
 
     private void drawStar() {
+
         int x = 3;
+
         int y;
+
         Circle circle;
+
         for (int i = 0; i < 3; ++i) {
+
             y = 3;
+
             for (int j = 0; j < 3; ++j) {
+
                 circle = new Circle();
+
                 circle.setFill(Color.BLACK);
+
                 circle.setRadius(3);
+
                 circle.setLayoutX(x * stoneGap + borderGap);
+
                 circle.setLayoutY(y * stoneGap + borderGap);
+
                 chessPane.getChildren().add(circle);
+
                 y = y + 6;
+
             }
+
             x = x + 6;
+
         }
+
     }
 
     private void initStonesCircle() {
+
         for (int i = 0; i < 19; ++i) {
+
             for (int j = 0; j < 19; ++j) {
+
                 stonesCircle[i][j] = new Circle();
+
             }
+
         }
+
     }
 
     private void initStepsLable() {
+
         for (int i = 0; i < 19; ++i) {
+
             for (int j = 0; j < 19; ++j) {
+
                 steps[i][j] = new Label();
+
             }
+
         }
+
     }
+
 }
