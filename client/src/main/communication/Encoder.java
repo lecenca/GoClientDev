@@ -90,7 +90,7 @@ public class Encoder {
 
     public static String gameActionRequest(int action, int x, int y) {
         Map map = new HashMap();
-        map.put("room_id", Client.getUser().getRoom());
+		map.put("room_id", Client.getUser().getRoom());
         map.put("action", action);
         Map placeMap = new HashMap();
         placeMap.put("x", x);
