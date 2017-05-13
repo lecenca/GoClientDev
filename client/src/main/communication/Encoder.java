@@ -12,7 +12,7 @@ public class Encoder {
 
     private static Gson gson = new Gson();
 
-    public static String keepAliveRequest(){
+    public static String keepAliveRequest() {
         return "{\"request_type\":" + String.valueOf(Type.Request.KEEP_ALIVE) + "}";
     }
 
@@ -59,7 +59,7 @@ public class Encoder {
         return requestJson(gson.toJson(jsonObject), Type.Request.UPDATE_ROOM);
     }
 
-    public static String sitdownRequest(int roomId){
+    public static String sitdownRequest(int roomId) {
         Map map = new HashMap();
         map.put("room_id", roomId);
         map.put("player", Client.getUser().getAccount());
@@ -74,12 +74,12 @@ public class Encoder {
         return requestJson(gson.toJson(map), Type.Request.READY);
     }
 
-    public static String gameOverRequest(int roomId, double player1Point, double player2Point, int type){
+    public static String gameOverRequest(int roomId, double player1Point, double player2Point, int type) {
         Map map = new HashMap();
         map.put("room_id", roomId);
-        map.put("point1",player1Point);
-        map.put("point2",player2Point);
-        map.put("result",type);
+        map.put("point1", player1Point);
+        map.put("point2", player2Point);
+        map.put("result", type);
         return requestJson(gson.toJson(map), Type.Request.GAME_OVER);
     }
 
@@ -90,22 +90,17 @@ public class Encoder {
         return requestJson(gson.toJson(map), Type.Request.JUDGE);
     }
 
-    public static String actionRequest(int action, int color, int x, int y) {
+    public static String gameActionRequest(int action, int x, int y) {
         Map map = new HashMap();
         map.put("room_id", Client.getUser().getRoom());
         map.put("action", action);
-        if (action == Type.Action.PLACE) {
-            Map placeMap = new HashMap();
-            placeMap.put("x", x);
-            placeMap.put("y", y);
-            placeMap.put("color", color);
-            map.put("place", placeMap);
-        } else if (action == Type.Action.KILL) {
-            Map placeMap = new HashMap();
-            placeMap.put("x", x);
-            placeMap.put("y", y);
-            placeMap.put("color", color);
-            map.put("place", placeMap);
+        Map placeMap = new HashMap();
+        placeMap.put("x", x);
+        placeMap.put("y", y);
+        placeMap.put("color", Client.getGameController().getTurn());
+        placeMap.put("step", Board.step);
+        map.put("place", placeMap);
+        if (action == Type.Action.KILL) {
             ArrayList killList = new ArrayList();
             for (int chain : Board.dead) {
                 for (Stone stone : Board.stonesMap.get(chain)) {
@@ -113,6 +108,7 @@ public class Encoder {
                     killStone.put("x", stone.x);
                     killStone.put("y", stone.y);
                     killStone.put("color", stone.color);
+                    killStone.put("step", stone.step);
                     killList.add(killStone);
                     break;
                 }
@@ -126,18 +122,18 @@ public class Encoder {
         return "{\"request_type\":" + String.valueOf(type) + "," + json.substring(1);
     }
 
-    public static String roomMessageRequest(int roomId, String message){
+    public static String roomMessageRequest(int roomId, String message) {
         Map map = new HashMap();
-        map.put("room_id",roomId);
+        map.put("room_id", roomId);
         map.put("account", Client.getUser().getAccount());
-        map.put("message",message);
+        map.put("message", message);
         return requestJson(gson.toJson(map), Type.Request.ROOM_CHAT);
     }
 
     public static String lobbyMessageRequest(String message) {
         Map map = new HashMap();
         map.put("account", Client.getUser().getAccount());
-        map.put("message",message);
+        map.put("message", message);
         return requestJson(gson.toJson(map), Type.Request.LOBBY_CHAT);
     }
 

@@ -12,9 +12,6 @@ import src.main.Client;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Created by touhoudoge on 2017/4/9.
- */
 public class Timer implements Initializable {
 
     private Timeline mainTimeTimeline;
@@ -23,21 +20,20 @@ public class Timer implements Initializable {
     private int period;
     private int periodTimes;
     private Label playerOverTimeRemain;
-    private Timer otherTimer;
-    private ChessBoard chessBoard;
 
     private int tempPeriod;
 
     @FXML
     private Label timeLabel = new Label();
 
-    public Timer(){}
+    public Timer() {
+    }
 
     public void setPlayerOverTimeRemain(Label playerOverTimeRemain) {
         this.playerOverTimeRemain = playerOverTimeRemain;
     }
 
-    private void countintSecond(){
+    private void countintSecond() {
         periodTimeline = new Timeline();
         periodTimeline.setCycleCount(period);
         tempPeriod = period;
@@ -46,27 +42,22 @@ public class Timer implements Initializable {
             displaySecond(tempPeriod);
             if (tempPeriod == 0) {
                 --periodTimes;
-                playerOverTimeRemain.setText(String.valueOf(periodTimes)+"次");
-                if(periodTimes ==0){
+                playerOverTimeRemain.setText(periodTimes + "次");
+                if (periodTimes == 0) {
                     Client.getGameController().overTime();
-                }else{
-                    this.pause();
-                    if(Client.offlineMode){
-                        chessBoard.changeTurn();
-                    }
-                    else {
-                        Client.getGameController().takeTurns();
-                    }
-                    otherTimer.start();
+                } else {
+                    //this.pause();
+                    Client.getGameController().reverseTurn();
+                    //otherTimer.start();
                 }
             }
         }));
     }
 
-    private void displayMainTime(){
-        int minute = mainTime/60;
-        int second = mainTime%60;
-        timeLabel.setText(String.format("%02d 分 %02d 秒",minute,second));
+    private void displayMainTime() {
+        int minute = mainTime / 60;
+        int second = mainTime % 60;
+        timeLabel.setText(String.format("%02d 分 %02d 秒", minute, second));
     }
 
     private void displaySecond(int t) {
@@ -76,9 +67,9 @@ public class Timer implements Initializable {
     public void start() {
         //mainTimeTimeline.play();
         /*********** test ***********/
-        if(mainTime!=0){
+        if (mainTime != 0) {
             mainTimeTimeline.play();
-        }else{
+        } else {
             periodTimeline.play();
         }
         /*********** test ***********/
@@ -91,9 +82,9 @@ public class Timer implements Initializable {
     public void pause() {
         //mainTimeTimeline.pause();
         /*********** test ***********/
-        if(mainTime!=0){
+        if (mainTime != 0) {
             mainTimeTimeline.pause();
-        }else{
+        } else {
             periodTimeline.stop();
             tempPeriod = period;
             displaySecond(tempPeriod);
@@ -101,11 +92,11 @@ public class Timer implements Initializable {
         /*********** test ***********/
     }
 
-    public int getPeriodTimes(){
+    public int getPeriodTimes() {
         return this.periodTimes;
     }
 
-    public void init(int main, int period, int times){
+    public void init(int main, int period, int times) {
         mainTime = 60 * main;
         this.period = period;
         periodTimes = times;
@@ -125,13 +116,7 @@ public class Timer implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {}
-
-    public void setOtherTimer(Timer otherTimer) {
-        this.otherTimer = otherTimer;
+    public void initialize(URL location, ResourceBundle resources) {
     }
 
-    public void setChessBoard(ChessBoard chessBoard) {
-        this.chessBoard = chessBoard;
-    }
 }
