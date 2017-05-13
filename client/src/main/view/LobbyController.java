@@ -108,7 +108,6 @@ public class LobbyController implements Initializable {
 
     @FXML
     private void logout() {
-        /************* release *****************/
         Connect.send(Encoder.logoutRequest());
         client.getLobbyStage().close();
         client.gotoLogin();
@@ -116,8 +115,8 @@ public class LobbyController implements Initializable {
         client.getRoomData().clear();
         client.playersMap.clear();
         client.roomsMap.clear();
+        chatBoxController.clear();
         music.stop();
-        /************* release *****************/
     }
 
     @FXML
