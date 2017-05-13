@@ -18,13 +18,15 @@ public class ChatBox implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         chatBox.setItems(FXCollections.observableArrayList());
+        /*
         chatBox.getItems().addListener((ListChangeListener.Change<? extends String> change) -> {
             while (change.next()) {
-                if (change.getList().size() > 10.0) {
+                if (change.getList().size() > 10) {
                     change.getList().remove(0);
                 }
             }
         });
+        */
     }
 
     public void clearMessage(){
@@ -33,8 +35,10 @@ public class ChatBox implements Initializable {
 
     public void sendMessage(String message) {
         chatBox.getItems().add(message);
+        if (chatBox.getItems().size() > 20) {
+            chatBox.getItems().remove(0);
+        }
         chatBox.scrollTo(chatBox.getItems().size() - 1);
-        
     }
 
     public void setItems(ObservableList<String> chatMessage) {
