@@ -171,8 +171,12 @@ public class ChessBoard implements Initializable {
         stone.setRadius(stoneRadius);
 
         stone.setEffect(new Lighting());
-
-        chessPane.getChildren().add(stone);
+        if(!chessPane.getChildren().contains(stone))
+            chessPane.getChildren().add(stone);
+        else {
+            int index = chessPane.getChildren().indexOf(stone);
+            chessPane.getChildren().set(index, stone);
+        }
 
         board.add(x, y, color);
 
