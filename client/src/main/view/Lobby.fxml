@@ -21,7 +21,7 @@
          <font>
             <Font size="15.0" />
          </font></TextField>
-      <Button fx:id="sendbtn" disable="true" layoutX="625.0" layoutY="590.0" mnemonicParsing="false" onAction="#send" prefHeight="37.0" prefWidth="80.0" text="发送">
+      <Button fx:id="sendbtn" disable="true" layoutX="625.0" layoutY="590.0" mnemonicParsing="false" onAction="#chat" prefHeight="37.0" prefWidth="80.0" text="发送">
          <font>
             <Font size="15.0" />
          </font></Button>

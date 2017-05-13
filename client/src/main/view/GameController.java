@@ -1,17 +1,15 @@
 package src.main.view;
 
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-
-import javafx.application.Platform;
-
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -28,7 +26,9 @@ import src.main.communication.Encoder;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
@@ -345,7 +345,7 @@ public class GameController implements Initializable {
                 Connect.send(msg);
                 System.out.println("game result msg: " + msg);
             } else {
-                String msg = Encoder.gameOverRequest(room.getId(), diff, -diff, Type.GameResult.LOSE);
+                String msg = Encoder.gameOverRequest(room.getId(), -diff, diff, Type.GameResult.LOSE);
                 Connect.send(msg);
                 System.out.println("game result msg: " + msg);
             }
@@ -419,7 +419,7 @@ public class GameController implements Initializable {
         }
     }
 
-    public void playAction(int action, int x, int y, int color){
+    public void playAction(int action, int x, int y, int color) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -427,25 +427,6 @@ public class GameController implements Initializable {
             }
         });
     }
-
-    /*public void place(int x, int y, int color) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                boardController.place(x, y, color);
-            }
-        });
-    }
-
-    public void kill(ArrayList<Stone> deadList) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Board.addDead(deadList);
-                boardController.remove();
-            }
-        });
-    }*/
 
     public void overTime() {
         if (Client.offlineMode) {
@@ -561,7 +542,7 @@ public class GameController implements Initializable {
     }
 
     public void reverseTurn() {
-        if(turn == Stone.Black){
+        if (turn == Stone.Black) {
             player2TimerController.pause();
             player1TimerController.start();
         } else {
@@ -572,8 +553,8 @@ public class GameController implements Initializable {
     }
 
     @FXML
-    public void reverseTimer(){
-        if(turn == Stone.Black){
+    public void reverseTimer() {
+        if (turn == Stone.Black) {
             player2TimerController.pause();
             player1TimerController.start();
         } else {
@@ -629,7 +610,7 @@ public class GameController implements Initializable {
         });
     }
 
-    public void setScore(int point) {
+    public void setScore(double point) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -639,28 +620,32 @@ public class GameController implements Initializable {
     }
 
     @FXML
-    public void setPlayer1Kill(int times){
-        player1Kill.setText(times+"次");
+    public void setPlayer1Kill(int times) {
+        player1Kill.setText(times + "次");
     }
+
     @FXML
-    public void setPlayer2Kill(int times){
-        player2Kill.setText(times+"次");
+    public void setPlayer2Kill(int times) {
+        player2Kill.setText(times + "次");
     }
 
     @FXML
     private void chat() {
-        chatBoxController.sendMessage(Client.getUser().getNickname() + ":" + inputField.getText());
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String time = String.format(" (" + format.format(date) + "):");
+        chatBoxController.sendMessage(Client.getUser().getNickname() + time + inputField.getText());
         String msg = Encoder.roomMessageRequest(room.getId(), inputField.getText());
         Connect.send(msg);
         inputField.clear();
         send.setDisable(true);
     }
 
-    public void playMusic(){
+    public void playMusic() {
         music.play();
     }
 
-    public void stopMusic(){
+    public void stopMusic() {
         music.stop();
     }
 
@@ -676,13 +661,13 @@ public class GameController implements Initializable {
                     User player1 = Client.playersMap.get(room.getPlayer1());
                     player1Name.setText(player1.getNickname());
                     player1Level.setText(player1.getLevelProperty().toString());
-                    player1Record.setText(player1.getWin()+"胜"+player1.getLose()+"负"+player1.getDraw()+"平");
+                    player1Record.setText(player1.getWin() + "胜" + player1.getLose() + "负" + player1.getDraw() + "平");
                 }
                 if (!room.getPlayer2().isEmpty()) {
                     User player2 = Client.playersMap.get(room.getPlayer2());
                     player2Name.setText(player2.getNickname());
                     player2Level.setText(player2.getLevelProperty().toString());
-                    player2Record.setText(player2.getWin()+"胜"+player2.getLose()+"负"+player2.getDraw()+"平");
+                    player2Record.setText(player2.getWin() + "胜" + player2.getLose() + "负" + player2.getDraw() + "平");
                 }
             }
         });
