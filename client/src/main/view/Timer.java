@@ -33,6 +33,11 @@ public class Timer implements Initializable {
         this.playerOverTimeRemain = playerOverTimeRemain;
     }
 
+
+    /**
+     * initialize periodTimeline and start it to counting second in
+     * stage 2.
+     */
     private void countintSecond() {
         periodTimeline = new Timeline();
         periodTimeline.setCycleCount(period);
@@ -99,6 +104,15 @@ public class Timer implements Initializable {
         return this.periodTimes;
     }
 
+    /**
+     *
+     * @param main
+     * @param period
+     * @param times
+     *
+     * initialize the timer. setup the mainTimeline, which is used to
+     * counting second in the stage 1.
+     */
     public void init(int main, int period, int times) {
         mainTime = 60 * main;
         this.period = period;
