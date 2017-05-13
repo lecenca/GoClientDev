@@ -250,5 +250,6 @@ public class User {
     public int getPriority() {
         return priority;
     }
+    
 }
 
