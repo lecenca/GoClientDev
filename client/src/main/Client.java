@@ -73,13 +73,15 @@ public class Client extends Application {
                     } catch (IOException e) {
                         // e.printStackTrace();
                         System.out.println("与服务器连接失败!");
-                        JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误",
-                                JOptionPane.INFORMATION_MESSAGE);
+                        //JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                        Alert error = new Alert(Alert.AlertType.ERROR,"与服务器连接失败!\\n正在尝试重新连接...");
+                        error.show();
                         reConnect();
                     } catch (NullPointerException e) {
                         System.out.println("与服务器连接失败！");
-                        JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误",
-                                JOptionPane.INFORMATION_MESSAGE);
+                        //JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
+                        Alert error = new Alert(Alert.AlertType.ERROR,"与服务器连接失败!\\n正在尝试重新连接...");
+                        error.show();
                         reConnect();
                     }
                     lastTimeCheck = System.currentTimeMillis();
@@ -113,7 +115,9 @@ public class Client extends Application {
                      * signupController.checkAccountValid();
                      * SignupController.hasCheckedAccount = true; }
                      */
-                    JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
+                    //JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
+                    Alert alert = new Alert(Alert.AlertType.ERROR,"重新连接服务器成功！");
+                    alert.show();
                 } catch (UnknownHostException e) {
                     if (print2)
                         System.out.println("客户端异常！");
@@ -253,21 +257,24 @@ public class Client extends Application {
                     if(gameController.isBegin()){
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         alert.setTitle("提示");
-                        alert.setHeaderText("您正在游戏中，确认要退出游戏吗？");
+                        alert.setHeaderText("提示");
+                        alert.setContentText("您正在游戏中，确认要退出游戏吗？");
                         alert.initOwner(gameStage);
                         alert.initModality(Modality.WINDOW_MODAL);
                         Optional<ButtonType> result = alert.showAndWait();
                         if (result.get() == ButtonType.CANCEL) {
                             event.consume();
+                        }else{
+                            gameController.clear();
                         }
                     }
-                    gameController.clear();
                     return;
                 }
                 if (user.getState() == Type.UserState.GAMING) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("提示");
-                    alert.setHeaderText("您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分");
+                    alert.setHeaderText("提示");
+                    alert.setContentText("您正在游戏中，确认要退出游戏吗？\n强制退出将会损失较多积分");
                     alert.initOwner(gameStage);
                     alert.initModality(Modality.WINDOW_MODAL);
                     Optional<ButtonType> result = alert.showAndWait();
