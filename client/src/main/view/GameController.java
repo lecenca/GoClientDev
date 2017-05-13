@@ -135,13 +135,6 @@ public class GameController implements Initializable {
         turn = Stone.Black;
         player1TimerController.setPlayerOverTimeRemain(player1OverTimeRemain);
         player2TimerController.setPlayerOverTimeRemain(player2OverTimeRemain);
-        player1TimerController.setOtherTimer(player2TimerController);
-        player2TimerController.setOtherTimer(player1TimerController);
-        player1TimerController.setChessBoard(boardController);
-        player2TimerController.setChessBoard(boardController);
-        boardController.setPlayerKill(player1Kill, player2Kill);
-        boardController.setTimer(player1TimerController, player2TimerController);
-
         Image image = new Image("resources/image/bg004.jpg", 1161, 700, false, true);
         BackgroundSize backgroundSize = new BackgroundSize(1161, 700, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
@@ -199,9 +192,8 @@ public class GameController implements Initializable {
         mainTime.setText(room.getMainTime() + "分");
         periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
         resetLabel();
+        turn = Stone.Black;
         if (Client.offlineMode) {
-            turn = Stone.Black;
-            boardController.setColor(Stone.Black);
             ready.setText("开始对局");
             surrender.setDisable(true);
             judge.setDisable(true);
@@ -209,7 +201,7 @@ public class GameController implements Initializable {
         }
         /********** release ******/
         ready.setText("准备");
-        if ((room.getPlayer1() != null || room.getPlayer1().isEmpty()) && room.getPlayer1() == Client.getUser().getAccount()) {
+        if (!room.getPlayer1().isEmpty() && room.getPlayer1() == Client.getUser().getAccount()) {
             roomOwner = true;
             boardController.setColor(Stone.White);
         } else {
@@ -427,7 +419,16 @@ public class GameController implements Initializable {
         }
     }
 
-    public void place(int x, int y, int color) {
+    public void playAction(int action, int x, int y, int color){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                boardController.playAction(action, x, y, color);
+            }
+        });
+    }
+
+    /*public void place(int x, int y, int color) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -444,7 +445,7 @@ public class GameController implements Initializable {
                 boardController.remove();
             }
         });
-    }
+    }*/
 
     public void overTime() {
         if (Client.offlineMode) {
@@ -524,7 +525,6 @@ public class GameController implements Initializable {
     }
 
     public void leaveRoom() {
-        Room room = Client.roomsMap.get(Client.getUser().getRoom());
         room.setState(Type.RoomState.READY);
         if (room.getPlayer1() == Client.getUser().getAccount()) {
             room.setPlayer1("");
@@ -560,8 +560,26 @@ public class GameController implements Initializable {
         return turn;
     }
 
-    public void takeTurns() {
+    public void reverseTurn() {
+        if(turn == Stone.Black){
+            player2TimerController.pause();
+            player1TimerController.start();
+        } else {
+            player1TimerController.pause();
+            player2TimerController.start();
+        }
         turn = -turn;
+    }
+
+    @FXML
+    public void reverseTimer(){
+        if(turn == Stone.Black){
+            player2TimerController.pause();
+            player1TimerController.start();
+        } else {
+            player1TimerController.pause();
+            player2TimerController.start();
+        }
     }
 
     @FXML
@@ -620,18 +638,14 @@ public class GameController implements Initializable {
         });
     }
 
-    // chat windows
-    /*@FXML
-    private void hasText() {
-        String text = inputField.getText();
-        if (text == null || "".equals(text) || text.isEmpty()) {
-            send.setDisable(true);
-            
-        } else {
-            send.setDisable(false);
-            
-        }
-    }*/
+    @FXML
+    public void setPlayer1Kill(int times){
+        player1Kill.setText(times+"次");
+    }
+    @FXML
+    public void setPlayer2Kill(int times){
+        player2Kill.setText(times+"次");
+    }
 
     @FXML
     private void chat() {

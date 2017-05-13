@@ -18,12 +18,9 @@ public class Board {
     public static Stone[] maybeKo = new Stone[2];
     public static int step = 1;
 
-    /******************/
-    private static int deadNum1 = 0;
-    private static int deadNum2 = 0;
-    private static Label player1Kill;
-    private static Label player2Kill;
-    /******************/
+
+    private static int player1KillTimes = 0;
+    private static int player2KillTimes = 0;
     private static boolean[] used = new boolean[361];
 
     public Board() {
@@ -48,8 +45,8 @@ public class Board {
         dead.clear();
         step = 1;
         /******/
-        deadNum1 = 0;
-        deadNum2 = 0;
+        player1KillTimes = 0;
+        player2KillTimes = 0;
         /********/
     }
 
@@ -75,14 +72,14 @@ public class Board {
         /*******************************************/
         if (Client.getGameController().getTurn() == Stone.Black) {
             for (int chain : dead) {
-                deadNum2 += stonesMap.get(chain).size();
+                player2KillTimes += stonesMap.get(chain).size();
             }
-            player1Kill.setText(deadNum2 + "子");
+            Client.getGameController().setPlayer2Kill(player2KillTimes);
         } else {
             for (int chain : dead) {
-                deadNum1 += stonesMap.get(chain).size();
+                player1KillTimes += stonesMap.get(chain).size();
             }
-            player2Kill.setText(deadNum1 + "子");
+            Client.getGameController().setPlayer1Kill(player1KillTimes);
         }
         /*******************************************/
         for (int chain : dead) {
@@ -200,13 +197,4 @@ public class Board {
         libertyMap.get(chain).add(point);
     }
 
-    public static void setPlayerKill(Label player1Kill, Label player2Kill) {
-        Board.player1Kill = player1Kill;
-        Board.player2Kill = player2Kill;
-    }
-
-    public static HashSet<Integer> getDead() {
-        return dead;
-    }
-    
 }

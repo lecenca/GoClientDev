@@ -91,7 +91,7 @@ public class Connect {
 			 */
         try {
             socket = new Socket();
-            socket.connect(new InetSocketAddress(IP, PORT),2000);
+            socket.connect(new InetSocketAddress(IP, PORT), 2000);
             os = socket.getOutputStream();
             is = socket.getInputStream();
             connect = true;
@@ -263,7 +263,7 @@ public class Connect {
         messages.add(nickname + ":" + message);
     }
 
-    private void handleSitDown(boolean state){
+    private void handleSitDown(boolean state) {
         Client.getLobbyController().setSitDown(state);
     }
 
@@ -282,7 +282,7 @@ public class Connect {
         }
     }
 
-    private void handleLogout(JSONObject jsonObject){
+    private void handleLogout(JSONObject jsonObject) {
         String account = jsonObject.getString("account");
         Client.removePlayer(account);
     }
@@ -308,13 +308,13 @@ public class Connect {
         }
     }
 
-    private void handleUpdatePlayer(JSONObject jsonObject){
+    private void handleUpdatePlayer(JSONObject jsonObject) {
         MessageQueue<User> players = Client.getPlayers();
         players.add(Decoder.parseUser(jsonObject.getJSONObject("user")));
     }
 
-    private void handleUpdateRoom(JSONObject jsonObject){
-        if(jsonObject.getIntValue("action") == Type.UpdateRoom.DESTROY){
+    private void handleUpdateRoom(JSONObject jsonObject) {
+        if (jsonObject.getIntValue("action") == Type.UpdateRoom.DESTROY) {
             Client.removeRoom(jsonObject.getJSONObject("room").getIntValue("id"));
             return;
         }
@@ -324,25 +324,32 @@ public class Connect {
 
     private void handleReady(JSONObject jsonObject) {
         Client.getGameController().setReady(jsonObject.getBooleanValue("player1"),
-                                            jsonObject.getBooleanValue("player2"));
+                jsonObject.getBooleanValue("player2"));
     }
 
-    private void handleJudge(){
+    private void handleJudge() {
         Client.getGameController().judgeFromOpponent();
     }
 
     private void handleGameAction(JSONObject jsonObject) {
-        Client.getGameController().place(
-                jsonObject.getIntValue("x"),
-                jsonObject.getIntValue("y"),
-                jsonObject.getIntValue("color"));
-        if (jsonObject.getIntValue("action") == Type.Action.KILL) {
-            ArrayList<Stone> deadList = Decoder.parseKillList(jsonObject);
-            Client.getGameController().kill(deadList);
+        JSONObject place = jsonObject.getJSONObject("place");
+        if (jsonObject.getIntValue("action") == Type.Action.PLACE) {
+            Client.getGameController().playAction(
+                    Type.Action.PLACE,
+                    place.getIntValue("x"),
+                    place.getIntValue("y"),
+                    place.getIntValue("color"));
+        } else {
+            Board.addDead(Decoder.parseKillList(jsonObject));
+            Client.getGameController().playAction(
+                    Type.Action.KILL,
+                    place.getIntValue("x"),
+                    place.getIntValue("y"),
+                    place.getIntValue("color"));
         }
     }
 
-    private void handleGameResult(JSONObject jsonObject){
+    private void handleGameResult(JSONObject jsonObject) {
         Client.getGameController().setGameResult(
                 jsonObject.getIntValue("result")
         );
@@ -408,7 +415,7 @@ public class Connect {
         return receiveThread;
     }
     /*
-	public String getRegisterMessage() {
+    public String getRegisterMessage() {
 		return registerMessage;
 	}
 

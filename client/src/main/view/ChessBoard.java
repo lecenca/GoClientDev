@@ -166,24 +166,17 @@ public class ChessBoard implements Initializable {
     }
 
     public void remove() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-
-                System.out.println("看里面hashset是空的" + Board.getDead());
-                for (int chain : Board.dead) {
-                    HashSet<Stone> stones = Board.stonesMap.get(chain);
-                    System.out.println(stones.size());
-                    for (Stone s : stones) {
-                        chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
-                        if (Client.getGameController().isShowStep()) {
-                            chessPane.getChildren().remove(steps[s.x][s.y]);
-                        }
-                    }
+        System.out.println("执行remove");
+        for (int chain : Board.dead) {
+            HashSet<Stone> stones = Board.stonesMap.get(chain);
+            for (Stone s : stones) {
+                System.out.println("kill " + (s.color == Stone.Black ? "black" : "white") + " in (" + s.x + "," + s.y + ")");
+                chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
+                if (Client.getGameController().isShowStep()) {
+                    chessPane.getChildren().remove(steps[s.x][s.y]);
                 }
             }
-        });
+        }
 
     }
 

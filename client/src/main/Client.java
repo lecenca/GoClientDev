@@ -223,6 +223,16 @@ public class Client extends Application {
         lobbyController = loader.getController();
         lobbyController.setClient(this);
         lobbyController.setAssociation();
+        lobbyStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Connect.send(Encoder.logoutRequest());
+                playerData.clear();
+                roomData.clear();
+                playersMap.clear();
+                roomsMap.clear();
+            }
+        });
 
         gameStage = new Stage();
         FXMLLoader loader2 = new FXMLLoader();
