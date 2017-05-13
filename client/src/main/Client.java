@@ -146,11 +146,11 @@ public class Client extends Application {
         }
     });
     private Thread chatThread = new Thread(new Runnable() {
-        
+
         @Override
         public void run() {
             System.out.println("聊天线程启动！");
-            while(true) {
+            while (true) {
                 if (!chatMessages.isEmpty())
                     try {
                         Platform.runLater(new Runnable() {
@@ -185,7 +185,7 @@ public class Client extends Application {
                     }
             }
         }
-        
+
     });
     private Thread messageThread = new Thread(new Runnable() {
 
@@ -201,7 +201,7 @@ public class Client extends Application {
                 if (!rooms.isEmpty()) {
                     adjustRoom(rooms.remove());
                 }
-               
+
             }
         }
     });
@@ -230,6 +230,20 @@ public class Client extends Application {
         lobbyStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
+                if (user.getState() != Type.UserState.IDLE) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("提示");
+                    if (user.getState() != Type.UserState.READY) {
+                        alert.setHeaderText("您正在房间中，请先退出房间！");
+                    } else {
+                        alert.setHeaderText("您正在游戏中，请先结束游戏！");
+                    }
+                    alert.initOwner(lobbyStage);
+                    alert.initModality(Modality.WINDOW_MODAL);
+                    alert.show();
+                    event.consume();
+                    return;
+                }
                 Connect.send(Encoder.logoutRequest());
                 playerData.clear();
                 roomData.clear();
@@ -254,7 +268,7 @@ public class Client extends Application {
             @Override
             public void handle(WindowEvent event) {
                 if (offlineMode) {
-                    if(gameController.isBegin()){
+                    if (gameController.isBegin()) {
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                         alert.setTitle("提示");
                         alert.setHeaderText("提示");
@@ -268,6 +282,12 @@ public class Client extends Application {
                             gameController.clear();
                         }
                     }
+                    return;
+                }
+                if(roomsMap.get(user.getRoom()) == null){
+                    user.setState(Type.UserState.IDLE);
+                    user.setRoom(0);
+                    updateUser();
                     return;
                 }
                 if (user.getState() == Type.UserState.GAMING) {
@@ -286,11 +306,9 @@ public class Client extends Application {
                         event.consume();
                         return;
                     }
-                }
-                else if(roomsMap.get(user.getRoom()).playerNumber() == 2){
+                } else if (roomsMap.get(user.getRoom()).playerNumber() == 2) {
                     gameController.leaveRoom();
-                }
-                else{
+                } else {
                     Room room = roomsMap.get(user.getRoom());
                     updateRoom(room, Type.UpdateRoom.DESTROY);
                 }
@@ -460,7 +478,7 @@ public class Client extends Application {
     }
 
     public static void adjustRoom(Room room) {
-        if(room.getId() == user.getRoom()){
+        if (room.getId() == user.getRoom()) {
             gameController.updateRoomInfo(room);
         }
         if (roomData.contains(room)) {

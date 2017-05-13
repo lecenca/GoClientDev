@@ -14,6 +14,9 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.shape.StrokeLineCap;
 import src.main.Client;
 import src.main.Room;
 import src.main.Type;
@@ -50,6 +53,9 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        /*Shape shape = new Rectangle();
+        shape.setSmooth(true);
+        account.setShape(shape);*/
         emptyAccountTips.setVisible(false);
         emptyPasswordTips.setVisible(false);
         invaildMessageTips.setVisible(false);

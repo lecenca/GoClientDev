@@ -40,7 +40,7 @@ public class ChessBoard implements Initializable {
     private static final int stoneGap = 30;
     private static final int xLen = 18 * stoneGap + 2 * borderGap;
     private static final int yLen = 18 * stoneGap + 2 * borderGap;
-    private static final int stoneRadius = (stoneGap - 2) / 2;
+    private static final int stoneRadius = (stoneGap - 0) / 2;
 
     private Point pixel = new Point();
     private Point index = new Point();
