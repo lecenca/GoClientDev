@@ -482,6 +482,8 @@ public class Client extends Application {
     }
 
     public static void adjustRoom(Room room) {
+        System.out.println("adjust room: id:"+room.getId()+" komi:"+room.getKomi()+" mainTime:"+room.getMainTime()
+        +" period:"+room.getPeriodTime()+"times:"+room.getPeriodTimes());
         if (room.getId() == user.getRoom()) {
             gameController.updateRoomInfo(room);
         }

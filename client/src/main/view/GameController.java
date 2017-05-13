@@ -190,7 +190,7 @@ public class GameController implements Initializable {
         }
         for (int i = 1; i <= 19; ++i) {
             axisLable[i - 1].setText(String.valueOf(i));
-            axisLable[i - 1].setTextFill(Color.color(0.9,0.2,0.2));
+            axisLable[i - 1].setTextFill(Color.color(0.9,0.1,0.1));
             axisLable[i - 1].setLayoutX(25 + i * 30);
             axisLable[i - 1].setLayoutY(612.0);
             axisLable[i - 1].setPrefSize(15, 15);
@@ -198,7 +198,7 @@ public class GameController implements Initializable {
         }
         for (int i = 0; i < 19; ++i) {
             axisLable[i + 19].setText(String.valueOf((char) ('A' + i)));
-            axisLable[i + 19].setTextFill(Color.color(0.9,0.2,0.2));
+            axisLable[i + 19].setTextFill(Color.color(0.9,0.1,0.1));
             axisLable[i + 19].setLayoutX(38);
             axisLable[i + 19].setLayoutY(592 - i * 30);
             axisLable[i + 19].setPrefSize(15, 15);
@@ -332,6 +332,7 @@ public class GameController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                resetGame();
                 begin = true;
                 player2TimerController.start();
                 if (Client.offlineMode) {
@@ -351,6 +352,8 @@ public class GameController implements Initializable {
 
     @FXML
     public void gameOver() {
+        player1Ready = false;
+        player2Ready = false;
         begin = false;
         getPlayerPoint();
         double diff = Math.abs(player1Point - player2Point);
