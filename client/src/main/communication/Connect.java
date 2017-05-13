@@ -297,6 +297,7 @@ public class Connect {
             Client.setUser(user);
             MessageQueue<User> players = Client.getPlayers();
             players.add(user);
+            System.out.println("user priority:" + user.getPriority());
         }
     }
 
@@ -320,7 +321,11 @@ public class Connect {
         if (playerList.size() != 0) {
             MessageQueue<User> players = Client.getPlayers();
             for (User user : playerList) {
-                user.setPriority(0);
+                if(user.equals(Client.getUser()))
+                    user.setPriority(1);
+                else
+                    user.setPriority(0);
+                System.out.println("other user priority" + user.getPriority());
                 players.add(user);
             }
         }
@@ -331,6 +336,8 @@ public class Connect {
         User user = Decoder.parseUser(jsonObject.getJSONObject("user"));
         if(!user.equals(Client.getUser()))
             user.setPriority(0);
+        else
+            user.setPriority(1);
         players.add(user);
     }
 
