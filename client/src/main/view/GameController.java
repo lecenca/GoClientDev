@@ -351,6 +351,8 @@ public class GameController implements Initializable {
 
     @FXML
     public void gameOver() {
+        player1Ready = false;
+        player2Ready = false;
         begin = false;
         getPlayerPoint();
         double diff = Math.abs(player1Point - player2Point);
