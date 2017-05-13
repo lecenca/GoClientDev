@@ -11,6 +11,8 @@ public class Stone {
     public int color;
     public int step;
 
+    public Stone(){}
+
     public Stone(int x, int y) {
         this.x = x;
         this.y = y;
