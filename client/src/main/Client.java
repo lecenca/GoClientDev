@@ -229,7 +229,7 @@ public class Client extends Application {
                 if (user.getState() != Type.UserState.IDLE) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("提示");
-                    if (user.getState() != Type.UserState.READY) {
+                    if (user.getState() == Type.UserState.READY) {
                         alert.setHeaderText("您正在房间中，请先退出房间！");
                     } else {
                         alert.setHeaderText("您正在游戏中，请先结束游戏！");
@@ -279,7 +279,8 @@ public class Client extends Application {
                     gameController.clear();
                     return;
                 }
-                if(roomsMap.get(user.getRoom()) == null){
+                Room room = roomsMap.get(user.getRoom());
+                if(room == null){
                     user.setState(Type.UserState.IDLE);
                     user.setRoom(0);
                     updateUser();
@@ -303,7 +304,6 @@ public class Client extends Application {
                 } else if (roomsMap.get(user.getRoom()).playerNumber() == 2) {
                     gameController.leaveRoom();
                 } else {
-                    Room room = roomsMap.get(user.getRoom());
                     updateRoom(room, Type.UpdateRoom.DESTROY);
                 }
                 user.setState(Type.UserState.IDLE);
