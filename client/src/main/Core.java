@@ -104,7 +104,7 @@ public class Core {
         return false;
     }
 
-    private static void SetPossibleKo(int x, int y) {
+    public static void SetPossibleKo(int x, int y) {
         if (Board.dead.size() == 1) {
             for (int chain : Board.dead) {
                 if (Board.stonesMap.get(chain).size() == 1) {

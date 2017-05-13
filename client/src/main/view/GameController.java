@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.*;
@@ -93,6 +94,8 @@ public class GameController implements Initializable {
     private Button judge;
     @FXML
     private ToggleButton step;
+    @FXML
+    private ToggleButton axis;
 
     @FXML
     private ChatBox chatBoxController;
@@ -111,21 +114,22 @@ public class GameController implements Initializable {
     private Label gameResultShow;
     @FXML
     private Slider volumeSlider;
+    @FXML
+    private Label[] axisLable = new Label[38];
 
     public GameController() {
-
         music = new MediaPlayer(new Media(getClass().getResource("/resources/music/testMusic.mp3").toExternalForm()));
         music.setOnEndOfMedia(new Runnable() {
             public void run() {
                 music.seek(Duration.ZERO);
             }
         });
-        music.setVolume(1.3);
-
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initAxis();
+        hideAxis();
         gameResultShow.setVisible(false);
         surrender.setDisable(true);
         judge.setDisable(true);
@@ -135,19 +139,19 @@ public class GameController implements Initializable {
         turn = Stone.Black;
         player1TimerController.setPlayerOverTimeRemain(player1OverTimeRemain);
         player2TimerController.setPlayerOverTimeRemain(player2OverTimeRemain);
-        Image image = new Image("resources/image/bg004.jpg", 1161, 700, false, true);
+        Image image = new Image("resources/image/bg004.jpg", 1160, 700, false, true);
         BackgroundSize backgroundSize = new BackgroundSize(1161, 700, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
         gamePane.setBackground(background);
 
-        Image image2 = new Image("resources/image/bg014.jpg", 371, 200, false, true);
+        Image image2 = new Image("resources/image/bg014.jpg", 380, 200, false, true);
         BackgroundSize backgroundSize2 = new BackgroundSize(371, 200, true, true, true, false);
         BackgroundImage backgroundImage2 = new BackgroundImage(image2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize2);
         Background background2 = new Background(backgroundImage2);
         playerPane.setBackground(background2);
 
-        Image image3 = new Image("resources/image/bg013.jpg", 484, 123, false, true);
+        Image image3 = new Image("resources/image/bg013.jpg", 470, 125, false, true);
         BackgroundSize backgroundSize3 = new BackgroundSize(484, 123, true, true, true, false);
         BackgroundImage backgroundImage3 = new BackgroundImage(image3, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize3);
         Background background3 = new Background(backgroundImage3);
@@ -179,6 +183,41 @@ public class GameController implements Initializable {
         });
     }
 
+    private void initAxis() {
+        for (int i = 0; i < 38; ++i) {
+            axisLable[i] = new Label();
+            gamePane.getChildren().add(axisLable[i]);
+        }
+        for (int i = 1; i <= 19; ++i) {
+            axisLable[i - 1].setText(String.valueOf(i));
+            axisLable[i - 1].setTextFill(Color.color(0.9,0.2,0.2));
+            axisLable[i - 1].setLayoutX(25 + i * 30);
+            axisLable[i - 1].setLayoutY(612.0);
+            axisLable[i - 1].setPrefSize(15, 15);
+            axisLable[i - 1].setAlignment(Pos.BASELINE_CENTER);
+        }
+        for (int i = 0; i < 19; ++i) {
+            axisLable[i + 19].setText(String.valueOf((char) ('A' + i)));
+            axisLable[i + 19].setTextFill(Color.color(0.9,0.2,0.2));
+            axisLable[i + 19].setLayoutX(38);
+            axisLable[i + 19].setLayoutY(592 - i * 30);
+            axisLable[i + 19].setPrefSize(15, 15);
+            axisLable[i + 19].setAlignment(Pos.BASELINE_CENTER);
+        }
+    }
+
+    private void hideAxis() {
+        for (Label label : axisLable) {
+            label.setVisible(false);
+        }
+    }
+
+    private void showAxis() {
+        for (Label label : axisLable) {
+            label.setVisible(true);
+        }
+    }
+
     public void setRoom(Room room) {
         this.room = room;
         if (Client.offlineMode) {
@@ -191,6 +230,9 @@ public class GameController implements Initializable {
         komi.setText(room.getKomiString());
         mainTime.setText(room.getMainTime() + "分");
         periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
+        step.setSelected(false);
+        axis.setSelected(false);
+        volumeSlider.setValue(1.0);
         resetLabel();
         turn = Stone.Black;
         if (Client.offlineMode) {
@@ -201,6 +243,7 @@ public class GameController implements Initializable {
         }
         /********** release ******/
         ready.setText("准备");
+        ready.setSelected(false);
         if (!room.getPlayer1().isEmpty() && room.getPlayer1() == Client.getUser().getAccount()) {
             roomOwner = true;
             boardController.setColor(Stone.White);
@@ -218,48 +261,46 @@ public class GameController implements Initializable {
         player2Kill.setText("0次");
         player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
         player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
+        player1TimerController.stop();
+        player2TimerController.stop();
     }
 
+    @FXML
     public void clear() {
+        resetGame();
         ready.setSelected(false);
-        surrender.setDisable(true);
-        judge.setDisable(true);
         player1Ready = false;
         player2Ready = false;
         begin = false;
         step.setSelected(false);
+        axis.setSelected(false);
         gameResultShow.setVisible(false);
-        boardController.clear();
         chatBox.refresh();
         chatBoxController.clear();
-        player1TimerController.stop();
-        player2TimerController.stop();
-
-        /**********/
-        player1Kill.setText("0子");
-        player2Kill.setText("0子");
         music.stop();
-        /*********/
+    }
 
+    private void resetGame() {
+        boardController.clear();
+        surrender.setDisable(true);
+        judge.setDisable(true);
+        gameResultShow.setVisible(false);
+        resetLabel();
     }
 
     @FXML
     private void ready() {
-
         if (Client.offlineMode) {
-            /*************** test *************/
             gameResultShow.setVisible(false);
             if (ready.isSelected()) {
-                boardController.clear();
-                resetLabel();
+                resetGame();
                 gameStart();
             } else {
                 gameOver();
             }
             return;
-            /*************** test *************/
         }
-        /***************** release **************/
+        /***************** online **************/
         gameResultShow.setVisible(false);
         if (ready.isSelected()) {
             if (roomOwner) {
@@ -271,6 +312,7 @@ public class GameController implements Initializable {
             System.out.println("ready request msg: " + msg);
             Connect.send(msg);
             ready.setText("取消准备");
+
         } else {
             if (roomOwner) {
                 player1Ready = false;
@@ -282,7 +324,7 @@ public class GameController implements Initializable {
             Connect.send(msg);
             ready.setText("准备");
         }
-        /***************** release **************/
+        /***************** online **************/
     }
 
     @FXML
@@ -290,21 +332,15 @@ public class GameController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                begin = true;
+                player2TimerController.start();
                 if (Client.offlineMode) {
                     ready.setText("结束对局");
-                    begin = true;
-                    step.setSelected(false);
-                    player2TimerController.start();
                     return;
                 }
                 ready.setText("游戏中");
                 ready.setDisable(true);
-                player1TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-                player2TimerController.init(room.getMainTime(), room.getPeriodTime(), room.getPeriodTimes());
-                begin = true;
                 surrender.setDisable(false);
-                step.setSelected(false);
-                player2TimerController.start();
                 Client.getUser().setState(Type.UserState.GAMING);
                 Client.updateUser();
                 room.setState(Type.RoomState.GAMING);
@@ -331,8 +367,8 @@ public class GameController implements Initializable {
             }
             gameResultShow.setTextFill(Color.color(0.2, 0.9, 0.2));
             gameResultShow.setVisible(true);
-            player1TimerController.pause();
-            player2TimerController.pause();
+            player1TimerController.stop();
+            player2TimerController.stop();
             return;
         }
         if (roomOwner) {
@@ -443,9 +479,8 @@ public class GameController implements Initializable {
             }
             gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
             gameResultShow.setVisible(true);
-            player1TimerController.pause();
-            player2TimerController.pause();
-            step.setSelected(false);
+            player1TimerController.stop();
+            player2TimerController.stop();
             return;
         }
         if (roomOwner) {
@@ -556,17 +591,6 @@ public class GameController implements Initializable {
     }
 
     @FXML
-    public void reverseTimer() {
-        if (turn == Stone.Black) {
-            player2TimerController.pause();
-            player1TimerController.start();
-        } else {
-            player1TimerController.pause();
-            player2TimerController.start();
-        }
-    }
-
-    @FXML
     public boolean isShowStep() {
         return step.isSelected();
     }
@@ -577,6 +601,15 @@ public class GameController implements Initializable {
             boardController.showStep();
         } else {
             boardController.hideStep();
+        }
+    }
+
+    @FXML
+    public void displayAxis() {
+        if (axis.isSelected()) {
+            showAxis();
+        } else {
+            hideAxis();
         }
     }
 
