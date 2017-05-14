@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -224,10 +223,6 @@ public class Client extends Application {
         loginController = loader0.getController();
         loginController.setClient(this);
 
-        signupStage = new Stage();
-        signupStage.setTitle("MicroOnlineGo - 注册");
-        signupStage.setResizable(false);
-
         lobbyStage = new Stage();
         lobbyStage.setTitle("MicroOnlineGo - 大厅");
         lobbyStage.setResizable(false);
@@ -313,8 +308,8 @@ public class Client extends Application {
                     return;
                 }
                 System.out.println("room playernum: " + room.playerNumber());
-                System.out.println("room p1: "+room.getPlayer1());
-                System.out.println("room p2: "+room.getPlayer2());
+                System.out.println("room p1: " + room.getPlayer1());
+                System.out.println("room p2: " + room.getPlayer2());
                 if (user.getState() == Type.UserState.GAMING) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("提示");
@@ -364,15 +359,18 @@ public class Client extends Application {
     }
 
     public void gotoLogin() {
-        loginStage.show();
         loginController.resetAccount();
         loginController.resetPassword();
+        loginStage.show();
         if (!loginController.isPlayingMusic()) {
             loginController.playMusic();
         }
     }
 
     public void gotoSignup() {
+        signupStage = new Stage();
+        signupStage.setTitle("MicroOnlineGo - 注册");
+        signupStage.setResizable(false);
         signupController = (SignupController) changeStage("view/Signup.fxml", signupStage);
         signupController.setClient(this);
     }
@@ -386,21 +384,9 @@ public class Client extends Application {
 
     public void gotoCreateRoom() {
         createRoomStage = new Stage();
-        createRoomStage.initModality(Modality.APPLICATION_MODAL);
-        createRoomStage.initOwner(primaryStage);
         createRoomStage.setTitle("MicroOnlineGo - 创建房间");
         createRoomStage.setResizable(false);
-        FXMLLoader loader = new FXMLLoader();
-        loader.setBuilderFactory(new JavaFXBuilderFactory());
-        loader.setLocation(getClass().getResource("view/CreateRoom.fxml"));
-        InputStream in = getClass().getResourceAsStream("view/CreateRoom.fxml");
-        try {
-            createRoomStage.setScene(new Scene(loader.load(in)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        createRoomStage.show();
-        CreateRoomController createRoomController = loader.getController();
+        CreateRoomController createRoomController = (CreateRoomController) changeStage("view/CreateRoom.fxml", createRoomStage);
         createRoomController.setClient(this);
     }
 
@@ -418,18 +404,6 @@ public class Client extends Application {
             loginController.stopMusic();
         }
         gameController.playMusic();
-    }
-
-    private Initializable replaceSceneContent(String fxml) throws Exception {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setBuilderFactory(new JavaFXBuilderFactory());
-        loader.setLocation(getClass().getResource(fxml));
-        InputStream in = getClass().getResourceAsStream(fxml);
-        primaryStage.close();
-        primaryStage = new Stage();
-        primaryStage.setScene(new Scene(loader.load(in)));
-        primaryStage.show();
-        return (Initializable) loader.getController();
     }
 
     private Initializable changeStage(String fxml, Stage stage) {
@@ -476,7 +450,7 @@ public class Client extends Application {
     }
 
     public static void adjustRoom(Room room) {
-        System.out.println("player1: "+room.getPlayer1()+", p2: "+room.getPlayer2());
+        System.out.println("player1: " + room.getPlayer1() + ", p2: " + room.getPlayer2());
         if (room.getId() == user.getRoom()) {
             gameController.updatePlayerInfo(room);
         }
@@ -486,7 +460,7 @@ public class Client extends Application {
         } else {
             roomData.add(room);
         }
-        System.out.println("player1: "+room.getPlayer1()+", p2: "+room.getPlayer2());
+        System.out.println("player1: " + room.getPlayer1() + ", p2: " + room.getPlayer2());
         roomsMap.put(room.getId(), room);
     }
 
@@ -509,10 +483,6 @@ public class Client extends Application {
 
     public static User getUser() {
         return user;
-    }
-
-    public Stage getPrimaryStage() {
-        return primaryStage;
     }
 
     public Stage getCreateRoomStage() {

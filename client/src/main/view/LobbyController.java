@@ -33,9 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-/**
- * Created by touhoudoge on 2017/3/20.
- */
 public class LobbyController implements Initializable {
 
     private Client client;

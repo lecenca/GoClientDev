@@ -1,5 +1,8 @@
 package src.main.view;
 
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -7,25 +10,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.scene.shape.StrokeLineCap;
 import javafx.util.Duration;
 import src.main.Client;
-import src.main.Room;
 import src.main.Type;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import src.main.User;
 import src.main.communication.Connect;
 import src.main.communication.Encoder;
@@ -57,7 +48,7 @@ public class LoginController implements Initializable {
 
     public static boolean correct;
 
-    public LoginController(){
+    public LoginController() {
         music = new MediaPlayer(new Media(getClass().getResource("/resources/music/login.mp3").toExternalForm()));
         music.setOnEndOfMedia(new Runnable() {
             public void run() {
@@ -77,19 +68,19 @@ public class LoginController implements Initializable {
         Background background = new Background(backgroundImage);
         loginPane.setBackground(background);
         password.setOnKeyReleased(new EventHandler<KeyEvent>() {
-
             @Override
             public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER)
+                if (event.getCode() == KeyCode.ENTER){
                     login();
+                }
             }
         });
     }
 
     @FXML
-    private void offline(){
+    private void offline() {
         Client.offlineMode = true;
-        User player1 = new User("1","玩家一");
+        User player1 = new User("1", "玩家一");
         Client.setUser(player1);
         client.gotoCreateRoom();
     }
@@ -133,7 +124,7 @@ public class LoginController implements Initializable {
             String json = Encoder.loginRequest(this.account.getText(), this.password.getText());
             Connect.send(json);
             Connect.waitForRec(Type.Response.LOGIN_SUCCESS, Type.Response.LOGIN_FAILED);
-            if(Connect.timeout) {
+            if (Connect.timeout) {
                 Connect.timeout = false;
                 return false;
             }
@@ -144,17 +135,17 @@ public class LoginController implements Initializable {
         return correct;
     }
 
-    public void playMusic(){
+    public void playMusic() {
         playing = true;
         music.play();
     }
 
-    public void stopMusic(){
+    public void stopMusic() {
         playing = false;
         music.stop();
     }
 
-    public boolean isPlayingMusic(){
+    public boolean isPlayingMusic() {
         return playing;
     }
 
@@ -172,7 +163,7 @@ public class LoginController implements Initializable {
 
     @FXML
     public void resetPassword() {
-        account.setText("");
+        password.setText("");
     }
 
     @FXML
