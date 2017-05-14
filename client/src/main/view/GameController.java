@@ -149,7 +149,7 @@ public class GameController implements Initializable {
         gamePane.setBackground(background);
 
         Image image2 = new Image("resources/image/bg014.jpg", 420, 200, false, true);
-        BackgroundSize backgroundSize2 = new BackgroundSize(371, 200, true, true, true, false);
+        BackgroundSize backgroundSize2 = new BackgroundSize(390, 200, true, true, true, false);
         BackgroundImage backgroundImage2 = new BackgroundImage(image2, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize2);
         Background background2 = new Background(backgroundImage2);
         playerPane.setBackground(background2);
@@ -220,7 +220,7 @@ public class GameController implements Initializable {
         }
     }
 
-    public void setRoom(Room room) {
+    public void initRoom(Room room) {
         this.room = room;
         resetState();
         initRuleLable();
@@ -553,6 +553,8 @@ public class GameController implements Initializable {
     }
 
     public void leaveRoom() {
+        System.out.println("room p1 in game: "+room.getPlayer1());
+        System.out.println("room p2 in game: "+room.getPlayer2());
         room.setState(Type.RoomState.WATING);
         if (room.getPlayer1() == Client.getUser().getAccount()) {
             room.setPlayer1("");
@@ -698,10 +700,19 @@ public class GameController implements Initializable {
         return chatBoxController;
     }
 
+    public Room getRoom(){
+        return room;
+    }
+
+    public void setRoom(Room room){
+        this.room = room;
+    }
+
     public void updatePlayerInfo(Room room) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                setRoom(room);
                 if (room.getPlayer1().isEmpty()) {
                     player1Name.setText("???");
                     player1Level.setText("?级");
