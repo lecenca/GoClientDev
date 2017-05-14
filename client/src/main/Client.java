@@ -39,9 +39,11 @@ public class Client extends Application {
     private Stage gameStage;
     private Stage lobbyStage = null;
     private Stage signupStage = null;
+    private Stage loginStage;
     private static User user;
     private Connect connect = null;
     private ArrayList playerList = new ArrayList();
+    private static LoginController loginController;
     private static LobbyController lobbyController;
     private static GameController gameController;
     private static SignupController signupController;
@@ -206,7 +208,22 @@ public class Client extends Application {
     });
 
     public Client() {
-        // playerData.sort(comparator);
+        loginStage = new Stage();
+        loginStage.setTitle("MicroOnlineGo - 登录");
+        loginStage.setResizable(false);
+        FXMLLoader loader0 = new FXMLLoader();
+        loader0.setLocation(getClass().getResource("view/Login.fxml"));
+        Pane loginPane = null;
+        try {
+            loginPane = loader0.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Scene loginScene = new Scene(loginPane);
+        loginStage.setScene(loginScene);
+        loginController = loader0.getController();
+        loginController.setClient(this);
+
         signupStage = new Stage();
         signupStage.setTitle("MicroOnlineGo - 注册");
         signupStage.setResizable(false);
@@ -286,7 +303,7 @@ public class Client extends Application {
                     gameController.stopMusic();
                     return;
                 }
-                Room room = roomsMap.get(user.getRoom());
+                Room room = gameController.getRoom();
                 if (room == null) {
                     user.setState(Type.UserState.IDLE);
                     user.setRoom(0);
@@ -295,7 +312,9 @@ public class Client extends Application {
                     lobbyController.playMusic();
                     return;
                 }
-                System.out.println("room playernum: "+room.playerNumber());
+                System.out.println("room playernum: " + room.playerNumber());
+                System.out.println("room p1: "+room.getPlayer1());
+                System.out.println("room p2: "+room.getPlayer2());
                 if (user.getState() == Type.UserState.GAMING) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("提示");
@@ -312,7 +331,7 @@ public class Client extends Application {
                         event.consume();
                         return;
                     }
-                } else if (roomsMap.get(user.getRoom()).playerNumber() == 2) {
+                } else if (room.playerNumber() == 2) {
                     gameController.leaveRoom();
                 } else {
                     updateRoom(room, Type.UpdateRoom.DESTROY);
@@ -328,9 +347,6 @@ public class Client extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        primaryStage.setTitle("MicroOnlineGo - 登录");
-        primaryStage.setResizable(false);
         gotoLogin();
         connect = new Connect();
         receiveThread = connect.getReceiveThread();
@@ -348,10 +364,12 @@ public class Client extends Application {
     }
 
     public void gotoLogin() {
-        LoginController loginController = (LoginController) changeStage("view/Login.fxml", primaryStage);
-        loginController.setClient(this);
+        loginStage.show();
         loginController.resetAccount();
         loginController.resetPassword();
+        if (!loginController.isPlayingMusic()) {
+            loginController.playMusic();
+        }
     }
 
     public void gotoSignup() {
@@ -362,6 +380,7 @@ public class Client extends Application {
     public void gotoLobby() {
         lobbyStage.show();
         lobbyController.fetchLobbyInfo();
+        loginController.stopMusic();
         lobbyController.playMusic();
     }
 
@@ -390,11 +409,14 @@ public class Client extends Application {
     }
 
     public void gotoGame(Room room) {
-        gameController.setRoom(room);
+        gameController.initRoom(room);
         gameController.getChatBoxController().setItems(privateMessageData);
         gameStage.setTitle("MicroOnlineGo - 房间 " + Integer.toString(room.getId()) + " " + room.getName());
         gameStage.show();
         lobbyController.stopMusic();
+        if (loginController.isPlayingMusic()) {
+            loginController.stopMusic();
+        }
         gameController.playMusic();
     }
 
@@ -428,13 +450,13 @@ public class Client extends Application {
     static public void updateUser() {
         String msg = Encoder.updatePlayerRequest();
         Connect.send(msg);
-        //System.out.println("update player msg: " + msg);
+        System.out.println("update player msg: " + msg);
     }
 
     static public void updateRoom(Room room, int type) {
         String msg = Encoder.updateRoomRequest(room, type);
         Connect.send(msg);
-        //System.out.println("update room msg: " + msg);
+        System.out.println("update room msg: " + msg);
     }
 
     public static void adjustPlayer(User player) {
@@ -454,6 +476,7 @@ public class Client extends Application {
     }
 
     public static void adjustRoom(Room room) {
+        System.out.println("player1: "+room.getPlayer1()+", p2: "+room.getPlayer2());
         if (room.getId() == user.getRoom()) {
             gameController.updatePlayerInfo(room);
         }
@@ -463,6 +486,7 @@ public class Client extends Application {
         } else {
             roomData.add(room);
         }
+        System.out.println("player1: "+room.getPlayer1()+", p2: "+room.getPlayer2());
         roomsMap.put(room.getId(), room);
     }
 
@@ -503,8 +527,12 @@ public class Client extends Application {
         return lobbyStage;
     }
 
-    public Stage getsignupStage() {
+    public Stage getSignupStage() {
         return signupStage;
+    }
+
+    public Stage getLoginStage() {
+        return loginStage;
     }
 
     public ArrayList getPlayerList() {

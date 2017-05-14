@@ -13,10 +13,13 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.util.Duration;
 import src.main.Client;
 import src.main.Room;
 import src.main.Type;
@@ -49,13 +52,22 @@ public class LoginController implements Initializable {
     @FXML
     private AnchorPane loginPane;
 
+    private MediaPlayer music;
+    private boolean playing;
+
     public static boolean correct;
+
+    public LoginController(){
+        music = new MediaPlayer(new Media(getClass().getResource("/resources/music/login.mp3").toExternalForm()));
+        music.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                music.seek(Duration.ZERO);
+            }
+        });
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /*Shape shape = new Rectangle();
-        shape.setSmooth(true);
-        account.setShape(shape);*/
         emptyAccountTips.setVisible(false);
         emptyPasswordTips.setVisible(false);
         invaildMessageTips.setVisible(false);
@@ -84,26 +96,16 @@ public class LoginController implements Initializable {
 
     @FXML
     private void login() {
-        /********** test **********/
-        /*Client.setUser(new User());
-        Client.getLobbyController().addPlayer(Client.getUser());
-        Client.playersMap.put(Client.getUser().getAccount(),Client.getUser());
-        client.getPrimaryStage().close();
-        client.gotoLobby();*/
-        /********** test **********/
-
-        /********** release **********/
         if (checkValid()) {
             Client.offlineMode = false;
-            client.getPrimaryStage().close();
+            client.getLoginStage().close();
             client.gotoLobby();
         }
-        /********** release **********/
     }
 
     @FXML
     private void signup() {
-        client.getPrimaryStage().close();
+        client.getLoginStage().close();
         client.gotoSignup();
     }
 
@@ -142,6 +144,20 @@ public class LoginController implements Initializable {
         return correct;
     }
 
+    public void playMusic(){
+        playing = true;
+        music.play();
+    }
+
+    public void stopMusic(){
+        playing = false;
+        music.stop();
+    }
+
+    public boolean isPlayingMusic(){
+        return playing;
+    }
+
     @FXML
     private void setTipsError(Label tip, String msg) {
         tip.setVisible(true);
@@ -158,14 +174,14 @@ public class LoginController implements Initializable {
     public void resetPassword() {
         account.setText("");
     }
+
     @FXML
     public void clearTip() {
         setTipsError(invaildMessageTips, "");
     }
+
     public void setClient(Client client) {
         this.client = client;
     }
-
-
 
 }
