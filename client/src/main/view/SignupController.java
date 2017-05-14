@@ -99,7 +99,7 @@ public class SignupController implements Initializable {
             client.getConnect().send(json);
             Connect.waitForRec(Type.Response.REGIST_SUCCESS, Type.Response.REGIST_FAILED);
             if (registSuccess) {
-                client.getsignupStage().close();
+                client.getSignupStage().close();
                 client.gotoLogin();
             } else {
                 JOptionPane.showMessageDialog(null, "服务器发生未知错误，请重试");
@@ -216,7 +216,7 @@ public class SignupController implements Initializable {
                 validName = false;
                 return false;
             }
-            if (length > 16) {
+            if (length > 12) {
                 setTipsError(nameFormatTips, "昵称过长");
                 validName = false;
                 return false;
@@ -350,7 +350,7 @@ public class SignupController implements Initializable {
 
     @FXML
     private void backToLogin() {
-        client.getsignupStage().close();
+        client.getSignupStage().close();
         client.gotoLogin();
     }
 
