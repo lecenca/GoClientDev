@@ -433,15 +433,15 @@ public class GameController implements Initializable {
                 } else if (gameResult == Type.GameResult.WIN) {
                     int p = (int) score;
                     score -= (double) p;
-                    gameResultShow.setText("对局结束，你赢了"+p+"目"+(Math.abs(score - 0.5) < 0.01 ? "半" : "")+"！");
+                    gameResultShow.setText("对局结束，你赢了"+Math.abs(p)+"目"+(Math.abs(score - 0.5) < 0.01 ? "半" : "")+"！");
                 } else if (gameResult == Type.GameResult.LOSE) {
                     int p = (int) score;
                     score -= (double) p;
-                    gameResultShow.setText("对局结束，你输了"+(-p)+"目"+(Math.abs(score - 0.5) < 0.01 ? "半" : "")+"！");
+                    gameResultShow.setText("对局结束，你输了"+Math.abs(p)+"目"+(Math.abs(score - 0.5) < 0.01 ? "半" : "")+"！");
                 } else {
                     gameResultShow.setText("对局结束，双方打平！");
                 }
-                if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)) {
+                if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 0x1) == 1)) {
                     gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
                 } else {
                     gameResultShow.setTextFill(Color.color(0.2, 0.9, 0.2));

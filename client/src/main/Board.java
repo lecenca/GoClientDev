@@ -10,14 +10,13 @@ import java.util.Map;
 
 public class Board {
 
-    public static Stone[][] stones = new Stone[19][19];
-    public static Map<Stone, Integer> chainMap = new HashMap<>();
-    public static Map<Integer, HashSet<Stone>> stonesMap = new HashMap<>();
-    public static Map<Integer, HashSet<Point>> libertyMap = new HashMap<>();
-    public static HashSet<Integer> dead = new HashSet<>();
-    public static Stone[] maybeKo = new Stone[2];
+    public static Stone[][] stones = new Stone[19][19];                       // 棋子
+    public static Map<Stone, Integer> chainMap = new HashMap<>();             // 棋子所在的链
+    public static Map<Integer, HashSet<Stone>> stonesMap = new HashMap<>();   // 链上的所有棋子
+    public static Map<Integer, HashSet<Point>> libertyMap = new HashMap<>();  // 一条链上的气
+    public static HashSet<Integer> dead = new HashSet<>();                    // 死亡的链
+    public static Stone[] maybeKo = new Stone[2];                             // 可能的劫点
     public static int step = 1;
-
 
     private static int player1KillTimes = 0;
     private static int player2KillTimes = 0;
