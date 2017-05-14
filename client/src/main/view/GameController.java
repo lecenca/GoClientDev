@@ -431,11 +431,15 @@ public class GameController implements Initializable {
                         gameResultShow.setText("对方超时，你赢了！");
                     }
                 } else if (gameResult == Type.GameResult.WIN) {
-                    gameResultShow.setText("你赢了！");
+                    int p = (int) score;
+                    score -= (double) p;
+                    gameResultShow.setText("对局结束，你赢了"+p+"目"+(Math.abs(score - 0.5) < 0.01 ? "半" : "")+"！");
                 } else if (gameResult == Type.GameResult.LOSE) {
-                    gameResultShow.setText("你输了！");
+                    int p = (int) score;
+                    score -= (double) p;
+                    gameResultShow.setText("对局结束，你输了"+(-p)+"目"+(Math.abs(score - 0.5) < 0.01 ? "半" : "")+"！");
                 } else {
-                    gameResultShow.setText("双方打平，平局！");
+                    gameResultShow.setText("对局结束，双方打平！");
                 }
                 if ((gameResult ^ 1) == 0 || ((gameResult & 0xF0) != 0) && (roomOwner ^ (gameResult & 1) == 0)) {
                     gameResultShow.setTextFill(Color.color(0.9, 0.2, 0.2));
@@ -549,7 +553,7 @@ public class GameController implements Initializable {
     }
 
     public void leaveRoom() {
-        room.setState(Type.RoomState.READY);
+        room.setState(Type.RoomState.WATING);
         if (room.getPlayer1() == Client.getUser().getAccount()) {
             room.setPlayer1("");
             Client.updateRoom(room, Type.UpdateRoom.PLAYER1OUT);
