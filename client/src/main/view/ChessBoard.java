@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main.view;
 
 import javafx.fxml.FXML;
@@ -49,7 +60,6 @@ public class ChessBoard implements Initializable {
     @FXML
     private void onClick(MouseEvent event) {
         if (Client.offlineMode) {
-            /**************************** test ****************************/
             if (Client.getGameController().isBegin()) {
                 getPixelPos(event);
                 int action = action();
@@ -58,9 +68,7 @@ public class ChessBoard implements Initializable {
                 }
             }
             return;
-            /**************************** test ****************************/
         }
-        /**************************** release ****************************/
         if (Client.getGameController().isBegin() && Client.getGameController().getTurn() == this.color) {
             getPixelPos(event);
             int action = action();
@@ -71,13 +79,10 @@ public class ChessBoard implements Initializable {
                 playAction(action, index.x, index.y, color);
             }
         }
-        /**************************** release ****************************/
     }
 
     public void playAction(int action, int x, int y, int color) {
-        /**** sound *****/
         placeChessSound.play();
-        /**** sound *****/
         place(x, y, color);
         if (action == Type.Action.KILL) {
             remove();
@@ -87,7 +92,7 @@ public class ChessBoard implements Initializable {
     }
 
     public void place(int x, int y, int color) {
-        System.out.println("place " + (color == Stone.Black ? "black" : "white") + " in (" + x + "," + y + ")");
+        //System.out.println("place " + (color == Stone.Black ? "black" : "white") + " in (" + x + "," + y + ")");
         Circle stone = stonesCircle[x][y];
         Label step = steps[x][y];
         if (color == Stone.Black) {
@@ -134,12 +139,9 @@ public class ChessBoard implements Initializable {
     }
 
     public void remove() {
-        System.out.println("执行remove");
         for (int chain : Board.dead) {
             HashSet<Stone> stones = Board.stonesMap.get(chain);
             for (Stone s : stones) {
-                System.out.println(
-                        "kill " + (s.color == Stone.Black ? "black" : "white") + " in (" + s.x + "," + s.y + ")");
                 chessPane.getChildren().remove(stonesCircle[s.x][s.y]);
                 if (Client.getGameController().isShowStep()) {
                     chessPane.getChildren().remove(steps[s.x][s.y]);
@@ -222,18 +224,6 @@ public class ChessBoard implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /****** 要的 ******/
-        /*
-         * 
-         * drawBoard();
-         * 
-         * drawLine();
-         * 
-         * drawStar();
-         * 
-         */
-        /******* 要的 ******/
-        /*******************/
         Image boardPicture = new Image("resources/image/chessBoard.png");
         ImageView boardView = new ImageView(boardPicture);
         boardView.setFitWidth(590);
@@ -241,7 +231,6 @@ public class ChessBoard implements Initializable {
         chessPane.getChildren().add(boardView);
         drawLine();
         drawStar();
-        /*******************/
         initStonesCircle();
         initStepsLable();
     }

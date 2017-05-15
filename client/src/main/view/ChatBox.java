@@ -1,12 +1,21 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main.view;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
-import src.main.Room;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,18 +27,9 @@ public class ChatBox implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         chatBox.setItems(FXCollections.observableArrayList());
-        /*
-        chatBox.getItems().addListener((ListChangeListener.Change<? extends String> change) -> {
-            while (change.next()) {
-                if (change.getList().size() > 10) {
-                    change.getList().remove(0);
-                }
-            }
-        });
-        */
     }
 
-    public void clearMessage(){
+    public void clearMessage() {
         chatBox.getItems().clear();
     }
 
@@ -52,5 +52,5 @@ public class ChatBox implements Initializable {
     public ListView<String> getChatBox() {
         return chatBox;
     }
-    
+
 }

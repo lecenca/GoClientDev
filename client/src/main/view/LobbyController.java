@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main.view;
 
 import javafx.beans.value.ChangeListener;
@@ -84,10 +95,6 @@ public class LobbyController implements Initializable {
 
     private MediaPlayer music;
 
-    /*
-     * private static ArrayList<Room> rooms; private static ArrayList<User>
-     * players;
-     */
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessage = new MessageQueue<>();

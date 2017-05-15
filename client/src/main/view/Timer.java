@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main.view;
 
 import javafx.animation.KeyFrame;
@@ -16,7 +27,7 @@ public class Timer implements Initializable {
 
     private Timeline mainTimeTimeline;
     private Timeline periodTimeline;
-    private int mainTime; //以秒的方式计算，如2分钟，mainTime存有120
+    private int mainTime; // 以秒的方式计算，如2分钟，mainTime存有120
     private int period;
     private int periodTimes;
     private Label playerOverTimeRemain;
@@ -33,11 +44,6 @@ public class Timer implements Initializable {
         this.playerOverTimeRemain = playerOverTimeRemain;
     }
 
-
-    /**
-     * initialize periodTimeline and start it to counting second in
-     * stage 2.
-     */
     private void countintSecond() {
         periodTimeline = new Timeline();
         periodTimeline.setCycleCount(period);
@@ -51,9 +57,7 @@ public class Timer implements Initializable {
                 if (periodTimes == 0) {
                     Client.getGameController().overTime();
                 } else {
-                    //this.pause();
                     Client.getGameController().reverseTurn();
-                    //otherTimer.start();
                 }
             }
         }));
@@ -70,26 +74,21 @@ public class Timer implements Initializable {
     }
 
     public void start() {
-        //mainTimeTimeline.play();
-        /*********** test ***********/
         if (mainTime != 0) {
             mainTimeTimeline.play();
         } else {
             periodTimeline.play();
         }
-        /*********** test ***********/
     }
 
     public void stop() {
         mainTimeTimeline.stop();
-        if(periodTimeline!=null){
+        if (periodTimeline != null) {
             periodTimeline.stop();
         }
     }
 
     public void pause() {
-        //mainTimeTimeline.pause();
-        /*********** test ***********/
         if (mainTime != 0) {
             mainTimeTimeline.pause();
         } else {
@@ -97,7 +96,6 @@ public class Timer implements Initializable {
             tempPeriod = period;
             displaySecond(tempPeriod);
         }
-        /*********** test ***********/
     }
 
     public int getPeriodTimes() {
@@ -105,13 +103,10 @@ public class Timer implements Initializable {
     }
 
     /**
-     *
      * @param main
      * @param period
-     * @param times
-     *
-     * initialize the timer. setup the mainTimeline, which is used to
-     * counting second in the stage 1.
+     * @param times  initialize the timer. setup the mainTimeline, which is used to
+     *               counting second in the stage 1.
      */
     public void init(int main, int period, int times) {
         mainTime = 60 * main;

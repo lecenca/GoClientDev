@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main;
 
 import java.awt.*;
@@ -76,6 +87,24 @@ public class Core {
         return result;
     }
 
+    public static void SetPossibleKo(int x, int y) {
+        if (Board.dead.size() == 1) {
+            for (int chain : Board.dead) {
+                if (Board.stonesMap.get(chain).size() == 1) {
+                    for (Stone stone : Board.stonesMap.get(chain)) {
+                        Board.maybeKo[0].x = x;
+                        Board.maybeKo[0].y = y;
+                        Board.maybeKo[0].step = Board.step;
+                        Board.maybeKo[0].color = -stone.color;
+                        Board.maybeKo[1] = stone;
+                    }
+                    break;
+                }
+                break;
+            }
+        }
+    }
+
     private static void actionWith(int x, int y, Stone stone, int color) {
         if (stone.color == Stone.None || (stone.color == color && liberty(stone) > 1)) {
             hasLiberty = true;
@@ -83,7 +112,6 @@ public class Core {
             if (!isKo(x, y, stone)) {
                 hasKilled = true;
                 Board.dead.add(Board.chainMap.get(stone));
-                System.out.println("Board.dead.add ("+stone.x+","+stone.y+")");
             }
         }
     }
@@ -102,24 +130,6 @@ public class Core {
             return true;
         }
         return false;
-    }
-
-    public static void SetPossibleKo(int x, int y) {
-        if (Board.dead.size() == 1) {
-            for (int chain : Board.dead) {
-                if (Board.stonesMap.get(chain).size() == 1) {
-                    for (Stone stone : Board.stonesMap.get(chain)) {
-                        Board.maybeKo[0].x = x;
-                        Board.maybeKo[0].y = y;
-                        Board.maybeKo[0].step = Board.step;
-                        Board.maybeKo[0].color = -stone.color;
-                        Board.maybeKo[1] = stone;
-                    }
-                    break;
-                }
-                break;
-            }
-        }
     }
 
 }
