@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -6,9 +17,9 @@ import javafx.beans.property.StringProperty;
 public class Room {
 
     private class Config {
-        public int komi;         // 贴目规则
-        public int mainTime;    // 主时间 [1,5,10,15,20,30,40,60,90](单位：分)
-        public int period;      // 读秒时间 [15,20,30,40,50,60]（单位：秒）
+        public int komi;          // 贴目规则
+        public int mainTime;     // 主时间 [1,5,10,15,20,30,40,60,90](单位：分)
+        public int period;       // 读秒时间 [15,20,30,40,50,60]（单位：秒）
         public int periodTimes; // 读秒次数 [1,3,5,7,10]
 
         public Config() {
@@ -49,7 +60,7 @@ public class Room {
         public void setPeriodTimes(int periodTimes) {
             this.periodTimes = periodTimes;
         }
-        
+
     }
 
     private int id = 0;
@@ -92,7 +103,7 @@ public class Room {
                 return Client.playersMap.get(this.player1).getNickname();
             }
         }
-        return "???";
+        return "";
     }
 
     public String getPlayer2Name() {
@@ -101,7 +112,7 @@ public class Room {
                 return Client.playersMap.get(this.player2).getNickname();
             }
         }
-        return "???";
+        return "";
     }
 
     public String getKomiString() {
@@ -168,6 +179,14 @@ public class Room {
         this.state = state;
     }
 
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
     public void setConfig(int komi, int mainTime, int period, int periodTimes) {
         this.config.komi = komi;
         this.config.mainTime = mainTime;
@@ -219,12 +238,5 @@ public class Room {
         return this.id == room.id;
     }
 
-    public Config getConfig() {
-        return config;
-    }
 
-    public void setConfig(Config config) {
-        this.config = config;
-    }
-    
 }

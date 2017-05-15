@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main.view;
 
 import javafx.collections.FXCollections;
@@ -409,12 +420,6 @@ public class SignupController implements Initializable {
             if (newPropertyValue) {
 
             } else {
-               /*if(account.getText() == "" && Integer.parseInt(account.getText()) > 12)
-               {
-
-               }*/
-               /*account.setText("12");
-               System.out.println("Textfield 1 out focus");*/
                 try {
                     checkAccountValid();
                 } catch (Exception e) {

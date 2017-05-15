@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main.view;
 
 import javafx.collections.FXCollections;
@@ -20,9 +31,6 @@ import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-/**
- * Created by touhoudoge on 2017/4/9.
- */
 public class CreateRoomController implements Initializable {
 
     private Client client;
@@ -62,17 +70,15 @@ public class CreateRoomController implements Initializable {
     private void createRoom() {
         /************* release *****************/
         Room room = new Room();
-        if(Client.offlineMode){
+        if (Client.offlineMode) {
             room.setId(88888);
-        }
-        else{
+        } else {
             room.setId(getRoomId());
         }
         String name = roomNameField.getText();
-        if(name == null || name.isEmpty()){
-            JOptionPane.showMessageDialog(null,"房间名称不能为空");
-        }
-        else{
+        if (name == null || name.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "房间名称不能为空");
+        } else {
             room.setName(name);
         }
         room.setPlayer1(Client.getUser().getAccount());
@@ -82,10 +88,10 @@ public class CreateRoomController implements Initializable {
                 this.mainTime.getSelectionModel().getSelectedIndex(),
                 this.period.getSelectionModel().getSelectedIndex(),
                 this.periodTimes.getSelectionModel().getSelectedIndex()
-                );
+        );
         client.backToLobby();
         client.gotoGame(room);
-        if(Client.offlineMode){
+        if (Client.offlineMode) {
             return;
         }
         Client.getUser().setRoom(room.getId());
@@ -97,9 +103,9 @@ public class CreateRoomController implements Initializable {
         /************* release ********************/
     }
 
-    private int getRoomId(){
+    private int getRoomId() {
         int res = random.nextInt(65535) % 65536;
-        while(roomId.contains(res)){
+        while (roomId.contains(res)) {
             res = random.nextInt(65535) % 65536;
         }
         roomId.add(res);
@@ -155,7 +161,7 @@ public class CreateRoomController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        roomNameField.setText(defaultName[random.nextInt(5)%5]);
+        roomNameField.setText(defaultName[random.nextInt(5) % 5]);
         initComboBox();
     }
 }

@@ -1,14 +1,23 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main.communication;
 
 import com.alibaba.fastjson.JSONObject;
 import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 import src.main.*;
 import src.main.view.LoginController;
 import src.main.view.SignupController;
 import src.util.MessageQueue;
 
-import javax.swing.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,26 +32,13 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Connect {
-    /*
-     * private final static String LINE_SEPARATOR =
-     * System.getProperty("line.separator"); private static String IP; private
-     * static int PORT; private static Socket socket; private static
-     * OutputStream os; private static InputStream is; private static
-     * PrintWriter pw; private static BufferedReader br; private Thread
-     * receiveThread; private Thread chatThread; private String loginMessage;
-     * private String registerMessage; private String chatMessage = "hello";
-     * private ChatBox chatBox;
-     */
-    //private final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static String IP = "192.168.43.7";
-    private static int PORT = 60000;
+
+    private static String IP;
+    private static int PORT;
     public static Socket socket;
     private static OutputStream os;
     private static InputStream is;
     private Thread receiveThread;
-    //private Thread chatThread;
-    //private String loginMessage;
-    //private String registerMessage;
     private String chatMessage = "hello";
     private static ConcurrentLinkedDeque<Integer> responseValues = new ConcurrentLinkedDeque<>();
     public static ArrayList<Integer> requestValues = new ArrayList<>();
@@ -50,7 +46,7 @@ public class Connect {
     private static boolean connect = false;
     public static boolean timeout = false;
 
-    public static Thread waitThrea = new Thread(new Runnable() {
+    public static Thread waitThread = new Thread(new Runnable() {
 
         @Override
         public void run() {
@@ -75,7 +71,7 @@ public class Connect {
                 i++;
                 if (i == 100) {
                     //JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
-                    Alert error = new Alert(Alert.AlertType.ERROR,"连接超时，请重试");
+                    Alert error = new Alert(Alert.AlertType.ERROR, "连接超时，请重试");
                     error.show();
                     break;
                 }
@@ -91,10 +87,8 @@ public class Connect {
         } catch (IOException e) {
             e.printStackTrace();
         }
-            /*
-             * IP = pro.getProperty("IP"); PORT =
-			 * Integer.parseInt(pro.getProperty("PORT"));
-			 */
+        IP = pro.getProperty("IP");
+        PORT = Integer.parseInt(pro.getProperty("PORT"));
         try {
             socket = new Socket();
             socket.connect(new InetSocketAddress(IP, PORT), 2000);
@@ -105,7 +99,6 @@ public class Connect {
         } catch (IOException e) {
             connect = false;
             System.out.println("服务器连接失败");
-            //e.printStackTrace();
         }
         receiveThread = new Thread(new Runnable() {
             @Override
@@ -126,10 +119,6 @@ public class Connect {
 
     public static void send(String message) {
         try {
-            /***** test *****/
-            //System.out.println("message len(utf-8 bytes): " + message.getBytes("utf-8").length);
-            //System.out.println("message: " + message);
-            /***** test *****/
             os.write(intToByteHH(message.getBytes("utf-8").length));
             os.write(message.getBytes("utf-8"));
             os.flush();
@@ -159,8 +148,7 @@ public class Connect {
                 }
             i++;
             if (i == 100) {
-                //JOptionPane.showMessageDialog(null, "连接超时，请重试", "连接错误", JOptionPane.INFORMATION_MESSAGE);
-                Alert error = new Alert(Alert.AlertType.ERROR,"连接超时，请重试");
+                Alert error = new Alert(Alert.AlertType.ERROR, "连接超时，请重试");
                 error.show();
                 timeout = true;
                 break;
@@ -174,7 +162,7 @@ public class Connect {
         try {
             is.read(first);
             int len = byteToIntHH(first);
-            System.out.println("服务器响应信息长度:" + len);
+            //System.out.println("服务器响应信息长度:" + len);
             if (len > 0) {
                 byte[] buff = new byte[len];
                 is.read(buff);
@@ -251,7 +239,7 @@ public class Connect {
             e.printStackTrace();
             System.out.println("与服务器断开连接！");
         } catch (IOException e) {
-            //System.out.println("与服务器连接异常！");
+
         }
     }
 
@@ -321,7 +309,7 @@ public class Connect {
         if (playerList.size() != 0) {
             MessageQueue<User> players = Client.getPlayers();
             for (User user : playerList) {
-                if(user.equals(Client.getUser()))
+                if (user.equals(Client.getUser()))
                     user.setPriority(1);
                 else
                     user.setPriority(0);
@@ -334,7 +322,7 @@ public class Connect {
     private void handleUpdatePlayer(JSONObject jsonObject) {
         MessageQueue<User> players = Client.getPlayers();
         User user = Decoder.parseUser(jsonObject.getJSONObject("user"));
-        if(!user.equals(Client.getUser()))
+        if (!user.equals(Client.getUser()))
             user.setPriority(0);
         else
             user.setPriority(1);
@@ -422,40 +410,14 @@ public class Connect {
                 | (bytes[3] & 0xFF);
     }
 
-    public void closeInputstream() {
-        // TODO Auto-generated method stub
-        try {
-            socket.shutdownInput();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-	/*public String getLoginMessage() {
-        return loginMessage;
-	}
-
-	public void setLoginMessage(String loginMessage) {
-		this.loginMessage = loginMessage;
-	}*/
-
     public Thread getReceiveThread() {
         return receiveThread;
     }
-    /*
-    public String getRegisterMessage() {
-		return registerMessage;
-	}
-
-	public void setRegisterMessage(String registerMessage) {
-		this.registerMessage = registerMessage;
-	}*/
 
     public static boolean interrupted() {
         if (!connect) {
             //JOptionPane.showMessageDialog(null, "请检查您的网络连接", "连接失败", JOptionPane.ERROR_MESSAGE);
-            Alert error = new Alert(Alert.AlertType.ERROR,"请检查您的网络连接");
+            Alert error = new Alert(Alert.AlertType.ERROR, "请检查您的网络连接");
             error.show();
             return true;
         }

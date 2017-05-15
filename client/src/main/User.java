@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -90,8 +101,8 @@ public class User {
         state = Type.UserState.IDLE;
         room = 0;
     }
-
     /********** test **********/
+
     public User(String account, String nickname) {
         this.account = account;
         this.nickname = nickname;

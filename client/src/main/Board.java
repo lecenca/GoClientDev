@@ -1,6 +1,15 @@
-package src.main;
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
 
-import javafx.scene.control.Label;
+package src.main;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -43,10 +52,8 @@ public class Board {
         libertyMap.clear();
         dead.clear();
         step = 1;
-        /******/
         player1KillTimes = 0;
         player2KillTimes = 0;
-        /********/
     }
 
     // Checks if the stones in color can be placed in the Point p.
@@ -57,7 +64,7 @@ public class Board {
         return Core.action(x, y, color);
     }
 
-    // Adds a stone at the Point (x, y)
+    // Adds a stone at the Point (x, y).
     public void add(int x, int y, int color) {
         stones[x][y].color = color;
         stones[x][y].step = step;
@@ -68,7 +75,6 @@ public class Board {
 
     // Removes the stones that were dead.
     public void remove() {
-        /*******************************************/
         if (Client.getGameController().getTurn() == Stone.Black) {
             for (int chain : dead) {
                 player2KillTimes += stonesMap.get(chain).size();
@@ -80,7 +86,6 @@ public class Board {
             }
             Client.getGameController().setPlayer1Kill(player1KillTimes);
         }
-        /*******************************************/
         for (int chain : dead) {
             HashSet<Stone> ss = stonesMap.get(chain);
             for (Stone s : ss) {
