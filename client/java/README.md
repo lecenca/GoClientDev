@@ -37,7 +37,7 @@ client/java/client/lib
 
 # Document
 
-See [docs](/docs)
+See [docs](https://github.com/Alinshans/GoClientDev/tree/master/client/java/docs)
 
 # Contributors
 
