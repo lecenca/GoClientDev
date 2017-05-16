@@ -11,6 +11,10 @@
 | :white_check_mark: | Connection     |
 | :white_check_mark: | Encode/Decode  |
 
+# Required
+ 
+ * jdk version >= 1.8
+ 
 # How to run
 
 #### 1. Clone this repository into your local file.
