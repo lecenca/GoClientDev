@@ -1,5 +1,15 @@
-package src.main.view;
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
 
+package src.main.view;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -192,7 +202,7 @@ public class GameController implements Initializable {
         }
         for (int i = 1; i <= 19; ++i) {
             axisLable[i - 1].setText(String.valueOf(i));
-            axisLable[i - 1].setTextFill(Color.color(0.9,0.1,0.1));
+            axisLable[i - 1].setTextFill(Color.color(0.9, 0.1, 0.1));
             axisLable[i - 1].setLayoutX(25 + i * 30);
             axisLable[i - 1].setLayoutY(612.0);
             axisLable[i - 1].setPrefSize(15, 15);
@@ -200,7 +210,7 @@ public class GameController implements Initializable {
         }
         for (int i = 0; i < 19; ++i) {
             axisLable[i + 19].setText(String.valueOf((char) ('A' + i)));
-            axisLable[i + 19].setTextFill(Color.color(0.9,0.1,0.1));
+            axisLable[i + 19].setTextFill(Color.color(0.9, 0.1, 0.1));
             axisLable[i + 19].setLayoutX(38);
             axisLable[i + 19].setLayoutY(592 - i * 30);
             axisLable[i + 19].setPrefSize(15, 15);
@@ -233,8 +243,7 @@ public class GameController implements Initializable {
         volumeSlider.setValue(1.0);
         if (Client.offlineMode) {
             ready.setText("开始对局");
-        }
-        else{
+        } else {
             ready.setText("准备");
             if (!room.getPlayer1().isEmpty() && room.getPlayer1() == Client.getUser().getAccount()) {
                 roomOwner = true;
@@ -246,7 +255,7 @@ public class GameController implements Initializable {
         }
     }
 
-    private void resetState(){
+    private void resetState() {
         player1Ready = false;
         player2Ready = false;
         begin = false;
@@ -257,7 +266,7 @@ public class GameController implements Initializable {
         surrender.setDisable(true);
     }
 
-    private void initRuleLable(){
+    private void initRuleLable() {
         komi.setText(room.getKomiString());
         mainTime.setText(room.getMainTime() + "分");
         periodTime.setText(room.getPeriodTime() + "秒" + room.getPeriodTimes() + "次");
@@ -433,11 +442,11 @@ public class GameController implements Initializable {
                 } else if (gameResult == Type.GameResult.WIN) {
                     int p = (int) score;
                     score -= (double) p;
-                    gameResultShow.setText("对局结束，你赢了"+Math.abs(p)+"目"+(Math.abs(score - 0.5) < 0.01 ? "半" : "")+"！");
+                    gameResultShow.setText("对局结束，你赢了" + Math.abs(p) + "目" + (Math.abs(score - 0.5) < 0.01 ? "半" : "") + "！");
                 } else if (gameResult == Type.GameResult.LOSE) {
                     int p = (int) score;
                     score -= (double) p;
-                    gameResultShow.setText("对局结束，你输了"+Math.abs(p)+"目"+(Math.abs(score - 0.5) < 0.01 ? "半" : "")+"！");
+                    gameResultShow.setText("对局结束，你输了" + Math.abs(p) + "目" + (Math.abs(score - 0.5) < 0.01 ? "半" : "") + "！");
                 } else {
                     gameResultShow.setText("对局结束，双方打平！");
                 }
@@ -553,8 +562,8 @@ public class GameController implements Initializable {
     }
 
     public void leaveRoom() {
-        System.out.println("room p1 in game: "+room.getPlayer1());
-        System.out.println("room p2 in game: "+room.getPlayer2());
+        System.out.println("room p1 in game: " + room.getPlayer1());
+        System.out.println("room p2 in game: " + room.getPlayer2());
         room.setState(Type.RoomState.WATING);
         if (room.getPlayer1() == Client.getUser().getAccount()) {
             room.setPlayer1("");
@@ -700,11 +709,11 @@ public class GameController implements Initializable {
         return chatBoxController;
     }
 
-    public Room getRoom(){
+    public Room getRoom() {
         return room;
     }
 
-    public void setRoom(Room room){
+    public void setRoom(Room room) {
         this.room = room;
     }
 
@@ -717,7 +726,7 @@ public class GameController implements Initializable {
                     player1Name.setText("???");
                     player1Level.setText("?级");
                     player1Record.setText("?胜?负?平");
-                }else{
+                } else {
                     User player1 = Client.playersMap.get(room.getPlayer1());
                     player1Name.setText(player1.getNickname());
                     player1Level.setText(player1.getLevelString());
@@ -727,7 +736,7 @@ public class GameController implements Initializable {
                     player2Name.setText("???");
                     player2Level.setText("?级");
                     player2Record.setText("?胜?负?平");
-                }else{
+                } else {
                     User player2 = Client.playersMap.get(room.getPlayer2());
                     player2Name.setText(player2.getNickname());
                     player2Level.setText(player2.getLevelString());

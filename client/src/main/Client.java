@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main;
 
 import javafx.application.Application;
@@ -25,35 +36,36 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class Client extends Application {
     public static boolean offlineMode;
-    private UserComparator comparator = new UserComparator();
-    private Stage primaryStage;
+    private static User user;
+    private Connect connect = null;
+
     private Stage createRoomStage;
     private Stage gameStage;
     private Stage lobbyStage = null;
     private Stage signupStage = null;
     private Stage loginStage;
-    private static User user;
-    private Connect connect = null;
-    private ArrayList playerList = new ArrayList();
+
     private static LoginController loginController;
     private static LobbyController lobbyController;
     private static GameController gameController;
     private static SignupController signupController;
+
     public static MessageQueue<Room> rooms = new MessageQueue<>();
     public static MessageQueue<User> players = new MessageQueue<>();
     public static MessageQueue<String> chatMessages = new MessageQueue<>();
     public static MessageQueue<String> privateChatMessages = new MessageQueue<>();
+
     private static ObservableList<Room> roomData = FXCollections.observableArrayList();
     private static ObservableList<User> playerData = FXCollections.observableArrayList();
     private static ObservableList<String> messageData = FXCollections.observableArrayList();
     private static ObservableList<String> privateMessageData = FXCollections.observableArrayList();
+
     public static Map<String, User> playersMap = new HashMap<>();
     public static Map<Integer, Room> roomsMap = new HashMap<>();
 
@@ -61,6 +73,7 @@ public class Client extends Application {
     private long keepAliveDalay = 3000;
     private long lastTimeCheck;
     private Thread receiveThread;
+
     private Thread keepAliveThread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -73,13 +86,11 @@ public class Client extends Application {
                     } catch (IOException e) {
                         // e.printStackTrace();
                         System.out.println("与服务器连接失败!");
-                        //JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
                         Alert error = new Alert(Alert.AlertType.ERROR, "与服务器连接失败!\\n正在尝试重新连接...");
                         error.show();
                         reConnect();
                     } catch (NullPointerException e) {
                         System.out.println("与服务器连接失败！");
-                        //JOptionPane.showMessageDialog(null, "与服务器连接失败!\n正在尝试重新连接...", "连接错误", JOptionPane.INFORMATION_MESSAGE);
                         Alert error = new Alert(Alert.AlertType.ERROR, "与服务器连接失败!\\n正在尝试重新连接...");
                         error.show();
                         reConnect();
@@ -110,12 +121,6 @@ public class Client extends Application {
                         receiveThread.start();
                     if (!messageThread.isAlive())
                         messageThread.start();
-                    /*
-                     * if(!SignupController.hasCheckedAccount) {
-                     * signupController.checkAccountValid();
-                     * SignupController.hasCheckedAccount = true; }
-                     */
-                    //JOptionPane.showMessageDialog(null, "重新连接服务器成功！", "连接提示", JOptionPane.INFORMATION_MESSAGE);
                     Alert alert = new Alert(Alert.AlertType.ERROR, "重新连接服务器成功！");
                     alert.show();
                 } catch (UnknownHostException e) {
@@ -125,7 +130,7 @@ public class Client extends Application {
                     // e.printStackTrace();
                 } catch (IOException e) {
                     if (print)
-                        System.out.println("正在尝试重新连接服务器。。。。");
+                        System.out.println("正在尝试重新连接服务器...");
                     print = false;
                 }
             }
@@ -145,6 +150,7 @@ public class Client extends Application {
             return false;
         }
     });
+
     private Thread chatThread = new Thread(new Runnable() {
 
         @Override
@@ -346,7 +352,8 @@ public class Client extends Application {
         connect = new Connect();
         receiveThread = connect.getReceiveThread();
         /*
-         * keepAliveThread.setDaemon(true); keepAliveThread.start();
+         * keepAliveThread.setDaemon(true);
+         * keepAliveThread.start();
          */
         if (Connect.hasConnect()) {
             receiveThread.setDaemon(true);
@@ -503,10 +510,6 @@ public class Client extends Application {
 
     public Stage getLoginStage() {
         return loginStage;
-    }
-
-    public ArrayList getPlayerList() {
-        return playerList;
     }
 
     public ObservableList<Room> getRoomData() {

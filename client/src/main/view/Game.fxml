@@ -165,13 +165,13 @@
       </AnchorPane>
       <ListView layoutX="641.0" layoutY="433.0" prefHeight="218.0" prefWidth="500.0" visible="false" />
       <Slider fx:id="volumeSlider" layoutX="417.0" layoutY="14.0" max="1.0" value="1.0" />
-      <ToggleButton fx:id="step" layoutX="69.0" layoutY="10.0" mnemonicParsing="false" onAction="#showStep" prefHeight="23.0" prefWidth="56.0" text="步数">
+      <ToggleButton fx:id="step" layoutX="69.0" layoutY="10.0" mnemonicParsing="false" onAction="#showStep" prefHeight="14.0" prefWidth="50.0" text="步数">
          <font>
             <Font size="14.0" />
          </font></ToggleButton>
-      <ToggleButton fx:id="axis" layoutX="150.0" layoutY="10.0" mnemonicParsing="false" onAction="#displayAxis" prefHeight="29.0" prefWidth="56.0" text="坐标">
+      <ToggleButton fx:id="axis" layoutX="150.0" layoutY="10.0" mnemonicParsing="false" onAction="#displayAxis" prefHeight="29.0" prefWidth="50.0" text="坐标">
          <font>
-            <Font size="14.0" />
+            <Font size="13.0" />
          </font>
       </ToggleButton>
    </children>

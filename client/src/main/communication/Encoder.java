@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main.communication;
 
 import com.alibaba.fastjson.JSONObject;
@@ -57,6 +68,21 @@ public class Encoder {
         return requestJson(gson.toJson(jsonObject), Type.Request.UPDATE_ROOM);
     }
 
+    public static String roomMessageRequest(int roomId, String message) {
+        Map map = new HashMap();
+        map.put("room_id", roomId);
+        map.put("account", Client.getUser().getAccount());
+        map.put("message", message);
+        return requestJson(gson.toJson(map), Type.Request.ROOM_CHAT);
+    }
+
+    public static String lobbyMessageRequest(String message) {
+        Map map = new HashMap();
+        map.put("account", Client.getUser().getAccount());
+        map.put("message", message);
+        return requestJson(gson.toJson(map), Type.Request.LOBBY_CHAT);
+    }
+
     public static String sitdownRequest(int roomId) {
         Map map = new HashMap();
         map.put("room_id", roomId);
@@ -90,7 +116,7 @@ public class Encoder {
 
     public static String gameActionRequest(int action, int x, int y) {
         Map map = new HashMap();
-		map.put("room_id", Client.getUser().getRoom());
+        map.put("room_id", Client.getUser().getRoom());
         map.put("action", action);
         Map placeMap = new HashMap();
         placeMap.put("x", x);
@@ -118,21 +144,6 @@ public class Encoder {
 
     private static String requestJson(String json, int type) {
         return "{\"request_type\":" + type + "," + json.substring(1);
-    }
-
-    public static String roomMessageRequest(int roomId, String message) {
-        Map map = new HashMap();
-        map.put("room_id", roomId);
-        map.put("account", Client.getUser().getAccount());
-        map.put("message", message);
-        return requestJson(gson.toJson(map), Type.Request.ROOM_CHAT);
-    }
-
-    public static String lobbyMessageRequest(String message) {
-        Map map = new HashMap();
-        map.put("account", Client.getUser().getAccount());
-        map.put("message", message);
-        return requestJson(gson.toJson(map), Type.Request.LOBBY_CHAT);
     }
 
 }

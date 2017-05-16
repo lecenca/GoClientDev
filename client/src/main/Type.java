@@ -1,3 +1,14 @@
+/******************************************************************************
+ * This file is licensed under the Unlicense. See License.txt for details.
+ *
+ * Author:
+ *   Alinshans (https://github.com/Alinshans/GoClientDev)
+ *   zengxingbin (https://github.com/zengxingbin/GoClientDev)
+ *   lecenca (https://github.com/lecenca/GoClientDev)
+ *
+ * Copyright (c) 2017. All rights reserved.
+ *****************************************************************************/
+
 package src.main;
 
 public class Type {
@@ -65,13 +76,6 @@ public class Type {
                 NONE = 3;
     }
 
-    public static class UpdatePlayer {
-        public static final int
-                IN = 0,
-                CHANGE = 1,
-                OUT = 2;
-    }
-
     public static class UpdateRoom {
         public static final int
                 PLAYER1IN = 0,
@@ -96,16 +100,17 @@ public class Type {
                 KILL = 2;       // 提子
     }
 
-    public static class GameResult{
+    public static class GameResult {
         public static final int
-            WIN = 0,
-            LOSE = 1,
-            DRAW = 2,
-            PLAYER1_OVERTIME= 16,
-            PLAYER2_OVERTIME = 17,
-            PLAYER1_SURRENDER = 32,
-            PLAYER2_SURRENDER = 33,
-            PLAYER1_ESCAPE = 64,
-            PLAYER2_ESCAPE = 65;
+                WIN = 0,
+                LOSE = 1,
+                DRAW = 2,
+                PLAYER1_OVERTIME = 16,
+                PLAYER2_OVERTIME = 17,
+                PLAYER1_SURRENDER = 32,
+                PLAYER2_SURRENDER = 33,
+                PLAYER1_ESCAPE = 64,
+                PLAYER2_ESCAPE = 65;
     }
+
 }
