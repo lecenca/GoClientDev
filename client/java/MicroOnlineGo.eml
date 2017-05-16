@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/out/test/MicroOnlineGo"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="gson-2.8.0.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/client/lib/gson-2.8.0.jar!/"/>
+	</lib>
+	<lib name="fastjson-1.2.5.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/client/lib/fastjson-1.2.5.jar!/"/>
+	</lib>
+	<lib name="junit-4.9.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/client/lib/junit-4.9.jar!/"/>
+	</lib>
+</component>
